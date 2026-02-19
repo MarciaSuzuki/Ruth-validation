@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prose Meaning Map — Validation Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cinzel:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #F8F4EE;
+  --white: #FFFFFF;
+  --teal: #2D6E6E;
+  --teal-hover: #245858;
+  --teal-light: #4A9B9B;
+  --teal-pale: #EAF4F4;
+  --gold: #9A6F2A;
+  --gold-pale: #FDF6E3;
+  --text: #1C1917;
+  --text-muted: #6B5E52;
+  --text-light: #A09080;
+  --border: #E2D8CC;
+  --border-light: #EDE7DF;
+  --amber: #B45309;
+  --amber-pale: #FFFBEB;
+  --amber-border: #FCD34D;
+  --green: #047857;
+  --green-pale: #ECFDF5;
+  --green-border: #6EE7B7;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Crimson Pro", Georgia, serif;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--cream);
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.app-header {
+  background: var(--teal);
+  color: white;
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+.app-header h1 {
+  font-family: "Cinzel", serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: white;
+}
+.app-header .subtitle {
+  font-size: 0.85rem;
+  opacity: 0.75;
+  font-style: italic;
+}
+
+/* ── NAV TABS ── */
+.tab-nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
+}
+.tab-btn {
+  font-family: "Cinzel", serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.9rem 1.25rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--teal); }
+.tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+/* ── MAIN ── */
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+.main-content { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: "Cinzel", serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text-light);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  border-radius: 6px;
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+  transition: border-left-color 0.2s;
+  overflow: hidden;
+}
+.card.has-warnings { border-left-color: var(--amber-border); }
+.card.reviewed { border-left-color: var(--green-border); }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+  background: #FCFAF7;
+}
+.card-title {
+  font-family: "Cinzel", serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--teal);
+}
+.card-title span {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-family: "Crimson Pro", serif;
+  font-size: 0.9rem;
+  letter-spacing: 0;
+  margin-left: 0.5rem;
+}
+
+/* ── STATUS BADGE ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  font-family: "Cinzel", serif;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-weight: 500;
+}
+.badge-pending { background: #F3F0EB; color: var(--text-muted); }
+.badge-warning { background: var(--amber-pale); color: var(--amber); border: 1px solid #FDE68A; }
+.badge-reviewed { background: var(--green-pale); color: var(--green); border: 1px solid var(--green-border); }
+
+/* ── CARD BODY ── */
+.card-body { padding: 1.25rem 1.5rem; }
+.card-body.editing { background: #FAFAF8; }
+
+/* ── WARNINGS ── */
+.warnings-block {
+  margin: 0 1.5rem 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--amber-pale);
+  border: 1px solid #FDE68A;
+  border-radius: 4px;
+}
+.warning-title {
+  font-family: "Cinzel", serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--amber);
+  margin-bottom: 0.35rem;
+}
+.warning-item {
+  font-size: 0.9rem;
+  color: #92400E;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+.warning-item::before { content: "⚠"; font-size: 0.8rem; margin-top: 0.1rem; flex-shrink: 0; }
+
+/* ── CARD ACTIONS ── */
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid var(--border-light);
+  background: #FCFAF7;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  border: none;
+  border-radius: 4px;
+  padding: 0.45rem 1rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-teal { background: var(--teal); color: white; }
+.btn-teal:hover { background: var(--teal-hover); }
+.btn-outline { background: transparent; color: var(--teal); border: 1px solid var(--teal); }
+.btn-outline:hover { background: var(--teal-pale); }
+.btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+.btn-green { background: var(--green); color: white; }
+.btn-green:hover { background: #035f47; }
+.btn-approve {
+  font-family: "Cinzel", serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  background: var(--gold);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.85rem 2.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  margin-top: 1.5rem;
+}
+.btn-approve:hover:not(:disabled) { background: #7A5520; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-approve:disabled { background: var(--text-light); cursor: not-allowed; opacity: 0.6; }
+.btn-sm { padding: 0.3rem 0.7rem; font-size: 0.68rem; }
+
+/* ── PROGRESS ── */
+.progress-bar-wrap {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.progress-info { flex: 1; }
+.progress-title {
+  font-family: "Cinzel", serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+.progress-track {
+  height: 6px;
+  background: var(--border-light);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+.progress-count {
+  font-family: "Cinzel", serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--teal);
+  white-space: nowrap;
+}
+
+/* ── REVIEW CONTENT ── */
+.level1-text {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text);
+}
+.level1-text p { margin-bottom: 1rem; }
+.level1-text p:last-child { margin-bottom: 0; }
+
+.subsection { margin-bottom: 1.5rem; }
+.subsection:last-child { margin-bottom: 0; }
+.subsection-label {
+  font-family: "Cinzel", serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--teal-light);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--teal-pale);
+}
+.scene-title {
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* ── PERSON / PLACE / OBJECT ENTRIES ── */
+.entry-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.entry-item {
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  background: #FDFCFA;
+}
+.entry-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--teal);
+  margin-bottom: 0.4rem;
+}
+.entry-fields { display: grid; grid-template-columns: auto 1fr; gap: 0.15rem 0.75rem; }
+.field-label {
+  font-family: "Cinzel", serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-light);
+  text-transform: uppercase;
+  padding-top: 0.15rem;
+  white-space: nowrap;
+}
+.field-value { font-size: 0.95rem; color: var(--text); }
+.absence-note {
+  margin-top: 0.75rem;
+  padding: 0.6rem 0.9rem;
+  background: var(--gold-pale);
+  border-left: 3px solid #D4A843;
+  border-radius: 0 4px 4px 0;
+  font-size: 0.92rem;
+  font-style: italic;
+  color: #5A4020;
+}
+.prose-text { font-size: 1rem; line-height: 1.75; color: var(--text); }
+
+/* ── PROPOSITIONS ── */
+.prop-list { display: flex; flex-direction: column; gap: 1.25rem; }
+.prop-block {
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.prop-header {
+  background: var(--teal-pale);
+  padding: 0.4rem 1rem;
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--teal);
+}
+.prop-content { padding: 0.6rem 1rem; }
+.qa-row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--border-light);
+  padding: 0.3rem 0;
+  align-items: baseline;
+}
+.qa-row:last-child { border-bottom: none; }
+.qa-question {
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--text-muted);
+  padding-right: 0.75rem;
+}
+.qa-answer { font-size: 0.95rem; color: var(--text); font-weight: 500; }
+.prop-warning { font-size: 0.8rem; color: var(--amber); padding: 0.2rem 1rem; background: var(--amber-pale); }
+
+/* ── EDIT FORMS ── */
+.edit-form { display: flex; flex-direction: column; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+.form-label {
+  font-family: "Cinzel", serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.form-input, .form-textarea {
+  font-family: "Crimson Pro", serif;
+  font-size: 1rem;
+  color: var(--text);
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+.form-input:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 2px rgba(45,110,110,0.12);
+}
+.form-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+.form-textarea.tall { min-height: 140px; }
+
+.entry-editor {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1rem;
+  background: white;
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+.entry-editor-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--teal);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-light);
+}
+.entry-editor-fields { display: flex; flex-direction: column; gap: 0.6rem; }
+.remove-entry-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.remove-entry-btn:hover { color: #DC2626; }
+.add-entry-btn {
+  font-family: "Cinzel", serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.07em;
+  color: var(--teal);
+  background: var(--teal-pale);
+  border: 1px dashed var(--teal-light);
+  border-radius: 4px;
+  padding: 0.5rem;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 0.25rem;
+}
+.add-entry-btn:hover { background: var(--teal); color: white; border-color: var(--teal); }
+
+.qa-editor { display: flex; flex-direction: column; gap: 0.5rem; }
+.qa-edit-row {
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+.qa-edit-row input {
+  font-family: "Crimson Pro", serif;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.35rem 0.6rem;
+}
+.qa-edit-row input:focus {
+  outline: none;
+  border-color: var(--teal);
+}
+.qa-edit-row input.q-input { font-style: italic; color: var(--text-muted); }
+.remove-qa-btn {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.2rem;
+  transition: color 0.15s;
+}
+.remove-qa-btn:hover { color: #DC2626; }
+.prop-editor-block {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.prop-editor-header {
+  background: var(--teal-pale);
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.prop-editor-header label {
+  font-family: "Cinzel", serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.07em;
+  color: var(--teal);
+}
+.prop-editor-header input {
+  font-family: "Crimson Pro", serif;
+  font-size: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.2rem 0.4rem;
+  width: 60px;
+}
+.prop-editor-body { padding: 0.75rem; }
+.add-qa-btn {
+  font-family: "Cinzel", serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.07em;
+  color: var(--teal);
+  background: none;
+  border: 1px dashed var(--teal-light);
+  border-radius: 3px;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  margin-top: 0.25rem;
+  transition: all 0.15s;
+}
+.add-qa-btn:hover { background: var(--teal-pale); }
+
+/* ── IMPORT TAB ── */
+.import-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.paste-area {
+  font-family: "Crimson Pro", serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  width: 100%;
+  min-height: 320px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  resize: vertical;
+  transition: border-color 0.15s;
+  color: var(--text);
+}
+.paste-area:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 2px rgba(45,110,110,0.1);
+}
+.parse-result {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+.parse-result.success { background: var(--green-pale); color: var(--green); border: 1px solid var(--green-border); }
+.parse-result.error { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+.parse-result.warning { background: var(--amber-pale); color: var(--amber); border: 1px solid #FDE68A; }
+
+/* ── ARCHIVE ── */
+.archive-empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.archive-item {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.archive-item:hover { border-color: var(--teal); box-shadow: var(--shadow); }
+.archive-passage {
+  font-family: "Cinzel", serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--teal);
+}
+.archive-meta { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; }
+.archive-badge { margin-left: 1rem; flex-shrink: 0; }
+
+/* ── EXPORT ── */
+.json-output {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  background: #1C1917;
+  color: #E8DDD0;
+  border-radius: 6px;
+  padding: 1.5rem;
+  overflow: auto;
+  max-height: 500px;
+  white-space: pre;
+}
+.export-actions { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
+
+/* ── APPROVE SECTION ── */
+.approve-section {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+.approve-title {
+  font-family: "Cinzel", serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+.approve-checklist { margin-bottom: 1.25rem; }
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+.check-item.done { color: var(--green); }
+.check-item::before { content: "○"; font-size: 0.8rem; }
+.check-item.done::before { content: "✓"; }
+
+/* ── UTILITY ── */
+.flex-gap { display: flex; gap: 0.5rem; align-items: center; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.divider { border: none; border-top: 1px solid var(--border-light); margin: 1rem 0; }
+.text-muted { color: var(--text-muted); }
+.text-small { font-size: 0.85rem; }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <h1>Prose Meaning Map</h1>
+  <span class="subtitle">Validation Studio &mdash; Tripod Method &middot; OBT Lab</span>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('import')">Import</button>
+  <button class="tab-btn" onclick="switchTab('review')">Review</button>
+  <button class="tab-btn" onclick="switchTab('archive')">Archive</button>
+  <button class="tab-btn" onclick="switchTab('export')">Export JSON</button>
+</nav>
+
+<!-- ── TAB 1: IMPORT ── -->
+<div id="tab-import" class="tab-pane active">
+<div class="main-content">
+  <p class="section-label">Import NotebookLM Output</p>
+
+  <div class="import-meta">
+    <div class="form-group">
+      <label class="form-label">Passage Reference</label>
+      <input id="meta-passage" class="form-input" placeholder="e.g. Ruth 1:1–7" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Analyst Name</label>
+      <input id="meta-analyst" class="form-input" placeholder="Your name" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Paste NotebookLM Output</label>
+    <textarea id="raw-input" class="paste-area"
+      placeholder="Paste the full Prose Meaning Map output from NotebookLM here..."></textarea>
+  </div>
+
+  <div class="mt-2 flex-gap">
+    <button class="btn btn-teal" onclick="parseInput()">Parse Map</button>
+    <button class="btn btn-ghost" onclick="clearInput()">Clear</button>
+  </div>
+
+  <div id="parse-result" style="display:none;"></div>
+</div>
+</div>
+
+<!-- ── TAB 2: REVIEW ── -->
+<div id="tab-review" class="tab-pane">
+<div class="main-content">
+  <div id="review-empty" class="archive-empty">
+    No map loaded. Go to the Import tab and paste a NotebookLM output.
+  </div>
+  <div id="review-content" style="display:none;">
+    <div class="progress-bar-wrap">
+      <div class="progress-info">
+        <div class="progress-title">Review Progress</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="progress-count" id="progress-count">0 / 0</div>
+    </div>
+    <div id="review-cards"></div>
+    <div class="approve-section" id="approve-section">
+      <div class="approve-title">APPROVAL CHECKLIST</div>
+      <div class="approve-checklist" id="approve-checklist"></div>
+      <button class="btn-approve" id="approve-btn" onclick="approveMap()" disabled>
+        Approve &amp; Save Map
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── TAB 3: ARCHIVE ── -->
+<div id="tab-archive" class="tab-pane">
+<div class="main-content">
+  <p class="section-label">Approved Maps</p>
+  <div id="archive-list"></div>
+</div>
+</div>
+
+<!-- ── TAB 4: EXPORT ── -->
+<div id="tab-export" class="tab-pane">
+<div class="main-content">
+  <p class="section-label">Export JSON</p>
+  <div id="export-empty" class="archive-empty">No map loaded or approved yet.</div>
+  <div id="export-content" style="display:none;">
+    <div class="export-actions">
+      <button class="btn btn-teal" onclick="downloadJSON()">Download JSON</button>
+      <button class="btn btn-outline" onclick="copyJSON()">Copy to Clipboard</button>
+    </div>
+    <pre class="json-output" id="json-output"></pre>
+  </div>
+</div>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════
+const state = {
+  currentMap: null,
+  savedMaps: loadFromStorage()
+};
+
+// Each review section has an id, a label, and a reviewed flag
+// Sections: level1, scene_1, scene_2, ..., level3
+
+// ════════════════════════════════════════════
+// TAB SWITCHING
+// ════════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("tab-" + name).classList.add("active");
+  document.querySelectorAll(".tab-btn").forEach(b => {
+    if (b.getAttribute("onclick").includes("'" + name + "'")) b.classList.add("active");
+  });
+  if (name === "archive") renderArchive();
+  if (name === "export") renderExport();
+}
+
+// ════════════════════════════════════════════
+// PARSER
+// ════════════════════════════════════════════
+function parseInput() {
+  const raw = document.getElementById("raw-input").value.trim();
+  const passage = document.getElementById("meta-passage").value.trim();
+  const analyst = document.getElementById("meta-analyst").value.trim();
+
+  if (!raw) {
+    showParseResult("error", "Please paste a NotebookLM output first.");
+    return;
+  }
+
+  try {
+    const map = parseMap(raw);
+    map.meta.passage = passage || inferPassage(raw);
+    map.meta.analyst = analyst;
+    map.meta.dateImported = new Date().toISOString();
+    map.meta.status = "draft";
+
+    // Run automated checks
+    runChecks(map);
+
+    state.currentMap = map;
+
+    const totalSections = 1 + map.scenes.length + 1; // L1 + scenes + L3
+    const warnings = countWarnings(map);
+    const msg = `Parsed successfully: Level 1, ${map.scenes.length} scene(s), ${map.propositions.length} proposition(s).`
+      + (warnings > 0 ? ` ${warnings} automated warning(s) flagged for review.` : " No automated warnings.");
+    showParseResult(warnings > 0 ? "warning" : "success", msg);
+
+    // Build review sections
+    buildReviewSections(map);
+    updateProgress();
+
+  } catch(e) {
+    showParseResult("error", "Parse error: " + e.message + ". Check that the format matches the expected NotebookLM output.");
+    console.error(e);
+  }
+}
+
+function inferPassage(text) {
+  // Try to extract from "Ruth 1:1–7" patterns
+  const m = text.match(/Ruth\s+[\d:–\-,\s]+/i);
+  return m ? m[0].trim() : "";
+}
+
+function showParseResult(type, msg) {
+  const el = document.getElementById("parse-result");
+  el.style.display = "block";
+  el.className = "parse-result " + type;
+  el.textContent = msg;
+}
+
+function clearInput() {
+  document.getElementById("raw-input").value = "";
+  document.getElementById("parse-result").style.display = "none";
+}
+
+function parseMap(raw) {
+  const text = raw.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+
+  const map = {
+    meta: { passage: "", analyst: "", status: "draft" },
+    level1: { text: "", reviewed: false, warnings: [] },
+    scenes: [],
+    propositions: [],
+    propositionsReviewed: false,
+    propositionWarnings: []
+  };
+
+  // ── LEVEL 1 ──
+  const l1m = text.match(/#{1,4}\s*Level\s*1[^\n]*\n([\s\S]*?)(?=#{1,4}\s*Level\s*[23]|$)/i);
+  if (l1m) {
+    map.level1.text = cleanSeparators(l1m[1]).trim();
+  }
+
+  // ── SCENES ──
+  const sceneRe = /#{1,4}\s*Level\s*2[^\n]*Scene\s*(\d+)[^\n]*Verses?\s*([\d\u2013\u2014\-:,\s]+)[^\n]*\n([\s\S]*?)(?=#{1,4}\s*Level|$)/gi;
+  let sm;
+  while ((sm = sceneRe.exec(text)) !== null) {
+    map.scenes.push(parseScene(sm[1], sm[2].trim(), sm[3]));
+  }
+
+  // ── LEVEL 3 ──
+  const l3m = text.match(/#{1,4}\s*Level\s*3[^\n]*\n([\s\S]*?)$/i);
+  if (l3m) {
+    map.propositions = parsePropositions(l3m[1]);
+  }
+
+  return map;
+}
+
+function cleanSeparators(text) {
+  return text.replace(/^[\-\u2500=]{3,}$/mg, "").replace(/\n{3,}/g, "\n\n");
+}
+
+function parseScene(num, verses, text) {
+  const scene = {
+    number: parseInt(num),
+    verses: verses,
+    title: "",
+    people: [], places: [], objects: [],
+    significantAbsence: "",
+    whatHappens: "",
+    communicativePurpose: "",
+    reviewed: false,
+    warnings: []
+  };
+
+  // Title
+  const titleM = text.match(/\*\*Title:\*\*\s*([^\n]+)/);
+  if (titleM) scene.title = titleM[1].trim();
+
+  // Extract subsections
+  const sub2A = extractSubsection(text, "2A", ["2B","2C","2D","2E"]);
+  const sub2B = extractSubsection(text, "2B", ["2C","2D","2E"]);
+  const sub2C = extractSubsection(text, "2C", ["2D","2E"]);
+  const sub2D = extractSubsection(text, "2D", ["2E"]);
+  const sub2E = extractSubsection(text, "2E", []);
+
+  if (sub2A) scene.people   = parseBoldEntries(sub2A, ["Role","Relationship","Wants","Carries"]);
+  if (sub2B) scene.places   = parseBoldEntries(sub2B, ["Role","Type","Meaning","Effect on scene"]);
+  if (sub2C) {
+    const absM = sub2C.match(/\*\*Significant absence:\*\*\s*([^\n]+(?:\n(?!\*\*)[^\n]*)*)/i);
+    if (absM) scene.significantAbsence = absM[1].trim();
+    const sub2CcleanText = sub2C.replace(/\*\*Significant absence:[^]*$/i, "");
+    scene.objects = parseBoldEntries(sub2CcleanText, ["What it is","Function in scene","Signals"]);
+  }
+  if (sub2D) scene.whatHappens = cleanSeparators(sub2D).trim();
+  if (sub2E) scene.communicativePurpose = cleanSeparators(sub2E).trim();
+
+  return scene;
+}
+
+function extractSubsection(text, label, nextLabels) {
+  const re = new RegExp("#{1,5}\\s*" + label + "\\s*[\\u2013\\u2014\\-][^\\n]*\\n([\\s\\S]*?)(?=" +
+    nextLabels.map(l => "#{1,5}\\s*" + l).join("|") + "|$)", "i");
+  const m = text.match(re);
+  return m ? m[1] : null;
+}
+
+function parseBoldEntries(text, fields) {
+  const entries = [];
+  if (!text) return entries;
+
+  // Split on **Name** pattern
+  const parts = text.split(/(?=\*\*[^*\n]+\*\*)/);
+
+  for (const part of parts) {
+    const nameM = part.match(/^\*\*([^*]+)\*\*/);
+    if (!nameM) continue;
+    const name = nameM[1].trim();
+    if (!name || name.toLowerCase().startsWith("significant absence")) continue;
+
+    const body = part.slice(nameM[0].length);
+    const entry = { name };
+
+    for (let i = 0; i < fields.length; i++) {
+      const field = fields[i];
+      const nextFields = fields.slice(i + 1);
+      entry[fieldKey(field)] = extractFieldValue(body, field, nextFields);
+    }
+    entries.push(entry);
+  }
+  return entries;
+}
+
+function fieldKey(f) {
+  return f.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z_]/g, "");
+}
+
+function escapeRe(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function extractFieldValue(text, fieldName, nextFields) {
+  const startRe = new RegExp(escapeRe(fieldName) + ":\s*", "i");
+  const startM = text.match(startRe);
+  if (!startM) return "";
+
+  const vs = startM.index + startM[0].length;
+  let ve = text.length;
+
+  for (const nf of nextFields) {
+    const nextRe = new RegExp("(?:\\s|^)" + escapeRe(nf) + ":\s*", "im");
+    const nm = text.slice(vs).match(nextRe);
+    if (nm && nm.index < (ve - vs)) {
+      ve = vs + nm.index;
+    }
+  }
+  return text.slice(vs, ve).trim();
+}
+
+function parsePropositions(text) {
+  const props = [];
+  const blocks = text.split(/(?=\*\*Proposition\s+\d+)/i);
+
+  for (const block of blocks) {
+    const hm = block.match(/\*\*Proposition\s+(\d+)\s*[\u2013\u2014\-]+\s*Verse\s*([^*\n]+)\*\*/i);
+    if (!hm) continue;
+
+    const prop = {
+      number: parseInt(hm[1]),
+      verse: hm[2].trim(),
+      content: [],
+      reviewed: false,
+      warnings: []
+    };
+
+    const lines = block.split("\n");
+    for (const line of lines) {
+      const t = line.trim();
+      if (!t || t.startsWith("**Proposition")) continue;
+      // Q→A: "Question? Answer"
+      const qam = t.match(/^(.+?\?)\s+(.+)$/);
+      if (qam) {
+        prop.content.push({ question: qam[1].trim(), answer: qam[2].trim() });
+      }
+    }
+
+    if (prop.content.length > 0) props.push(prop);
+  }
+  return props;
+}
+
+// ════════════════════════════════════════════
+// AUTOMATED CHECKS
+// ════════════════════════════════════════════
+const COMMENTARY_WORDS = [
+  "significant","important","notably","note that","this shows","this reveals",
+  "this establishes","interestingly","remarkably","it is worth","one should"
+];
+
+function runChecks(map) {
+  // Level 1
+  map.level1.warnings = [];
+  if (!map.level1.text) {
+    map.level1.warnings.push("Level 1 text not found or empty.");
+  } else {
+    if (/^[\-\*•]\s/m.test(map.level1.text))
+      map.level1.warnings.push("Level 1 contains bullet points. It should be prose only.");
+    if (/^\d+\.\s/m.test(map.level1.text))
+      map.level1.warnings.push("Level 1 contains a numbered list. It should be prose only.");
+    if (map.level1.text.split(/\s+/).length < 80)
+      map.level1.warnings.push("Level 1 is very short (under 80 words). It may be incomplete.");
+  }
+
+  // Scenes
+  for (const scene of map.scenes) {
+    scene.warnings = [];
+    if (scene.people.length === 0)
+      scene.warnings.push("2A — People is empty. Every scene must name every person present.");
+    if (scene.places.length === 0)
+      scene.warnings.push("2B — Places is empty. Every scene must name every location, including transitional spaces.");
+    if (scene.objects.length === 0)
+      scene.warnings.push("2C — Objects has no entries. Check whether objects, durations, or natural elements are present.");
+    if (!scene.whatHappens || scene.whatHappens.split(/\s+/).length < 15)
+      scene.warnings.push("2D — What Happens is very short. Check for completeness.");
+    if (!scene.communicativePurpose || scene.communicativePurpose.split(/\s+/).length < 10)
+      scene.warnings.push("2E — Communicative Purpose is very short or missing.");
+  }
+
+  // Propositions
+  map.propositionWarnings = [];
+  if (map.propositions.length === 0) {
+    map.propositionWarnings.push("No propositions found. Check that Level 3 is present in the input.");
+  }
+  for (const prop of map.propositions) {
+    prop.warnings = [];
+    if (prop.content.length === 0) {
+      prop.warnings.push("Proposition " + prop.number + " has no Q→A content.");
+      continue;
+    }
+    if (!prop.content[0].question.toLowerCase().startsWith("what happens")) {
+      prop.warnings.push("Proposition " + prop.number + ": first line should be \"What happens?\" — found: \"" + prop.content[0].question + "\"");
+    }
+    for (const qa of prop.content) {
+      const ansLower = qa.answer.toLowerCase();
+      for (const word of COMMENTARY_WORDS) {
+        if (ansLower.includes(word)) {
+          prop.warnings.push("Proposition " + prop.number + ": answer to \"" + qa.question + "\" may contain commentary (\"" + word + "\"). Level 3 should state only what the text says.");
+          break;
+        }
+      }
+      // Flag if answer looks like a full sentence (has a verb + subject)
+      if (/^[A-Z][^.!?]+[a-z]\s+[a-z]+s\b/.test(qa.answer) && qa.answer.split(/\s+/).length > 7) {
+        prop.warnings.push("Proposition " + prop.number + ": answer to \"" + qa.question + "\" may be a full sentence. Check it does not reproduce a biblical clause.");
+      }
+    }
+    if (prop.warnings.length > 0) {
+      map.propositionWarnings.push(...prop.warnings);
+    }
+  }
+}
+
+function countWarnings(map) {
+  return map.level1.warnings.length
+    + map.scenes.reduce((s, sc) => s + sc.warnings.length, 0)
+    + map.propositionWarnings.length;
+}
+
+// ════════════════════════════════════════════
+// REVIEW RENDERER
+// ════════════════════════════════════════════
+function buildReviewSections(map) {
+  document.getElementById("review-empty").style.display = "none";
+  document.getElementById("review-content").style.display = "block";
+
+  const container = document.getElementById("review-cards");
+  container.innerHTML = "";
+
+  // Level 1 card
+  container.appendChild(buildLevel1Card(map));
+
+  // Scene cards
+  for (const scene of map.scenes) {
+    container.appendChild(buildSceneCard(scene, map));
+  }
+
+  // Level 3 card
+  container.appendChild(buildPropositionsCard(map));
+
+  updateApproveChecklist(map);
+}
+
+function buildLevel1Card(map) {
+  const sec = map.level1;
+  const div = document.createElement("div");
+  div.id = "card-level1";
+  div.className = "card" + (sec.warnings.length > 0 ? " has-warnings" : "");
+
+  const badge = statusBadge(sec);
+  const warnings = sec.warnings.length > 0 ? warningsHTML(sec.warnings) : "";
+
+  const textHTML = sec.text.split(/\n\n+/).map(p =>
+    "<p>" + escHtml(p.trim()) + "</p>"
+  ).join("");
+
+  div.innerHTML = `
+    <div class="card-header">
+      <span class="card-title">LEVEL 1 <span>— The Arc</span></span>
+      ${badge}
+    </div>
+    ${warnings}
+    <div class="card-body" id="body-level1">
+      <div class="level1-text" id="view-level1">${textHTML}</div>
+    </div>
+    <div class="card-actions">
+      <button class="btn btn-ghost btn-sm" onclick="editLevel1()">Edit</button>
+      <button class="btn btn-${sec.reviewed ? "green" : "outline"} btn-sm" 
+        id="reviewed-btn-level1"
+        onclick="markReviewed('level1')">
+        ${sec.reviewed ? "✓ Reviewed" : "Mark Reviewed"}
+      </button>
+    </div>`;
+  return div;
+}
+
+function buildSceneCard(scene, map) {
+  const sid = "scene_" + scene.number;
+  const div = document.createElement("div");
+  div.id = "card-" + sid;
+  div.className = "card" + (scene.warnings.length > 0 ? " has-warnings" : "");
+
+  const badge = statusBadge(scene);
+  const warnings = scene.warnings.length > 0 ? warningsHTML(scene.warnings) : "";
+
+  let bodyHTML = `<div class="scene-title">${escHtml(scene.title)}</div>`;
+
+  // 2A
+  bodyHTML += `<div class="subsection">
+    <div class="subsection-label">2A — People</div>
+    <div class="entry-list">`;
+  for (const p of scene.people) {
+    bodyHTML += `<div class="entry-item">
+      <div class="entry-name">${escHtml(p.name)}</div>
+      <div class="entry-fields">
+        ${fieldRow("Role", p.role)}
+        ${fieldRow("Relationship", p.relationship)}
+        ${fieldRow("Wants", p.wants)}
+        ${fieldRow("Carries", p.carries)}
+      </div></div>`;
+  }
+  if (scene.people.length === 0) bodyHTML += `<div class="text-muted text-small"><em>No people parsed.</em></div>`;
+  bodyHTML += `</div></div>`;
+
+  // 2B
+  bodyHTML += `<div class="subsection">
+    <div class="subsection-label">2B — Places</div>
+    <div class="entry-list">`;
+  for (const pl of scene.places) {
+    bodyHTML += `<div class="entry-item">
+      <div class="entry-name">${escHtml(pl.name)}</div>
+      <div class="entry-fields">
+        ${fieldRow("Role", pl.role)}
+        ${fieldRow("Type", pl.type)}
+        ${fieldRow("Meaning", pl.meaning)}
+        ${fieldRow("Effect on scene", pl.effect_on_scene)}
+      </div></div>`;
+  }
+  if (scene.places.length === 0) bodyHTML += `<div class="text-muted text-small"><em>No places parsed.</em></div>`;
+  bodyHTML += `</div></div>`;
+
+  // 2C
+  bodyHTML += `<div class="subsection">
+    <div class="subsection-label">2C — Objects and Elements</div>
+    <div class="entry-list">`;
+  for (const o of scene.objects) {
+    bodyHTML += `<div class="entry-item">
+      <div class="entry-name">${escHtml(o.name)}</div>
+      <div class="entry-fields">
+        ${fieldRow("What it is", o.what_it_is)}
+        ${fieldRow("Function in scene", o.function_in_scene)}
+        ${fieldRow("Signals", o.signals)}
+      </div></div>`;
+  }
+  if (scene.objects.length === 0) bodyHTML += `<div class="text-muted text-small"><em>No objects parsed.</em></div>`;
+  if (scene.significantAbsence) {
+    bodyHTML += `<div class="absence-note"><strong>Significant absence:</strong> ${escHtml(scene.significantAbsence)}</div>`;
+  }
+  bodyHTML += `</div></div>`;
+
+  // 2D
+  bodyHTML += `<div class="subsection">
+    <div class="subsection-label">2D — What Happens</div>
+    <div class="prose-text">${escHtml(scene.whatHappens)}</div>
+  </div>`;
+
+  // 2E
+  bodyHTML += `<div class="subsection">
+    <div class="subsection-label">2E — Communicative Purpose</div>
+    <div class="prose-text">${escHtml(scene.communicativePurpose)}</div>
+  </div>`;
+
+  div.innerHTML = `
+    <div class="card-header">
+      <span class="card-title">SCENE ${scene.number} <span>— Verses ${escHtml(scene.verses)}</span></span>
+      ${badge}
+    </div>
+    ${warnings}
+    <div class="card-body" id="body-${sid}">${bodyHTML}</div>
+    <div class="card-actions">
+      <button class="btn btn-ghost btn-sm" onclick="editScene(${scene.number})">Edit</button>
+      <button class="btn btn-${scene.reviewed ? "green" : "outline"} btn-sm"
+        id="reviewed-btn-${sid}"
+        onclick="markReviewed('${sid}')">
+        ${scene.reviewed ? "✓ Reviewed" : "Mark Reviewed"}
+      </button>
+    </div>`;
+  return div;
+}
+
+function buildPropositionsCard(map) {
+  const div = document.createElement("div");
+  div.id = "card-level3";
+  const allPropWarnings = map.propositionWarnings;
+  div.className = "card" + (allPropWarnings.length > 0 ? " has-warnings" : "");
+
+  const badge = statusBadge({ reviewed: map.propositionsReviewed, warnings: allPropWarnings });
+  const warnings = allPropWarnings.length > 0 ? warningsHTML(allPropWarnings) : "";
+
+  let propsHTML = `<div class="prop-list">`;
+  for (const prop of map.propositions) {
+    propsHTML += `<div class="prop-block">
+      <div class="prop-header">Proposition ${prop.number} — Verse ${escHtml(prop.verse)}</div>
+      <div class="prop-content">`;
+    for (const qa of prop.content) {
+      propsHTML += `<div class="qa-row">
+        <span class="qa-question">${escHtml(qa.question)}</span>
+        <span class="qa-answer">${escHtml(qa.answer)}</span>
+      </div>`;
+    }
+    propsHTML += `</div></div>`;
+  }
+  propsHTML += `</div>`;
+
+  div.innerHTML = `
+    <div class="card-header">
+      <span class="card-title">LEVEL 3 <span>— Propositions (${map.propositions.length})</span></span>
+      ${badge}
+    </div>
+    ${warnings}
+    <div class="card-body" id="body-level3">${propsHTML}</div>
+    <div class="card-actions">
+      <button class="btn btn-ghost btn-sm" onclick="editPropositions()">Edit</button>
+      <button class="btn btn-${map.propositionsReviewed ? "green" : "outline"} btn-sm"
+        id="reviewed-btn-level3"
+        onclick="markReviewed('level3')">
+        ${map.propositionsReviewed ? "✓ Reviewed" : "Mark Reviewed"}
+      </button>
+    </div>`;
+  return div;
+}
+
+function fieldRow(label, value) {
+  if (!value) return "";
+  return `<span class="field-label">${escHtml(label)}</span><span class="field-value">${escHtml(value)}</span>`;
+}
+
+function statusBadge(section) {
+  const reviewed = section.reviewed;
+  const warnings = (section.warnings || []).length;
+  if (reviewed) return `<span class="badge badge-reviewed">✓ Reviewed</span>`;
+  if (warnings > 0) return `<span class="badge badge-warning">⚠ ${warnings} warning${warnings > 1 ? "s" : ""}</span>`;
+  return `<span class="badge badge-pending">Not reviewed</span>`;
+}
+
+function warningsHTML(warnings) {
+  if (!warnings || warnings.length === 0) return "";
+  let html = `<div class="warnings-block">
+    <div class="warning-title">AUTOMATED FLAGS — requires analyst review</div>`;
+  for (const w of warnings) {
+    html += `<div class="warning-item">${escHtml(w)}</div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+// ════════════════════════════════════════════
+// EDIT HANDLERS
+// ════════════════════════════════════════════
+function editLevel1() {
+  const map = state.currentMap;
+  const body = document.getElementById("body-level1");
+  body.classList.add("editing");
+  body.innerHTML = `
+    <div class="form-group">
+      <label class="form-label">Level 1 — The Arc (prose only)</label>
+      <textarea id="edit-level1-text" class="form-textarea tall" style="min-height:200px">${escHtml(map.level1.text)}</textarea>
+    </div>
+    <div class="mt-1 flex-gap">
+      <button class="btn btn-teal btn-sm" onclick="saveLevel1()">Save</button>
+      <button class="btn btn-ghost btn-sm" onclick="cancelEditLevel1()">Cancel</button>
+    </div>`;
+}
+
+function saveLevel1() {
+  const val = document.getElementById("edit-level1-text").value;
+  state.currentMap.level1.text = val;
+  state.currentMap.level1.reviewed = false;
+  runChecks(state.currentMap);
+  const card = document.getElementById("card-level1");
+  const newCard = buildLevel1Card(state.currentMap);
+  card.replaceWith(newCard);
+  updateProgress();
+}
+
+function cancelEditLevel1() {
+  const card = document.getElementById("card-level1");
+  const newCard = buildLevel1Card(state.currentMap);
+  card.replaceWith(newCard);
+}
+
+function editScene(num) {
+  const map = state.currentMap;
+  const scene = map.scenes.find(s => s.number === num);
+  const sid = "scene_" + num;
+  const body = document.getElementById("body-" + sid);
+  body.classList.add("editing");
+
+  let html = `<div class="edit-form">`;
+
+  // Title
+  html += `<div class="form-group">
+    <label class="form-label">Scene Title</label>
+    <input id="edit-scene-title-${num}" class="form-input" value="${escHtml(scene.title)}">
+  </div>`;
+
+  // 2A People
+  html += `<div class="subsection-label" style="margin-top:1rem">2A — People</div>
+    <div id="edit-people-${num}">`;
+  for (let i = 0; i < scene.people.length; i++) {
+    html += personEditorHTML(num, i, scene.people[i]);
+  }
+  html += `</div>
+  <button class="add-entry-btn" onclick="addPerson(${num})">+ Add Person</button>`;
+
+  // 2B Places
+  html += `<div class="subsection-label" style="margin-top:1rem">2B — Places</div>
+    <div id="edit-places-${num}">`;
+  for (let i = 0; i < scene.places.length; i++) {
+    html += placeEditorHTML(num, i, scene.places[i]);
+  }
+  html += `</div>
+  <button class="add-entry-btn" onclick="addPlace(${num})">+ Add Place</button>`;
+
+  // 2C Objects
+  html += `<div class="subsection-label" style="margin-top:1rem">2C — Objects and Elements</div>
+    <div id="edit-objects-${num}">`;
+  for (let i = 0; i < scene.objects.length; i++) {
+    html += objectEditorHTML(num, i, scene.objects[i]);
+  }
+  html += `</div>
+  <button class="add-entry-btn" onclick="addObject(${num})">+ Add Object</button>`;
+
+  // Significant absence
+  html += `<div class="form-group" style="margin-top:0.75rem">
+    <label class="form-label">Significant Absence</label>
+    <textarea id="edit-absence-${num}" class="form-textarea">${escHtml(scene.significantAbsence)}</textarea>
+  </div>`;
+
+  // 2D
+  html += `<div class="form-group">
+    <label class="form-label">2D — What Happens</label>
+    <textarea id="edit-2d-${num}" class="form-textarea tall">${escHtml(scene.whatHappens)}</textarea>
+  </div>`;
+
+  // 2E
+  html += `<div class="form-group">
+    <label class="form-label">2E — Communicative Purpose</label>
+    <textarea id="edit-2e-${num}" class="form-textarea tall">${escHtml(scene.communicativePurpose)}</textarea>
+  </div>`;
+
+  html += `<div class="flex-gap">
+    <button class="btn btn-teal btn-sm" onclick="saveScene(${num})">Save</button>
+    <button class="btn btn-ghost btn-sm" onclick="cancelEditScene(${num})">Cancel</button>
+  </div></div>`;
+
+  body.innerHTML = html;
+}
+
+function personEditorHTML(sceneNum, idx, p) {
+  return `<div class="entry-editor" id="person-editor-${sceneNum}-${idx}">
+    <button class="remove-entry-btn" onclick="removeEntry('people',${sceneNum},${idx})">×</button>
+    <div class="entry-editor-name">${escHtml(p.name || "Person " + (idx+1))}</div>
+    <div class="entry-editor-fields">
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input class="form-input" id="p-name-${sceneNum}-${idx}" value="${escHtml(p.name)}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <textarea class="form-textarea" id="p-role-${sceneNum}-${idx}">${escHtml(p.role)}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Relationship</label>
+        <textarea class="form-textarea" id="p-relationship-${sceneNum}-${idx}">${escHtml(p.relationship)}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Wants</label>
+        <textarea class="form-textarea" id="p-wants-${sceneNum}-${idx}">${escHtml(p.wants)}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Carries</label>
+        <textarea class="form-textarea" id="p-carries-${sceneNum}-${idx}">${escHtml(p.carries)}</textarea>
+      </div>
+    </div>
+  </div>`;
+}
+
+function placeEditorHTML(sceneNum, idx, pl) {
+  return `<div class="entry-editor" id="place-editor-${sceneNum}-${idx}">
+    <button class="remove-entry-btn" onclick="removeEntry('places',${sceneNum},${idx})">×</button>
+    <div class="entry-editor-fields">
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input class="form-input" id="pl-name-${sceneNum}-${idx}" value="${escHtml(pl.name)}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <textarea class="form-textarea" id="pl-role-${sceneNum}-${idx}">${escHtml(pl.role)}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Type</label>
+        <input class="form-input" id="pl-type-${sceneNum}-${idx}" value="${escHtml(pl.type)}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Meaning</label>
+        <textarea class="form-textarea" id="pl-meaning-${sceneNum}-${idx}">${escHtml(pl.meaning)}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Effect on Scene</label>
+        <textarea class="form-textarea" id="pl-effect-${sceneNum}-${idx}">${escHtml(pl.effect_on_scene)}</textarea>
+      </div>
+    </div>
+  </div>`;
+}
+
+function objectEditorHTML(sceneNum, idx, o) {
+  return `<div class="entry-editor" id="object-editor-${sceneNum}-${idx}">
+    <button class="remove-entry-btn" onclick="removeEntry('objects',${sceneNum},${idx})">×</button>
+    <div class="entry-editor-fields">
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input class="form-input" id="o-name-${sceneNum}-${idx}" value="${escHtml(o.name)}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">What it is</label>
+        <textarea class="form-textarea" id="o-what-${sceneNum}-${idx}">${escHtml(o.what_it_is)}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Function in scene</label>
+        <textarea class="form-textarea" id="o-function-${sceneNum}-${idx}">${escHtml(o.function_in_scene)}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Signals</label>
+        <textarea class="form-textarea" id="o-signals-${sceneNum}-${idx}">${escHtml(o.signals)}</textarea>
+      </div>
+    </div>
+  </div>`;
+}
+
+function readPersonFromEditor(sceneNum, idx) {
+  return {
+    name: val("p-name-" + sceneNum + "-" + idx),
+    role: val("p-role-" + sceneNum + "-" + idx),
+    relationship: val("p-relationship-" + sceneNum + "-" + idx),
+    wants: val("p-wants-" + sceneNum + "-" + idx),
+    carries: val("p-carries-" + sceneNum + "-" + idx)
+  };
+}
+function readPlaceFromEditor(sceneNum, idx) {
+  return {
+    name: val("pl-name-" + sceneNum + "-" + idx),
+    role: val("pl-role-" + sceneNum + "-" + idx),
+    type: val("pl-type-" + sceneNum + "-" + idx),
+    meaning: val("pl-meaning-" + sceneNum + "-" + idx),
+    effect_on_scene: val("pl-effect-" + sceneNum + "-" + idx)
+  };
+}
+function readObjectFromEditor(sceneNum, idx) {
+  return {
+    name: val("o-name-" + sceneNum + "-" + idx),
+    what_it_is: val("o-what-" + sceneNum + "-" + idx),
+    function_in_scene: val("o-function-" + sceneNum + "-" + idx),
+    signals: val("o-signals-" + sceneNum + "-" + idx)
+  };
+}
+
+function val(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : "";
+}
+
+function addPerson(sceneNum) {
+  const scene = state.currentMap.scenes.find(s => s.number === sceneNum);
+  scene.people.push({ name:"", role:"", relationship:"", wants:"", carries:"" });
+  const container = document.getElementById("edit-people-" + sceneNum);
+  const idx = scene.people.length - 1;
+  container.insertAdjacentHTML("beforeend", personEditorHTML(sceneNum, idx, scene.people[idx]));
+}
+function addPlace(sceneNum) {
+  const scene = state.currentMap.scenes.find(s => s.number === sceneNum);
+  scene.places.push({ name:"", role:"", type:"", meaning:"", effect_on_scene:"" });
+  const container = document.getElementById("edit-places-" + sceneNum);
+  const idx = scene.places.length - 1;
+  container.insertAdjacentHTML("beforeend", placeEditorHTML(sceneNum, idx, scene.places[idx]));
+}
+function addObject(sceneNum) {
+  const scene = state.currentMap.scenes.find(s => s.number === sceneNum);
+  scene.objects.push({ name:"", what_it_is:"", function_in_scene:"", signals:"" });
+  const container = document.getElementById("edit-objects-" + sceneNum);
+  const idx = scene.objects.length - 1;
+  container.insertAdjacentHTML("beforeend", objectEditorHTML(sceneNum, idx, scene.objects[idx]));
+}
+function removeEntry(type, sceneNum, idx) {
+  const scene = state.currentMap.scenes.find(s => s.number === sceneNum);
+  scene[type].splice(idx, 1);
+  editScene(sceneNum); // re-render edit form
+}
+
+function saveScene(num) {
+  const scene = state.currentMap.scenes.find(s => s.number === num);
+  scene.title   = val("edit-scene-title-" + num);
+  scene.whatHappens = val("edit-2d-" + num);
+  scene.communicativePurpose = val("edit-2e-" + num);
+  scene.significantAbsence = val("edit-absence-" + num);
+
+  // Read people
+  const newPeople = [];
+  for (let i = 0; i < scene.people.length + 5; i++) {
+    const el = document.getElementById("p-name-" + num + "-" + i);
+    if (!el) break;
+    newPeople.push(readPersonFromEditor(num, i));
+  }
+  scene.people = newPeople.filter(p => p.name);
+
+  // Read places
+  const newPlaces = [];
+  for (let i = 0; i < scene.places.length + 5; i++) {
+    const el = document.getElementById("pl-name-" + num + "-" + i);
+    if (!el) break;
+    newPlaces.push(readPlaceFromEditor(num, i));
+  }
+  scene.places = newPlaces.filter(p => p.name);
+
+  // Read objects
+  const newObjects = [];
+  for (let i = 0; i < scene.objects.length + 5; i++) {
+    const el = document.getElementById("o-name-" + num + "-" + i);
+    if (!el) break;
+    newObjects.push(readObjectFromEditor(num, i));
+  }
+  scene.objects = newObjects.filter(o => o.name);
+
+  scene.reviewed = false;
+  runChecks(state.currentMap);
+  const sid = "scene_" + num;
+  const card = document.getElementById("card-" + sid);
+  const newCard = buildSceneCard(scene, state.currentMap);
+  card.replaceWith(newCard);
+  updateProgress();
+}
+
+function cancelEditScene(num) {
+  const scene = state.currentMap.scenes.find(s => s.number === num);
+  const sid = "scene_" + num;
+  const card = document.getElementById("card-" + sid);
+  const newCard = buildSceneCard(scene, state.currentMap);
+  card.replaceWith(newCard);
+}
+
+function editPropositions() {
+  const map = state.currentMap;
+  const body = document.getElementById("body-level3");
+  body.classList.add("editing");
+
+  let html = `<div class="edit-form" id="prop-edit-form">`;
+  for (let pi = 0; pi < map.propositions.length; pi++) {
+    const prop = map.propositions[pi];
+    html += `<div class="prop-editor-block" id="prop-block-${pi}">
+      <div class="prop-editor-header">
+        <label>Proposition</label>
+        <input id="pe-num-${pi}" value="${prop.number}" style="width:45px">
+        <label>— Verse</label>
+        <input id="pe-verse-${pi}" value="${escHtml(prop.verse)}" style="width:60px">
+      </div>
+      <div class="prop-editor-body">
+        <div class="qa-editor" id="qa-editor-${pi}">`;
+    for (let qi = 0; qi < prop.content.length; qi++) {
+      html += qaEditRow(pi, qi, prop.content[qi]);
+    }
+    html += `</div>
+        <button class="add-qa-btn" onclick="addQARow(${pi})">+ Add line</button>
+      </div>
+    </div>`;
+  }
+  html += `<div class="flex-gap">
+    <button class="btn btn-teal btn-sm" onclick="savePropositions()">Save</button>
+    <button class="btn btn-ghost btn-sm" onclick="cancelEditPropositions()">Cancel</button>
+  </div></div>`;
+
+  body.innerHTML = html;
+}
+
+function qaEditRow(pi, qi, qa) {
+  return `<div class="qa-edit-row" id="qa-row-${pi}-${qi}">
+    <input class="q-input" id="q-${pi}-${qi}" value="${escHtml((qa || {}).question || "")}">
+    <input id="a-${pi}-${qi}" value="${escHtml((qa || {}).answer || "")}">
+    <button class="remove-qa-btn" onclick="removeQARow(${pi},${qi})">×</button>
+  </div>`;
+}
+
+function addQARow(pi) {
+  const container = document.getElementById("qa-editor-" + pi);
+  const prop = state.currentMap.propositions[pi];
+  const qi = prop.content.length;
+  prop.content.push({ question: "", answer: "" });
+  container.insertAdjacentHTML("beforeend", qaEditRow(pi, qi, {}));
+}
+
+function removeQARow(pi, qi) {
+  state.currentMap.propositions[pi].content.splice(qi, 1);
+  editPropositions();
+}
+
+function savePropositions() {
+  const map = state.currentMap;
+  for (let pi = 0; pi < map.propositions.length; pi++) {
+    map.propositions[pi].number = parseInt(val("pe-num-" + pi)) || pi+1;
+    map.propositions[pi].verse  = val("pe-verse-" + pi);
+    const newContent = [];
+    for (let qi = 0; qi < 20; qi++) {
+      const qel = document.getElementById("q-" + pi + "-" + qi);
+      if (!qel) break;
+      const q = qel.value.trim();
+      const a = val("a-" + pi + "-" + qi);
+      if (q || a) newContent.push({ question: q, answer: a });
+    }
+    map.propositions[pi].content = newContent;
+  }
+  map.propositionsReviewed = false;
+  runChecks(map);
+  const card = document.getElementById("card-level3");
+  const newCard = buildPropositionsCard(map);
+  card.replaceWith(newCard);
+  updateProgress();
+}
+
+function cancelEditPropositions() {
+  const card = document.getElementById("card-level3");
+  const newCard = buildPropositionsCard(state.currentMap);
+  card.replaceWith(newCard);
+}
+
+// ════════════════════════════════════════════
+// REVIEW LOGIC
+// ════════════════════════════════════════════
+function markReviewed(sectionId) {
+  const map = state.currentMap;
+  if (!map) return;
+
+  if (sectionId === "level1") {
+    map.level1.reviewed = true;
+  } else if (sectionId === "level3") {
+    map.propositionsReviewed = true;
+  } else if (sectionId.startsWith("scene_")) {
+    const num = parseInt(sectionId.split("_")[1]);
+    const scene = map.scenes.find(s => s.number === num);
+    if (scene) scene.reviewed = true;
+  }
+
+  // Update card appearance
+  const card = document.getElementById("card-" + sectionId);
+  if (card) {
+    card.classList.remove("has-warnings");
+    card.classList.add("reviewed");
+    const btn = document.getElementById("reviewed-btn-" + sectionId);
+    if (btn) {
+      btn.className = "btn btn-green btn-sm";
+      btn.textContent = "✓ Reviewed";
+    }
+    // Update badge in header
+    const badge = card.querySelector(".badge");
+    if (badge) {
+      badge.className = "badge badge-reviewed";
+      badge.textContent = "✓ Reviewed";
+    }
+  }
+
+  updateProgress();
+  updateApproveChecklist(map);
+}
+
+function updateProgress() {
+  const map = state.currentMap;
+  if (!map) return;
+
+  const total = 1 + map.scenes.length + 1;
+  const done  = (map.level1.reviewed ? 1 : 0)
+    + map.scenes.filter(s => s.reviewed).length
+    + (map.propositionsReviewed ? 1 : 0);
+
+  document.getElementById("progress-fill").style.width = (done / total * 100) + "%";
+  document.getElementById("progress-count").textContent = done + " / " + total;
+
+  const allDone = done === total;
+  document.getElementById("approve-btn").disabled = !allDone;
+}
+
+function updateApproveChecklist(map) {
+  const el = document.getElementById("approve-checklist");
+  if (!el) return;
+  const checks = [
+    { label: "Level 1 — Arc reviewed", done: map.level1.reviewed },
+    ...map.scenes.map(s => ({ label: "Scene " + s.number + " (Verses " + s.verses + ") reviewed", done: s.reviewed })),
+    { label: "Level 3 propositions reviewed", done: map.propositionsReviewed }
+  ];
+  el.innerHTML = checks.map(c =>
+    `<div class="check-item ${c.done ? "done" : ""}">${escHtml(c.label)}</div>`
+  ).join("");
+}
+
+// ════════════════════════════════════════════
+// APPROVE & SAVE
+// ════════════════════════════════════════════
+function approveMap() {
+  const map = state.currentMap;
+  if (!map) return;
+
+  map.meta.status = "approved";
+  map.meta.dateApproved = new Date().toISOString();
+  map.meta.version = 1;
+
+  // Check for existing version of same passage
+  const existing = state.savedMaps.findIndex(m => m.meta.passage === map.meta.passage);
+  if (existing >= 0) {
+    map.meta.version = (state.savedMaps[existing].meta.version || 1) + 1;
+    state.savedMaps[existing] = JSON.parse(JSON.stringify(map));
+  } else {
+    state.savedMaps.push(JSON.parse(JSON.stringify(map)));
+  }
+
+  saveToStorage();
+
+  // Update approve button
+  const btn = document.getElementById("approve-btn");
+  btn.textContent = "✓ Approved & Saved";
+  btn.style.background = "#047857";
+
+  // Switch to export
+  setTimeout(() => switchTab("export"), 800);
+}
+
+// ════════════════════════════════════════════
+// ARCHIVE & EXPORT
+// ════════════════════════════════════════════
+function renderArchive() {
+  const el = document.getElementById("archive-list");
+  if (state.savedMaps.length === 0) {
+    el.innerHTML = `<div class="archive-empty">No approved maps yet. Complete a review and approve a map to see it here.</div>`;
+    return;
+  }
+  el.innerHTML = state.savedMaps.map((m, i) => `
+    <div class="archive-item" onclick="loadFromArchive(${i})">
+      <div>
+        <div class="archive-passage">${escHtml(m.meta.passage || "Untitled")}</div>
+        <div class="archive-meta">
+          Analyst: ${escHtml(m.meta.analyst || "—")} &middot;
+          ${m.meta.dateApproved ? new Date(m.meta.dateApproved).toLocaleDateString() : "—"} &middot;
+          v${m.meta.version || 1} &middot;
+          ${m.scenes ? m.scenes.length : 0} scene(s), ${m.propositions ? m.propositions.length : 0} prop(s)
+        </div>
+      </div>
+      <span class="badge badge-reviewed archive-badge">Approved</span>
+    </div>`).join("");
+}
+
+function loadFromArchive(idx) {
+  state.currentMap = JSON.parse(JSON.stringify(state.savedMaps[idx]));
+  buildReviewSections(state.currentMap);
+  updateProgress();
+  switchTab("review");
+}
+
+function renderExport() {
+  const map = state.currentMap;
+  const el = document.getElementById("export-content");
+  const empty = document.getElementById("export-empty");
+
+  if (!map || map.meta.status !== "approved") {
+    el.style.display = "none";
+    empty.style.display = "block";
+    return;
+  }
+
+  el.style.display = "block";
+  empty.style.display = "none";
+  document.getElementById("json-output").textContent = buildJSON(map);
+}
+
+function buildJSON(map) {
+  const output = {
+    meta: map.meta,
+    level_1: { arc: map.level1.text },
+    level_2_scenes: map.scenes.map(s => ({
+      scene_number: s.number,
+      verses: s.verses,
+      title: s.title,
+      people: s.people,
+      places: s.places,
+      objects: s.objects,
+      significant_absence: s.significantAbsence,
+      what_happens: s.whatHappens,
+      communicative_purpose: s.communicativePurpose
+    })),
+    level_3_propositions: map.propositions.map(p => ({
+      proposition_number: p.number,
+      verse: p.verse,
+      content: p.content
+    }))
+  };
+  return JSON.stringify(output, null, 2);
+}
+
+function downloadJSON() {
+  const map = state.currentMap;
+  if (!map) return;
+  const json = buildJSON(map);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  const passage = (map.meta.passage || "map").replace(/[^a-z0-9]/gi, "_").toLowerCase();
+  a.download = "pmm_" + passage + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function copyJSON() {
+  const map = state.currentMap;
+  if (!map) return;
+  navigator.clipboard.writeText(buildJSON(map)).then(() => {
+    const btn = document.querySelector(".export-actions .btn-outline");
+    const orig = btn.textContent;
+    btn.textContent = "Copied!";
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+// ════════════════════════════════════════════
+// STORAGE
+// ════════════════════════════════════════════
+function saveToStorage() {
+  try {
+    localStorage.setItem("pmm_maps", JSON.stringify(state.savedMaps));
+  } catch(e) { console.warn("Storage save failed:", e); }
+}
+
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem("pmm_maps");
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+// ════════════════════════════════════════════
+// UTILITIES
+// ════════════════════════════════════════════
+function escHtml(s) {
+  if (!s) return "";
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+</script>
+</body>
+</html>
