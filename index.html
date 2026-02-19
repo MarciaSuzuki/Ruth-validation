@@ -649,6 +649,127 @@ body {
 .divider { border: none; border-top: 1px solid var(--border-light); margin: 1rem 0; }
 .text-muted { color: var(--text-muted); }
 .text-small { font-size: 0.85rem; }
+
+/* ── BHSA PANEL ── */
+.bhsa-overlay {
+  position: fixed; inset: 0;
+  background: rgba(28,25,23,0.45);
+  z-index: 200;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+}
+.bhsa-overlay.open { opacity: 1; pointer-events: all; }
+.bhsa-panel {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: min(680px, 95vw);
+  background: #1C1917;
+  color: #E8DDD0;
+  z-index: 201;
+  transform: translateX(100%);
+  transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+  display: flex; flex-direction: column;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.35);
+}
+.bhsa-panel.open { transform: translateX(0); }
+.bhsa-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #3A3430;
+  flex-shrink: 0;
+}
+.bhsa-panel-title {
+  font-family: "Cinzel", serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  color: #C4A97A;
+}
+.bhsa-close {
+  background: none; border: none; color: #8A7A6A;
+  font-size: 1.3rem; cursor: pointer; line-height: 1;
+  transition: color 0.15s;
+}
+.bhsa-close:hover { color: #E8DDD0; }
+.bhsa-panel-body {
+  flex: 1; overflow-y: auto; padding: 1.25rem 1.5rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+.bhsa-verse-block { margin-bottom: 2rem; }
+.bhsa-verse-ref {
+  font-family: "Cinzel", serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: #C4A97A;
+  border-bottom: 1px solid #3A3430;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+.bhsa-hebrew {
+  font-size: 1rem;
+  color: #F0E8D8;
+  direction: rtl;
+  text-align: right;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: #282420;
+  border-radius: 4px;
+  line-height: 1.8;
+}
+.bhsa-clause-block { margin-bottom: 1rem; }
+.bhsa-clause-label {
+  color: #7EB8B8;
+  margin-bottom: 0.35rem;
+}
+.bhsa-phrase-line { color: #A8C8A8; margin-left: 1rem; }
+.bhsa-word-line { color: #C4B89A; margin-left: 2rem; }
+.bhsa-domain-N { color: #8ABCBC; }
+.bhsa-domain-D { color: #C4A97A; }
+.bhsa-domain-Q { color: #B8A0C8; }
+.bhsa-empty {
+  color: #6A5A4A; font-style: italic;
+  text-align: center; padding: 2rem;
+}
+
+/* ── BHSA LOAD SECTION ── */
+.bhsa-load-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.bhsa-load-header {
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--teal);
+  margin-bottom: 0.5rem;
+}
+.bhsa-load-status {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+.bhsa-load-status.loaded { color: var(--green); font-style: normal; }
+.btn-bhsa {
+  background: none;
+  border: 1px solid var(--teal-light);
+  border-radius: 4px;
+  color: var(--teal);
+  font-family: "Cinzel", serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  padding: 0.28rem 0.7rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-bhsa:hover { background: var(--teal-pale); }
+
 </style>
 </head>
 <body>
@@ -693,6 +814,24 @@ body {
   </div>
 
   <div id="parse-result" style="display:none;"></div>
+
+  <hr class="divider" style="margin-top:2rem">
+  <div class="bhsa-load-box">
+    <div class="bhsa-load-header">BHSA LINGUISTIC DATA — Optional</div>
+    <p class="text-small text-muted" style="margin-bottom:0.75rem">
+      Load your <code>ruth_bhsa_full_analysis.md</code> file once.
+      It will be available in all review cards as a reference panel.
+    </p>
+    <div class="flex-gap">
+      <label class="btn btn-outline" style="cursor:pointer">
+        Load BHSA File
+        <input type="file" id="bhsa-file-input" accept=".md,.txt"
+          style="display:none" onchange="loadBHSAFile(event)">
+      </label>
+    </div>
+    <div class="bhsa-load-status" id="bhsa-load-status">No BHSA data loaded.</div>
+  </div>
+
 </div>
 </div>
 
@@ -753,7 +892,8 @@ body {
 // ════════════════════════════════════════════
 const state = {
   currentMap: null,
-  savedMaps: loadFromStorage()
+  savedMaps: loadFromStorage(),
+  bhsaData: {}   // keyed by "Ruth 1:1", "Ruth 1:2", etc.
 };
 
 // Each review section has an id, a label, and a reviewed flag
@@ -1112,10 +1252,19 @@ function buildLevel1Card(map) {
     "<p>" + escHtml(p.trim()) + "</p>"
   ).join("");
 
+  // Build verse refs from all propositions for Level 1 (whole passage)
+  const l1Refs = map.propositions.map(p => {
+    const chap = (map.meta.passage || "Ruth 1").match(/Ruth\s+(\d+)/i);
+    const chapNum = chap ? chap[1] : "1";
+    const v = p.verse.replace(/[ab]$/,"").trim();
+    return "Ruth " + chapNum + ":" + v;
+  }).filter((v,i,a) => a.indexOf(v) === i);
+  const l1BhsaBtn = l1Refs.length > 0 ? bhsaButtonHTML("Level 1 — " + (map.meta.passage||""), l1Refs) : "";
+
   div.innerHTML = `
     <div class="card-header">
       <span class="card-title">LEVEL 1 <span>— The Arc</span></span>
-      ${badge}
+      <div class="flex-gap">${l1BhsaBtn}${badge}</div>
     </div>
     ${warnings}
     <div class="card-body" id="body-level1">
@@ -1208,10 +1357,18 @@ function buildSceneCard(scene, map) {
     <div class="prose-text">${escHtml(scene.communicativePurpose)}</div>
   </div>`;
 
+  // Build verse refs for this scene
+  const scVerse = scene.verses || "";
+  const scChapM = (state.currentMap && state.currentMap.meta.passage || "Ruth 1").match(/Ruth\s+(\d+)/i);
+  const scChap = scChapM ? scChapM[1] : "1";
+  const scNums = versesInRange(scVerse);
+  const scRefs = scNums.map(n => "Ruth " + scChap + ":" + n);
+  const scBhsaBtn = scRefs.length > 0 ? bhsaButtonHTML("Scene " + scene.number + " — Verses " + scVerse, scRefs) : "";
+
   div.innerHTML = `
     <div class="card-header">
       <span class="card-title">SCENE ${scene.number} <span>— Verses ${escHtml(scene.verses)}</span></span>
-      ${badge}
+      <div class="flex-gap">${scBhsaBtn}${badge}</div>
     </div>
     ${warnings}
     <div class="card-body" id="body-${sid}">${bodyHTML}</div>
@@ -1250,10 +1407,19 @@ function buildPropositionsCard(map) {
   }
   propsHTML += `</div>`;
 
+  // Build verse refs for all propositions
+  const p3ChapM = (map.meta.passage || "Ruth 1").match(/Ruth\s+(\d+)/i);
+  const p3Chap = p3ChapM ? p3ChapM[1] : "1";
+  const p3Refs = map.propositions.map(p => {
+    const v = p.verse.replace(/[ab]$/,"").trim();
+    return "Ruth " + p3Chap + ":" + v;
+  }).filter((v,i,a) => a.indexOf(v) === i);
+  const p3BhsaBtn = p3Refs.length > 0 ? bhsaButtonHTML("Level 3 Propositions", p3Refs) : "";
+
   div.innerHTML = `
     <div class="card-header">
       <span class="card-title">LEVEL 3 <span>— Propositions (${map.propositions.length})</span></span>
-      ${badge}
+      <div class="flex-gap">${p3BhsaBtn}${badge}</div>
     </div>
     ${warnings}
     <div class="card-body" id="body-level3">${propsHTML}</div>
@@ -1892,6 +2058,172 @@ function escHtml(s) {
     .replace(/"/g, "&quot;");
 }
 
+
+// ════════════════════════════════════════════
+// BHSA DATA LOADER & PARSER
+// ════════════════════════════════════════════
+function loadBHSAFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    state.bhsaData = parseBHSAMarkdown(text);
+    const count = Object.keys(state.bhsaData).length;
+    const el = document.getElementById("bhsa-load-status");
+    el.textContent = "✓ Loaded: " + count + " verses indexed.";
+    el.className = "bhsa-load-status loaded";
+    // Refresh review cards if a map is loaded
+    if (state.currentMap) {
+      buildReviewSections(state.currentMap);
+      updateProgress();
+    }
+  };
+  reader.readAsText(file, "utf-8");
+}
+
+function parseBHSAMarkdown(text) {
+  // Index by "Ruth X:Y" from "## Ruth X:Y" headers
+  const data = {};
+  const lines = text.split("\n");
+  let currentRef = null;
+  let buffer = [];
+
+  for (const line of lines) {
+    const hm = line.match(/^##\s+(Ruth\s+\d+:\d+)\s*$/);
+    if (hm) {
+      if (currentRef && buffer.length) {
+        data[currentRef] = buffer.join("\n").trim();
+      }
+      currentRef = hm[1].trim();
+      buffer = [];
+    } else if (currentRef) {
+      buffer.push(line);
+    }
+  }
+  if (currentRef && buffer.length) {
+    data[currentRef] = buffer.join("\n").trim();
+  }
+  return data;
+}
+
+function versesInRange(versesStr) {
+  // Parse "1–7", "1-7", "6–7", "1", "1:1", etc.
+  // Returns array of verse numbers as strings
+  const clean = versesStr.replace(/\u2013|\u2014/g, "-").trim();
+  const m = clean.match(/^(\d+)(?:-(\d+))?$/);
+  if (!m) return [];
+  const from = parseInt(m[1]);
+  const to   = m[2] ? parseInt(m[2]) : from;
+  const result = [];
+  for (let i = from; i <= to; i++) result.push(String(i));
+  return result;
+}
+
+function openBHSAPanel(label, refs) {
+  // refs: array of "Ruth X:Y" strings
+  const panel = document.getElementById("bhsa-panel");
+  const overlay = document.getElementById("bhsa-overlay");
+  const body = document.getElementById("bhsa-panel-body");
+  const title = document.getElementById("bhsa-panel-title");
+
+  title.textContent = "BHSA — " + label;
+
+  if (!refs || refs.length === 0 || Object.keys(state.bhsaData).length === 0) {
+    body.innerHTML = `<div class="bhsa-empty">
+      ${Object.keys(state.bhsaData).length === 0
+        ? "Load the BHSA file in the Import tab first."
+        : "No BHSA data found for these verses."}
+    </div>`;
+  } else {
+    let html = "";
+    for (const ref of refs) {
+      const raw = state.bhsaData[ref];
+      if (!raw) {
+        html += `<div class="bhsa-verse-block">
+          <div class="bhsa-verse-ref">${escHtml(ref)}</div>
+          <div class="bhsa-empty" style="padding:0.5rem 0">Not found in BHSA data.</div>
+        </div>`;
+        continue;
+      }
+      html += renderBHSAVerse(ref, raw);
+    }
+    body.innerHTML = html || `<div class="bhsa-empty">No data for these verses.</div>`;
+  }
+
+  panel.classList.add("open");
+  overlay.classList.add("open");
+  body.scrollTop = 0;
+}
+
+function renderBHSAVerse(ref, raw) {
+  const lines = raw.split("\n");
+  let html = `<div class="bhsa-verse-block">
+    <div class="bhsa-verse-ref">${escHtml(ref)}</div>`;
+
+  // Hebrew line
+  const hebLine = lines.find(l => l.startsWith("**Hebrew:**"));
+  if (hebLine) {
+    const heb = hebLine.replace("**Hebrew:**", "").trim();
+    html += `<div class="bhsa-hebrew">${escHtml(heb)}</div>`;
+  }
+
+  // Clauses and phrases
+  for (const line of lines) {
+    if (line.startsWith("**Hebrew:**")) continue;
+    const t = line.trim();
+    if (!t) continue;
+
+    if (t.startsWith("**Clause")) {
+      // Clause header
+      const domainM = t.match(/Domain:\s*(\S+)/);
+      const domainKey = domainM ? domainM[1] : "N";
+      const domainClass = "bhsa-domain-" + domainKey.replace(/[^A-Z]/g,"").charAt(0);
+      html += `<div class="bhsa-clause-block">
+        <div class="bhsa-clause-label ${domainClass}">${escHtml(t)}</div>`;
+    } else if (t.startsWith("*(Relation")) {
+      html += `<div class="bhsa-phrase-line" style="color:#8A7A5A;font-style:italic">${escHtml(t)}</div>`;
+    } else if (t.startsWith("**[")) {
+      // Phrase line
+      html += `<div class="bhsa-phrase-line">${escHtml(t)}</div></div>`;
+    } else if (t.startsWith("- ")) {
+      // Word line
+      html += `<div class="bhsa-word-line">${escHtml(t)}</div>`;
+    }
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+function closeBHSA() {
+  document.getElementById("bhsa-panel").classList.remove("open");
+  document.getElementById("bhsa-overlay").classList.remove("open");
+}
+
+// ════════════════════════════════════════════
+// BHSA BUTTON BUILDERS
+// ════════════════════════════════════════════
+function bhsaButtonHTML(label, refs) {
+  const refsJson = JSON.stringify(refs).replace(/'/g, "\\'");
+  return `<button class="btn-bhsa" onclick='openBHSAPanel(${JSON.stringify(label)}, ${JSON.stringify(refs)})'>
+    Hebrew &#x1F4D6;
+  </button>`;
+}
+
 </script>
+
+<!-- ── BHSA PANEL ── -->
+<div class="bhsa-overlay" id="bhsa-overlay" onclick="closeBHSA()"></div>
+<div class="bhsa-panel" id="bhsa-panel">
+  <div class="bhsa-panel-header">
+    <span class="bhsa-panel-title" id="bhsa-panel-title">BHSA Analysis</span>
+    <button class="bhsa-close" onclick="closeBHSA()">×</button>
+  </div>
+  <div class="bhsa-panel-body" id="bhsa-panel-body">
+    <div class="bhsa-empty">Select a section to view its BHSA analysis.</div>
+  </div>
+</div>
+
 </body>
 </html>
