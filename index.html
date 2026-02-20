@@ -770,6 +770,53 @@ body {
 }
 .btn-bhsa:hover { background: var(--teal-pale); }
 
+
+/* ── EXPORT BLOCKS ── */
+.export-block {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.export-block-header {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+  background: #FCFAF7;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+.export-block-title {
+  font-family: "Cinzel", serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--teal);
+}
+.export-block-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.export-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+}
+.prose-output {
+  font-family: "Crimson Pro", Georgia, serif;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  background: #FDFCFA;
+  color: var(--text);
+  padding: 1.5rem;
+  overflow: auto;
+  max-height: 500px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 </style>
 </head>
 <body>
@@ -783,7 +830,7 @@ body {
   <button class="tab-btn active" onclick="switchTab('import')">Import</button>
   <button class="tab-btn" onclick="switchTab('review')">Review</button>
   <button class="tab-btn" onclick="switchTab('archive')">Archive</button>
-  <button class="tab-btn" onclick="switchTab('export')">Export JSON</button>
+  <button class="tab-btn" onclick="switchTab('export')">Export</button>
 </nav>
 
 <!-- ── TAB 1: IMPORT ── -->
@@ -862,14 +909,36 @@ body {
 <!-- ── TAB 4: EXPORT ── -->
 <div id="tab-export" class="tab-pane">
 <div class="main-content">
-  <p class="section-label">Export JSON</p>
+  <p class="section-label">Export Approved Map</p>
   <div id="export-empty" class="archive-empty">No map loaded or approved yet.</div>
   <div id="export-content" style="display:none;">
-    <div class="export-actions">
-      <button class="btn btn-teal" onclick="downloadJSON()">Download JSON</button>
-      <button class="btn btn-outline" onclick="copyJSON()">Copy to Clipboard</button>
+
+    <!-- Prose Map -->
+    <div class="export-block">
+      <div class="export-block-header">
+        <span class="export-block-title">PROSE MAP</span>
+        <span class="export-block-desc">Human-readable markdown — the validated map in full</span>
+      </div>
+      <div class="export-actions">
+        <button class="btn btn-teal" onclick="downloadProse()">Download .md</button>
+        <button class="btn btn-outline" onclick="copyProse()">Copy to Clipboard</button>
+      </div>
+      <pre class="prose-output" id="prose-output"></pre>
     </div>
-    <pre class="json-output" id="json-output"></pre>
+
+    <!-- JSON -->
+    <div class="export-block" style="margin-top:2rem">
+      <div class="export-block-header">
+        <span class="export-block-title">JSON DATA</span>
+        <span class="export-block-desc">Structured data for import into other tools</span>
+      </div>
+      <div class="export-actions">
+        <button class="btn btn-teal" onclick="downloadJSON()">Download .json</button>
+        <button class="btn btn-outline" onclick="copyJSON()">Copy to Clipboard</button>
+      </div>
+      <pre class="json-output" id="json-output"></pre>
+    </div>
+
   </div>
 </div>
 </div>
@@ -1967,6 +2036,7 @@ function renderExport() {
   el.style.display = "block";
   empty.style.display = "none";
   document.getElementById("json-output").textContent = buildJSON(map);
+  document.getElementById("prose-output").textContent = buildProse(map);
 }
 
 function buildJSON(map) {
@@ -2205,6 +2275,134 @@ function bhsaButtonHTML(label, refs) {
   return `<button class="btn-bhsa" onclick='openBHSAPanel(${JSON.stringify(label)}, ${JSON.stringify(refs)})'>
     Hebrew &#x1F4D6;
   </button>`;
+}
+
+
+// ════════════════════════════════════════════
+// PROSE MAP EXPORT
+// ════════════════════════════════════════════
+function buildProse(map) {
+  const lines = [];
+  const passage = map.meta.passage || "";
+  const analyst = map.meta.analyst || "";
+  const date = map.meta.dateApproved
+    ? new Date(map.meta.dateApproved).toLocaleDateString("en-GB", {day:"numeric",month:"long",year:"numeric"})
+    : "";
+
+  lines.push("# Prose Meaning Map — " + passage);
+  lines.push("");
+  if (analyst) lines.push("**Analyst:** " + analyst);
+  if (date)    lines.push("**Approved:** " + date);
+  lines.push("**Method:** Tripod Method · OBT Lab · Shema Bible Translation · YWAM Kansas City");
+  lines.push("");
+  lines.push("---");
+  lines.push("");
+
+  // ── LEVEL 1 ──
+  lines.push("#### Level 1 — The Arc");
+  lines.push("");
+  lines.push(map.level1.text || "");
+  lines.push("");
+  lines.push("---");
+  lines.push("");
+
+  // ── SCENES ──
+  for (const scene of map.scenes) {
+    lines.push("#### Level 2 — Scene " + scene.number + ": Verses " + scene.verses);
+    lines.push("**Title:** " + scene.title);
+    lines.push("");
+
+    // 2A
+    lines.push("##### 2A — People");
+    for (const p of scene.people) {
+      let entry = "**" + p.name + "**";
+      if (p.role)         entry += " Role: " + p.role;
+      if (p.relationship) entry += " Relationship: " + p.relationship;
+      if (p.wants)        entry += " Wants: " + p.wants;
+      if (p.carries)      entry += " Carries: " + p.carries;
+      lines.push(entry);
+    }
+    lines.push("");
+
+    // 2B
+    lines.push("##### 2B — Places");
+    for (const pl of scene.places) {
+      let entry = "**" + pl.name + "**";
+      if (pl.role)           entry += " Role: " + pl.role;
+      if (pl.type)           entry += " Type: " + pl.type;
+      if (pl.meaning)        entry += " Meaning: " + pl.meaning;
+      if (pl.effect_on_scene) entry += " Effect on scene: " + pl.effect_on_scene;
+      lines.push(entry);
+    }
+    lines.push("");
+
+    // 2C
+    lines.push("##### 2C — Objects and Elements");
+    for (const o of scene.objects) {
+      let entry = "**" + o.name + "**";
+      if (o.what_it_is)       entry += " What it is: " + o.what_it_is;
+      if (o.function_in_scene) entry += " Function in scene: " + o.function_in_scene;
+      if (o.signals)           entry += " Signals: " + o.signals;
+      lines.push(entry);
+    }
+    if (scene.significantAbsence) {
+      lines.push("**Significant absence:** " + scene.significantAbsence);
+    }
+    lines.push("");
+
+    // 2D
+    lines.push("##### 2D — What Happens");
+    lines.push(scene.whatHappens || "");
+    lines.push("");
+
+    // 2E
+    lines.push("##### 2E — Communicative Purpose");
+    lines.push(scene.communicativePurpose || "");
+    lines.push("");
+    lines.push("---");
+    lines.push("");
+  }
+
+  // ── LEVEL 3 ──
+  lines.push("#### Level 3 — The Propositions");
+  lines.push("");
+  for (const prop of map.propositions) {
+    lines.push("**Proposition " + prop.number + " — Verse " + prop.verse + "**");
+    for (const qa of prop.content) {
+      lines.push(qa.question + " " + qa.answer);
+    }
+    lines.push("");
+  }
+
+  return lines.join("\n");
+}
+
+function downloadProse() {
+  const map = state.currentMap;
+  if (!map) return;
+  const text = buildProse(map);
+  const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  const passage = (map.meta.passage || "map").replace(/[^a-z0-9]/gi, "_").toLowerCase();
+  a.download = "pmm_" + passage + ".md";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function copyProse() {
+  const map = state.currentMap;
+  if (!map) return;
+  navigator.clipboard.writeText(buildProse(map)).then(() => {
+    const btns = document.querySelectorAll(".export-actions .btn-outline");
+    // first btn-outline in first export-block is Copy Prose
+    if (btns[0]) {
+      const orig = btns[0].textContent;
+      btns[0].textContent = "Copied!";
+      setTimeout(() => btns[0].textContent = orig, 1500);
+    }
+  });
 }
 
 </script>
