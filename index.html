@@ -815,21 +815,9 @@ body {
 
   <div id="parse-result" style="display:none;"></div>
 
-  <hr class="divider" style="margin-top:2rem">
-  <div class="bhsa-load-box">
-    <div class="bhsa-load-header">BHSA LINGUISTIC DATA — Optional</div>
-    <p class="text-small text-muted" style="margin-bottom:0.75rem">
-      Load your <code>ruth_bhsa_full_analysis.md</code> file once.
-      It will be available in all review cards as a reference panel.
-    </p>
-    <div class="flex-gap">
-      <label class="btn btn-outline" style="cursor:pointer">
-        Load BHSA File
-        <input type="file" id="bhsa-file-input" accept=".md,.txt"
-          style="display:none" onchange="loadBHSAFile(event)">
-      </label>
-    </div>
-    <div class="bhsa-load-status" id="bhsa-load-status">No BHSA data loaded.</div>
+  <div class="bhsa-load-box" id="bhsa-status-box">
+    <div class="bhsa-load-header">BHSA LINGUISTIC DATA</div>
+    <div class="bhsa-load-status" id="bhsa-load-status">Loading Hebrew analysis data...</div>
   </div>
 
 </div>
@@ -2062,25 +2050,33 @@ function escHtml(s) {
 // ════════════════════════════════════════════
 // BHSA DATA LOADER & PARSER
 // ════════════════════════════════════════════
-function loadBHSAFile(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const text = e.target.result;
-    state.bhsaData = parseBHSAMarkdown(text);
-    const count = Object.keys(state.bhsaData).length;
-    const el = document.getElementById("bhsa-load-status");
-    el.textContent = "✓ Loaded: " + count + " verses indexed.";
-    el.className = "bhsa-load-status loaded";
-    // Refresh review cards if a map is loaded
-    if (state.currentMap) {
-      buildReviewSections(state.currentMap);
-      updateProgress();
-    }
-  };
-  reader.readAsText(file, "utf-8");
+function autoLoadBHSA() {
+  const statusEl = document.getElementById("bhsa-load-status");
+  // Fetch from same directory as the HTML — works on GitHub Pages
+  fetch("ruth_bhsa_full_analysis.md")
+    .then(r => {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.text();
+    })
+    .then(text => {
+      state.bhsaData = parseBHSAMarkdown(text);
+      const count = Object.keys(state.bhsaData).length;
+      if (statusEl) {
+        statusEl.textContent = "✓ " + count + " verses loaded.";
+        statusEl.className = "bhsa-load-status loaded";
+      }
+    })
+    .catch(err => {
+      console.warn("BHSA auto-load failed:", err);
+      if (statusEl) {
+        statusEl.textContent = "BHSA data not found. Add ruth_bhsa_full_analysis.md to the repository.";
+        statusEl.className = "bhsa-load-status";
+      }
+    });
 }
+
+// Auto-load on page ready
+document.addEventListener("DOMContentLoaded", autoLoadBHSA);
 
 function parseBHSAMarkdown(text) {
   // Index by "Ruth X:Y" from "## Ruth X:Y" headers
