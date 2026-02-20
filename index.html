@@ -862,6 +862,24 @@ body {
 
   <div id="parse-result" style="display:none;"></div>
 
+  <hr class="divider" style="margin-top:2rem">
+  <div class="bhsa-load-box">
+    <div class="bhsa-load-header">LOAD APPROVED JSON — Cross-check workflow</div>
+    <p class="text-small text-muted" style="margin-bottom:0.75rem">
+      Load an approved map exported by another validator. 
+      The map will open in the Review tab ready for cross-checking, 
+      with the original analyst and approval date preserved.
+    </p>
+    <div class="flex-gap">
+      <label class="btn btn-outline" style="cursor:pointer">
+        Load JSON File
+        <input type="file" id="json-import-input" accept=".json"
+          style="display:none" onchange="importJSON(event)">
+      </label>
+    </div>
+    <div class="bhsa-load-status" id="json-import-status"></div>
+  </div>
+
   <div class="bhsa-load-box" id="bhsa-status-box">
     <div class="bhsa-load-header">BHSA LINGUISTIC DATA</div>
     <div class="bhsa-load-status" id="bhsa-load-status">Loading Hebrew analysis data...</div>
@@ -2405,6 +2423,90 @@ function copyProse() {
       setTimeout(() => btns[0].textContent = orig, 1500);
     }
   });
+}
+
+
+// ════════════════════════════════════════════
+// JSON IMPORT (cross-check workflow)
+// ════════════════════════════════════════════
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById("json-import-status");
+  statusEl.className = "bhsa-load-status";
+  statusEl.textContent = "Loading...";
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      const map = rebuildMapFromJSON(data);
+
+      // Mark as loaded for cross-check — reset all reviewed flags
+      map.level1.reviewed = false;
+      map.scenes.forEach(s => s.reviewed = false);
+      map.propositionsReviewed = false;
+      map.meta.status = "draft";
+      map.meta.crossCheckBy = "";
+      map.meta.originalAnalyst = map.meta.analyst || "";
+      map.meta.originalApproved = map.meta.dateApproved || "";
+
+      state.currentMap = map;
+      runChecks(map);
+      buildReviewSections(map);
+      updateProgress();
+
+      const passage = map.meta.passage || "Unknown passage";
+      const analyst = map.meta.originalAnalyst;
+      statusEl.className = "bhsa-load-status loaded";
+      statusEl.textContent = "✓ Loaded: " + passage
+        + (analyst ? " — originally approved by " + analyst : "")
+        + ". Switching to Review tab.";
+
+      // Pre-fill analyst field for cross-checker
+      document.getElementById("meta-passage").value = map.meta.passage || "";
+
+      setTimeout(() => switchTab("review"), 600);
+    } catch(err) {
+      statusEl.textContent = "Error reading JSON: " + err.message;
+      console.error(err);
+    }
+  };
+  reader.readAsText(file, "utf-8");
+}
+
+function rebuildMapFromJSON(data) {
+  // Reconstruct internal map structure from exported JSON
+  return {
+    meta: data.meta || {},
+    level1: {
+      text: (data.level_1 || {}).arc || "",
+      reviewed: false,
+      warnings: []
+    },
+    scenes: (data.level_2_scenes || []).map(s => ({
+      number: s.scene_number,
+      verses: s.verses,
+      title: s.title || "",
+      people: s.people || [],
+      places: s.places || [],
+      objects: s.objects || [],
+      significantAbsence: s.significant_absence || "",
+      whatHappens: s.what_happens || "",
+      communicativePurpose: s.communicative_purpose || "",
+      reviewed: false,
+      warnings: []
+    })),
+    propositions: (data.level_3_propositions || []).map(p => ({
+      number: p.proposition_number,
+      verse: p.verse,
+      content: p.content || [],
+      reviewed: false,
+      warnings: []
+    })),
+    propositionsReviewed: false,
+    propositionWarnings: []
+  };
 }
 
 </script>
