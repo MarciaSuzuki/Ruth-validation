@@ -1106,8 +1106,10 @@ function parseScene(num, verses, text) {
 }
 
 function extractSubsection(text, label, nextLabels) {
-  const re = new RegExp("#{1,5}\\s*" + label + "\\s*[\\u2013\\u2014\\-][^\\n]*\\n([\\s\\S]*?)(?=" +
-    nextLabels.map(l => "#{1,5}\\s*" + l).join("|") + "|$)", "i");
+  const lookahead = nextLabels.length > 0
+    ? "(?=" + nextLabels.map(l => "#{1,5}\\s*" + l).join("|") + "|$)"
+    : "(?=$)";
+  const re = new RegExp("#{1,5}\\s*" + label + "\\s*[\\u2013\\u2014\\-][^\\n]*\\n([\\s\\S]*?)" + lookahead, "i");
   const m = text.match(re);
   return m ? m[1] : null;
 }
