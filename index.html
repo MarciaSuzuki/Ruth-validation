@@ -1224,8 +1224,65 @@ const COMMENTARY_WORDS = [
   "this establishes","interestingly","remarkably","it is worth","one should"
 ];
 
+// ── Validation helpers ───────────────────────────────────────────────────────
+
+// Embedding markers that signal a finite clause / undecomposed proposition
+const EMBEDDING_MARKERS = [
+  "that ", "because ", "so that ", "in order to ", "in order that ",
+  "which ", "who ", "when ", "although ", "even though ", "since ",
+  "after ", "before ", "until ", "as soon as ", "provided that ",
+  "so ", "therefore ", "thus "
+];
+
+// Performance frame phrases that should not appear in proposition lines
+const FRAME_MARKERS = [
+  "and then", "and so", "at that point", "at this point", "now then",
+  "listen", "hear this", "with all", "with everyone", "having said",
+  "now,", "well,", "so,", "behold", "look,", "see,",
+  "and it came to pass", "it happened that", "it came about"
+];
+
+// Returns true if the string contains a finite verb pattern
+// (conjugated verb with tense/person distinct from the subject noun)
+function hasFiniteVerb(str) {
+  // Remove leading article/pronoun combos that are just noun phrases
+  const s = str.trim().toLowerCase();
+
+  // Finite verb indicators: conjugated verb forms
+  // We look for: pronoun/noun + conjugated verb, or conjugated verb at start
+  // Common patterns: "she heard", "he said", "they went", "Naomi decided"
+  // Also: "had provided", "has gone", "were married", "will return"
+  const finitePatterns = [
+    /\b(i|you|he|she|it|we|they|naomi|ruth|elimelech|boaz|orpah)\s+(was|were|is|are|had|has|have|did|do|does|will|would|could|should|may|might|shall|went|came|said|told|heard|saw|took|gave|made|left|returned|decided|chose|asked|answered|replied|rose|fell|died|lived|married|stayed|remained|followed|urged|wept|lifted|kissed|called)\b/i,
+    /\b(was|were)\s+\w+ed\b/i,   // passive: was left, were married
+    /\bhad\s+\w+ed?\b/i,          // perfect: had provided, had gone
+    /\b(has|have)\s+\w+ed?\b/i,   // present perfect
+    /\bwill\s+\w+\b/i,            // future
+  ];
+  return finitePatterns.some(p => p.test(s));
+}
+
+// Returns true if the string starts with or contains an embedding marker
+function hasEmbeddingMarker(str) {
+  const s = str.trim().toLowerCase();
+  // Check if answer begins with a clause connector (strong signal)
+  if (EMBEDDING_MARKERS.some(m => s.startsWith(m))) return true;
+  // Check for embedded "that" following a verb-like word (weaker signal)
+  if (/\b(heard|said|knew|learned|reported|told|showed)\s+that\b/i.test(str)) return true;
+  return false;
+}
+
+// Count sentences (splits on . ! ? followed by space or end)
+function countSentences(str) {
+  if (!str) return 0;
+  const matches = str.match(/[^.!?]*[.!?]+/g);
+  return matches ? matches.length : (str.trim().length > 0 ? 1 : 0);
+}
+
+// ── Main check function ──────────────────────────────────────────────────────
+
 function runChecks(map) {
-  // Level 1
+  // ── Level 1 ────────────────────────────────────────────────────────────────
   map.level1.warnings = [];
   if (!map.level1.text) {
     map.level1.warnings.push("Level 1 text not found or empty.");
@@ -1238,48 +1295,88 @@ function runChecks(map) {
       map.level1.warnings.push("Level 1 is very short (under 80 words). It may be incomplete.");
   }
 
-  // Scenes
+  // ── Scenes ─────────────────────────────────────────────────────────────────
   for (const scene of map.scenes) {
     scene.warnings = [];
+
     if (scene.people.length === 0)
       scene.warnings.push("2A — People is empty. Every scene must name every person present.");
+
     if (scene.places.length === 0)
       scene.warnings.push("2B — Places is empty. Every scene must name every location, including transitional spaces.");
+
     if (scene.objects.length === 0)
       scene.warnings.push("2C — Objects has no entries. Check whether objects, durations, or natural elements are present.");
+
     if (!scene.whatHappens || scene.whatHappens.split(/\s+/).length < 15)
       scene.warnings.push("2D — What Happens is very short. Check for completeness.");
-    if (!scene.communicativePurpose || scene.communicativePurpose.split(/\s+/).length < 10)
-      scene.warnings.push("2E — Communicative Purpose is very short or missing.");
+
+    // 2E: require both minimum word count AND minimum sentence count
+    if (!scene.communicativePurpose || scene.communicativePurpose.trim().length === 0) {
+      scene.warnings.push("2E — Communicative Purpose is missing. This component is mandatory in every scene.");
+    } else {
+      const w2e = scene.communicativePurpose.split(/\s+/).length;
+      const s2e = countSentences(scene.communicativePurpose);
+      if (w2e < 10) {
+        scene.warnings.push("2E — Communicative Purpose is very short (" + w2e + " words). Minimum is three substantive sentences.");
+      } else if (s2e < 3) {
+        scene.warnings.push("2E — Communicative Purpose has only " + s2e + " sentence" + (s2e === 1 ? "" : "s") + ". The rule requires at least three sentences explaining why this scene exists and what it establishes.");
+      }
+    }
   }
 
-  // Propositions
+  // ── Propositions ───────────────────────────────────────────────────────────
   map.propositionWarnings = [];
   if (map.propositions.length === 0) {
     map.propositionWarnings.push("No propositions found. Check that Level 3 is present in the input.");
   }
+
   for (const prop of map.propositions) {
     prop.warnings = [];
     if (prop.content.length === 0) {
       prop.warnings.push("Proposition " + prop.number + " has no Q→A content.");
       continue;
     }
+
+    // First line must be "What happens?"
     if (!prop.content[0].question.toLowerCase().startsWith("what happens")) {
       prop.warnings.push("Proposition " + prop.number + ": first line should be \"What happens?\" — found: \"" + prop.content[0].question + "\"");
     }
+
     for (const qa of prop.content) {
-      const ansLower = qa.answer.toLowerCase();
+      const ans = qa.answer.trim();
+      const ansLower = ans.toLowerCase();
+      const qLabel = "Proposition " + prop.number + " (\"" + qa.question + "\")";
+
+      // 1. Commentary words
       for (const word of COMMENTARY_WORDS) {
         if (ansLower.includes(word)) {
-          prop.warnings.push("Proposition " + prop.number + ": answer to \"" + qa.question + "\" may contain commentary (\"" + word + "\"). Level 3 should state only what the text says.");
+          prop.warnings.push(qLabel + ": answer may contain commentary (\"" + word + "\"). Level 3 should state only what the text says.");
           break;
         }
       }
-      // Flag if answer looks like a full sentence (has a verb + subject)
-      if (/^[A-Z][^.!?]+[a-z]\s+[a-z]+s\b/.test(qa.answer) && qa.answer.split(/\s+/).length > 7) {
-        prop.warnings.push("Proposition " + prop.number + ": answer to \"" + qa.question + "\" may be a full sentence. Check it does not reproduce a biblical clause.");
+
+      // 2. Finite clause detection (replaces old "full sentence" heuristic)
+      // Skip inner content lines ("What the words say —", "What the report said —")
+      // which are expected to have more complex content
+      const isInnerContentLine = /what the (words|report|message|news) (say|said|says)\s*[—\-]/i.test(qa.question);
+      if (!isInnerContentLine) {
+        if (hasFiniteVerb(ans)) {
+          prop.warnings.push(qLabel + ": answer appears to be a finite clause (contains a conjugated verb with its own subject). This encodes an embedded proposition. Apply the two-layer rule: name the outer event on this line, then add inner-content lines decomposing the embedded content.");
+        } else if (hasEmbeddingMarker(ans)) {
+          prop.warnings.push(qLabel + ": answer may contain an embedding marker (\"that,\" \"because,\" \"so that,\" etc.). If this is a clause, decompose it into outer-event and inner-content lines.");
+        }
+      }
+
+      // 3. Performance frame elements in proposition lines
+      for (const frame of FRAME_MARKERS) {
+        if (ansLower.includes(frame) || ansLower.startsWith(frame.replace(/,$/, ""))) {
+          prop.warnings.push(qLabel + ": answer may contain a performance frame element (\"" + frame.trim() + "\"). These oral framing devices belong to the reconstructor and the target language, not to the semantic inventory.");
+          break;
+        }
       }
     }
+
     if (prop.warnings.length > 0) {
       map.propositionWarnings.push(...prop.warnings);
     }
