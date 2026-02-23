@@ -1047,23 +1047,8 @@ function clearInput() {
   document.getElementById("parse-result").style.display = "none";
 }
 
-function stripMarkdown(raw) {
-  let text = raw;
-  // Bold: **text** or __text__
-  text = text.replace(/\*\*([^*\n]+?)\*\*/g, "$1");
-  text = text.replace(/__([^_\n]+?)__/g, "$1");
-  // Italic: *text* or _text_ (single markers only)
-  text = text.replace(/(?<!\*)\*([^*\n]+?)\*(?!\*)/g, "$1");
-  text = text.replace(/(?<!_)_([^_\n]+?)_(?!_)/g, "$1");
-  // ATX headers: ## text → text (keep the text, drop the #s)
-  text = text.replace(/^#{1,6}\s+/gm, "");
-  // Horizontal rules: --- === ***
-  text = text.replace(/^[-=*]{3,}\s*$/gm, "");
-  return text;
-}
-
 function parseMap(raw) {
-  const text = stripMarkdown(raw).replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  const text = raw.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
 
   const map = {
     meta: { passage: "", analyst: "", status: "draft" },
@@ -1075,20 +1060,20 @@ function parseMap(raw) {
   };
 
   // ── LEVEL 1 ──
-  const l1m = text.match(/(?:^|\n)\s*(?:#{1,4}\s*)?Level\s*1\b[^\n]*\n([\s\S]*?)(?=\n\s*(?:#{1,4}\s*)?Level\s*[23]\b|$)/i);
+  const l1m = text.match(/#{1,4}\s*Level\s*1[^\n]*\n([\s\S]*?)(?=#{1,4}\s*Level\s*[23]|$)/i);
   if (l1m) {
     map.level1.text = cleanSeparators(l1m[1]).trim();
   }
 
   // ── SCENES ──
-  const sceneRe = /(?:^|\n)\s*(?:#{1,4}\s*)?Level\s*2[^\n]*Scene\s*(\d+)[^\n]*Verses?\s*([^\n]+)\n([\s\S]*?)(?=\n\s*(?:#{1,4}\s*)?Level\s*\d+\b|$)/gi;
+  const sceneRe = /#{1,4}\s*Level\s*2[^\n]*Scene\s*(\d+)[^\n]*Verses?\s*([\d\u2013\u2014\-:,\s]+)[^\n]*\n([\s\S]*?)(?=#{1,4}\s*Level|$)/gi;
   let sm;
   while ((sm = sceneRe.exec(text)) !== null) {
     map.scenes.push(parseScene(sm[1], sm[2].trim(), sm[3]));
   }
 
   // ── LEVEL 3 ──
-  const l3m = text.match(/(?:^|\n)\s*(?:#{1,4}\s*)?Level\s*3\b[^\n]*\n([\s\S]*?)$/i);
+  const l3m = text.match(/#{1,4}\s*Level\s*3[^\n]*\n([\s\S]*?)$/i);
   if (l3m) {
     map.propositions = parsePropositions(l3m[1]);
   }
@@ -1114,7 +1099,7 @@ function parseScene(num, verses, text) {
   };
 
   // Title
-  const titleM = text.match(/Title:\s*([^\n]+)/i);
+  const titleM = text.match(/\*\*Title:\*\*\s*([^\n]+)/);
   if (titleM) scene.title = titleM[1].trim();
 
   // Extract subsections
@@ -1127,9 +1112,9 @@ function parseScene(num, verses, text) {
   if (sub2A) scene.people   = parseBoldEntries(sub2A, ["Role","Relationship","Wants","Carries"]);
   if (sub2B) scene.places   = parseBoldEntries(sub2B, ["Role","Type","Meaning","Effect on scene"]);
   if (sub2C) {
-    const absM = sub2C.match(/Significant absence:\s*([^\n]+(?:\n(?!\S[^:\n]*:)[^\n]*)*)/i);
+    const absM = sub2C.match(/\*\*Significant absence:\*\*\s*([^\n]+(?:\n(?!\*\*)[^\n]*)*)/i);
     if (absM) scene.significantAbsence = absM[1].trim();
-    const sub2CcleanText = sub2C.replace(/Significant absence:[^]*$/i, "");
+    const sub2CcleanText = sub2C.replace(/\*\*Significant absence:[^]*$/i, "");
     scene.objects = parseBoldEntries(sub2CcleanText, ["What it is","Function in scene","Signals"]);
   }
   if (sub2D) scene.whatHappens = cleanSeparators(sub2D).trim();
@@ -1140,9 +1125,9 @@ function parseScene(num, verses, text) {
 
 function extractSubsection(text, label, nextLabels) {
   const lookahead = nextLabels.length > 0
-    ? "(?=\\n\\s*(?:" + nextLabels.map(l => "(?:#{1,5}\\s*)?" + l + "\\s*[\\u2013\\u2014\\-]").join("|") + ")|$)"
+    ? "(?=" + nextLabels.map(l => "#{1,5}\\s*" + l).join("|") + "|$)"
     : "(?=$)";
-  const re = new RegExp("(?:^|\\n)\\s*(?:#{1,5}\\s*)?" + label + "\\s*[\\u2013\\u2014\\-][^\\n]*\\n([\\s\\S]*?)" + lookahead, "i");
+  const re = new RegExp("#{1,5}\\s*" + label + "\\s*[\\u2013\\u2014\\-][^\\n]*\\n([\\s\\S]*?)" + lookahead, "i");
   const m = text.match(re);
   return m ? m[1] : null;
 }
@@ -1151,18 +1136,14 @@ function parseBoldEntries(text, fields) {
   const entries = [];
   if (!text) return entries;
 
-  // Split on name lines: a line with no colon (not a field label).
-  // Works whether or not markdown bold markers have been stripped.
-  const parts = text.split(/(?=\*{0,2}[^\n:*]+\*{0,2}\n)/);
+  // Split on **Name** pattern
+  const parts = text.split(/(?=\*\*[^*\n]+\*\*)/);
 
   for (const part of parts) {
-    // Name line: optional **, then name text (no colon), then optional **
-    const nameM = part.match(/^\*{0,2}([^*:\n]+?)\*{0,2}\n/);
+    const nameM = part.match(/^\*\*([^*]+)\*\*/);
     if (!nameM) continue;
     const name = nameM[1].trim();
     if (!name || name.toLowerCase().startsWith("significant absence")) continue;
-    // Skip field labels that leaked into a split boundary
-    if (/^(role|relationship|wants|carries|type|meaning|effect|what it|function|signals)/i.test(name)) continue;
 
     const body = part.slice(nameM[0].length);
     const entry = { name };
@@ -1205,10 +1186,10 @@ function extractFieldValue(text, fieldName, nextFields) {
 
 function parsePropositions(text) {
   const props = [];
-  const blocks = text.split(/(?=\*{0,2}Proposition\s+\d+)/i);
+  const blocks = text.split(/(?=\*\*Proposition\s+\d+)/i);
 
   for (const block of blocks) {
-    const hm = block.match(/\*{0,2}Proposition\s+(\d+)\s*[\u2013\u2014\-]+\s*Verse\s*([^*\n]+?)\*{0,2}\s*$/im);
+    const hm = block.match(/\*\*Proposition\s+(\d+)\s*[\u2013\u2014\-]+\s*Verse\s*([^*\n]+)\*\*/i);
     if (!hm) continue;
 
     const prop = {
