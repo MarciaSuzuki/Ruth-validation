@@ -1047,8 +1047,23 @@ function clearInput() {
   document.getElementById("parse-result").style.display = "none";
 }
 
+function stripMarkdown(raw) {
+  let text = raw;
+  // Bold: **text** or __text__
+  text = text.replace(/\*\*([^*\n]+?)\*\*/g, "$1");
+  text = text.replace(/__([^_\n]+?)__/g, "$1");
+  // Italic: *text* or _text_ (single markers only)
+  text = text.replace(/(?<!\*)\*([^*\n]+?)\*(?!\*)/g, "$1");
+  text = text.replace(/(?<!_)_([^_\n]+?)_(?!_)/g, "$1");
+  // ATX headers: ## text → text (keep the text, drop the #s)
+  text = text.replace(/^#{1,6}\s+/gm, "");
+  // Horizontal rules: --- === ***
+  text = text.replace(/^[-=*]{3,}\s*$/gm, "");
+  return text;
+}
+
 function parseMap(raw) {
-  const text = raw.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  const text = stripMarkdown(raw).replace(/\r\n/g, "\n").replace(/\r/g, "\n");
 
   const map = {
     meta: { passage: "", analyst: "", status: "draft" },
@@ -1099,7 +1114,7 @@ function parseScene(num, verses, text) {
   };
 
   // Title
-  const titleM = text.match(/\*\*Title:\*\*\s*([^\n]+)/);
+  const titleM = text.match(/Title:\s*([^\n]+)/i);
   if (titleM) scene.title = titleM[1].trim();
 
   // Extract subsections
@@ -1112,9 +1127,9 @@ function parseScene(num, verses, text) {
   if (sub2A) scene.people   = parseBoldEntries(sub2A, ["Role","Relationship","Wants","Carries"]);
   if (sub2B) scene.places   = parseBoldEntries(sub2B, ["Role","Type","Meaning","Effect on scene"]);
   if (sub2C) {
-    const absM = sub2C.match(/\*\*Significant absence:\*\*\s*([^\n]+(?:\n(?!\*\*)[^\n]*)*)/i);
+    const absM = sub2C.match(/Significant absence:\s*([^\n]+(?:\n(?!\S[^:\n]*:)[^\n]*)*)/i);
     if (absM) scene.significantAbsence = absM[1].trim();
-    const sub2CcleanText = sub2C.replace(/\*\*Significant absence:[^]*$/i, "");
+    const sub2CcleanText = sub2C.replace(/Significant absence:[^]*$/i, "");
     scene.objects = parseBoldEntries(sub2CcleanText, ["What it is","Function in scene","Signals"]);
   }
   if (sub2D) scene.whatHappens = cleanSeparators(sub2D).trim();
@@ -1136,14 +1151,18 @@ function parseBoldEntries(text, fields) {
   const entries = [];
   if (!text) return entries;
 
-  // Split on **Name** pattern
-  const parts = text.split(/(?=\*\*[^*\n]+\*\*)/);
+  // Split on name lines: a line with no colon (not a field label).
+  // Works whether or not markdown bold markers have been stripped.
+  const parts = text.split(/(?=\*{0,2}[^\n:*]+\*{0,2}\n)/);
 
   for (const part of parts) {
-    const nameM = part.match(/^\*\*([^*]+)\*\*/);
+    // Name line: optional **, then name text (no colon), then optional **
+    const nameM = part.match(/^\*{0,2}([^*:\n]+?)\*{0,2}\n/);
     if (!nameM) continue;
     const name = nameM[1].trim();
     if (!name || name.toLowerCase().startsWith("significant absence")) continue;
+    // Skip field labels that leaked into a split boundary
+    if (/^(role|relationship|wants|carries|type|meaning|effect|what it|function|signals)/i.test(name)) continue;
 
     const body = part.slice(nameM[0].length);
     const entry = { name };
@@ -1186,10 +1205,10 @@ function extractFieldValue(text, fieldName, nextFields) {
 
 function parsePropositions(text) {
   const props = [];
-  const blocks = text.split(/(?=\*\*Proposition\s+\d+)/i);
+  const blocks = text.split(/(?=\*{0,2}Proposition\s+\d+)/i);
 
   for (const block of blocks) {
-    const hm = block.match(/\*\*Proposition\s+(\d+)\s*[\u2013\u2014\-]+\s*Verse\s*([^*\n]+)\*\*/i);
+    const hm = block.match(/\*{0,2}Proposition\s+(\d+)\s*[\u2013\u2014\-]+\s*Verse\s*([^*\n]+?)\*{0,2}\s*$/im);
     if (!hm) continue;
 
     const prop = {
