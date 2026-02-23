@@ -1075,20 +1075,20 @@ function parseMap(raw) {
   };
 
   // ── LEVEL 1 ──
-  const l1m = text.match(/#{1,4}\s*Level\s*1[^\n]*\n([\s\S]*?)(?=#{1,4}\s*Level\s*[23]|$)/i);
+  const l1m = text.match(/(?:^|\n)\s*(?:#{1,4}\s*)?Level\s*1\b[^\n]*\n([\s\S]*?)(?=\n\s*(?:#{1,4}\s*)?Level\s*[23]\b|$)/i);
   if (l1m) {
     map.level1.text = cleanSeparators(l1m[1]).trim();
   }
 
   // ── SCENES ──
-  const sceneRe = /#{1,4}\s*Level\s*2[^\n]*Scene\s*(\d+)[^\n]*Verses?\s*([\d\u2013\u2014\-:,\s]+)[^\n]*\n([\s\S]*?)(?=#{1,4}\s*Level|$)/gi;
+  const sceneRe = /(?:^|\n)\s*(?:#{1,4}\s*)?Level\s*2[^\n]*Scene\s*(\d+)[^\n]*Verses?\s*([^\n]+)\n([\s\S]*?)(?=\n\s*(?:#{1,4}\s*)?Level\s*\d+\b|$)/gi;
   let sm;
   while ((sm = sceneRe.exec(text)) !== null) {
     map.scenes.push(parseScene(sm[1], sm[2].trim(), sm[3]));
   }
 
   // ── LEVEL 3 ──
-  const l3m = text.match(/#{1,4}\s*Level\s*3[^\n]*\n([\s\S]*?)$/i);
+  const l3m = text.match(/(?:^|\n)\s*(?:#{1,4}\s*)?Level\s*3\b[^\n]*\n([\s\S]*?)$/i);
   if (l3m) {
     map.propositions = parsePropositions(l3m[1]);
   }
@@ -1140,9 +1140,9 @@ function parseScene(num, verses, text) {
 
 function extractSubsection(text, label, nextLabels) {
   const lookahead = nextLabels.length > 0
-    ? "(?=" + nextLabels.map(l => "#{1,5}\\s*" + l).join("|") + "|$)"
+    ? "(?=\\n\\s*(?:" + nextLabels.map(l => "(?:#{1,5}\\s*)?" + l + "\\s*[\\u2013\\u2014\\-]").join("|") + ")|$)"
     : "(?=$)";
-  const re = new RegExp("#{1,5}\\s*" + label + "\\s*[\\u2013\\u2014\\-][^\\n]*\\n([\\s\\S]*?)" + lookahead, "i");
+  const re = new RegExp("(?:^|\\n)\\s*(?:#{1,5}\\s*)?" + label + "\\s*[\\u2013\\u2014\\-][^\\n]*\\n([\\s\\S]*?)" + lookahead, "i");
   const m = text.match(re);
   return m ? m[1] : null;
 }
