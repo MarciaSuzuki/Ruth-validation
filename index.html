@@ -3,2054 +3,2622 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prose Meaning Maps — OBT Lab</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Prose Meaning Map — Validation Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cinzel:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --teal-dark: #0d3b38;
-  --teal: #165c57;
-  --teal-mid: #1e7a72;
-  --teal-light: #2a9d8f;
-  --gold: #c9a84c;
-  --gold-light: #e3c97e;
-  --cream: #faf6ef;
-  --cream-dark: #f0e9dc;
-  --ink: #1a1a1a;
-  --ink-mid: #3a3a3a;
-  --ink-light: #6b6b6b;
-  --rust: #a0522d;
-  --error: #c0392b;
-  --white: #ffffff;
-  --shadow: 0 4px 24px rgba(13,59,56,0.12);
-  --shadow-sm: 0 2px 8px rgba(13,59,56,0.08);
-  --radius: 8px;
-  --radius-lg: 16px;
+  --cream: #F8F4EE;
+  --white: #FFFFFF;
+  --teal: #2D6E6E;
+  --teal-hover: #245858;
+  --teal-light: #4A9B9B;
+  --teal-pale: #EAF4F4;
+  --gold: #9A6F2A;
+  --gold-pale: #FDF6E3;
+  --text: #1C1917;
+  --text-muted: #6B5E52;
+  --text-light: #A09080;
+  --border: #E2D8CC;
+  --border-light: #EDE7DF;
+  --amber: #B45309;
+  --amber-pale: #FFFBEB;
+  --amber-border: #FCD34D;
+  --green: #047857;
+  --green-pale: #ECFDF5;
+  --green-border: #6EE7B7;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
 }
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 body {
-  font-family: 'Source Serif 4', Georgia, serif;
-  background: var(--cream);
-  color: var(--ink);
-  min-height: 100vh;
-  font-size: 16px;
+  font-family: "Crimson Pro", Georgia, serif;
+  font-size: 17px;
   line-height: 1.65;
+  color: var(--text);
+  background: var(--cream);
+  min-height: 100vh;
 }
 
 /* ── HEADER ── */
-header {
-  background: var(--teal-dark);
-  color: var(--white);
-  padding: 0;
+.app-header {
+  background: var(--teal);
+  color: white;
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+.app-header h1 {
+  font-family: "Cinzel", serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: white;
+}
+.app-header .subtitle {
+  font-size: 0.85rem;
+  opacity: 0.75;
+  font-style: italic;
+}
+
+/* ── NAV TABS ── */
+.tab-nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  padding: 0 2rem;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+  box-shadow: var(--shadow);
 }
-
-.header-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 32px 10px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.header-brand h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.55rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  line-height: 1.2;
-}
-
-.header-brand .subtitle {
-  font-size: 0.72rem;
-  color: var(--gold-light);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-family: 'Source Serif 4', serif;
-  font-weight: 300;
-}
-
-.header-org {
-  text-align: right;
-  font-size: 0.72rem;
-  color: rgba(255,255,255,0.6);
-  line-height: 1.5;
-  font-family: 'Source Serif 4', serif;
-}
-
-.header-org a {
-  color: var(--gold-light);
-  text-decoration: none;
-}
-
-nav {
-  display: flex;
-  padding: 0 24px;
-  gap: 0;
-  overflow-x: auto;
-}
-
-nav button {
+.tab-btn {
+  font-family: "Cinzel", serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
   background: none;
   border: none;
-  color: rgba(255,255,255,0.65);
-  padding: 10px 20px;
-  font-family: 'Source Serif 4', serif;
-  font-size: 0.82rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  cursor: pointer;
   border-bottom: 2px solid transparent;
-  transition: all 0.2s;
+  padding: 0.9rem 1.25rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
   white-space: nowrap;
 }
-
-nav button:hover { color: var(--white); }
-
-nav button.active {
-  color: var(--gold-light);
-  border-bottom: 2px solid var(--gold);
-}
+.tab-btn:hover { color: var(--teal); }
+.tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
 
 /* ── MAIN ── */
-main {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 40px 24px 120px;
-}
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+.main-content { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
 
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
-
-/* ── TYPOGRAPHY ── */
-h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.75rem;
-  color: var(--teal-dark);
-  margin-bottom: 6px;
-}
-
-h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.2rem;
-  color: var(--teal);
-  margin-bottom: 4px;
-}
-
-h4 {
-  font-family: 'Source Serif 4', serif;
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: "Cinzel", serif;
+  font-size: 0.7rem;
   font-weight: 600;
-  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  color: var(--text-light);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--teal-mid);
-  margin-bottom: 8px;
-}
-
-p { margin-bottom: 1rem; }
-
-.lead {
-  font-size: 1.05rem;
-  color: var(--ink-mid);
-  font-style: italic;
   margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-light);
 }
 
-/* ── CARDS & BOXES ── */
+/* ── CARD ── */
 .card {
   background: var(--white);
-  border-radius: var(--radius-lg);
-  padding: 28px 32px;
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 24px;
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  border-radius: 6px;
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+  transition: border-left-color 0.2s;
+  overflow: hidden;
 }
+.card.has-warnings { border-left-color: var(--amber-border); }
+.card.reviewed { border-left-color: var(--green-border); }
 
-.rule-box {
-  background: var(--teal-dark);
-  color: var(--white);
-  border-radius: var(--radius-lg);
-  padding: 24px 28px;
-  margin-bottom: 28px;
-}
-
-.rule-box h3 {
-  font-family: 'Playfair Display', serif;
-  color: var(--gold-light);
-  margin-bottom: 12px;
-  font-size: 1.1rem;
-}
-
-.rule-box p { color: rgba(255,255,255,0.88); margin-bottom: 0.75rem; font-size: 0.95rem; }
-.rule-box p:last-child { margin-bottom: 0; }
-
-.notice {
-  background: var(--cream-dark);
-  border-left: 4px solid var(--teal-light);
-  padding: 14px 18px;
-  border-radius: 0 var(--radius) var(--radius) 0;
-  margin-bottom: 20px;
-  font-size: 0.9rem;
-  color: var(--ink-mid);
-  font-style: italic;
-}
-
-.warning {
-  background: #fff8e1;
-  border-left: 4px solid var(--gold);
-  padding: 14px 18px;
-  border-radius: 0 var(--radius) var(--radius) 0;
-  margin-bottom: 20px;
-  font-size: 0.9rem;
-  color: var(--ink-mid);
-}
-
-/* ── SECTION HEADERS ── */
-.section-header {
-  background: var(--teal);
-  color: var(--white);
-  border-radius: var(--radius) var(--radius) 0 0;
-  padding: 14px 20px;
-  margin-bottom: 0;
+.card-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+  background: #FCFAF7;
 }
-
-.section-header .level-badge {
-  background: var(--gold);
-  color: var(--teal-dark);
-  border-radius: 20px;
-  padding: 2px 12px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-family: 'Source Serif 4', serif;
-}
-
-.section-header h3 {
-  color: var(--white);
-  font-family: 'Playfair Display', serif;
-  font-size: 1.05rem;
-  margin: 0;
-}
-
-.section-body {
-  background: var(--white);
-  border: 1px solid rgba(0,0,0,0.08);
-  border-top: none;
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-  padding: 24px;
-  margin-bottom: 28px;
-}
-
-/* ── TABLES ── */
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.88rem;
-  margin-bottom: 16px;
-}
-
-.data-table th {
-  background: var(--teal-mid);
-  color: var(--white);
-  padding: 10px 12px;
-  text-align: left;
-  font-family: 'Source Serif 4', serif;
-  font-weight: 600;
-  font-size: 0.78rem;
-  letter-spacing: 0.05em;
-}
-
-.data-table td {
-  padding: 9px 12px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-  vertical-align: top;
-  line-height: 1.5;
-}
-
-.data-table tr:nth-child(even) td { background: var(--cream); }
-
-/* ── PROPOSITION BLOCKS (example) ── */
-.prop-block {
-  background: var(--cream);
-  border-radius: var(--radius);
-  padding: 16px 20px;
-  margin-bottom: 12px;
-  border: 1px solid rgba(0,0,0,0.07);
-}
-
-.prop-block .prop-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.prop-num {
-  background: var(--teal-light);
-  color: var(--white);
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.78rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.prop-verse {
-  font-family: 'Source Serif 4', serif;
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: var(--teal-dark);
-}
-
-.prop-type {
-  font-size: 0.8rem;
-  color: var(--ink-light);
-  font-style: italic;
-}
-
-.slot-list {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.slot-row {
-  display: flex;
-  gap: 8px;
-  font-size: 0.88rem;
-}
-
-.slot-key {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  color: var(--teal-mid);
+.card-title {
+  font-family: "Cinzel", serif;
+  font-size: 0.82rem;
   font-weight: 500;
-  min-width: 120px;
-  padding-top: 2px;
-}
-
-.slot-val { color: var(--ink); }
-
-/* ── FORM ELEMENTS ── */
-.form-group {
-  margin-bottom: 18px;
-}
-
-label.field-label {
-  display: block;
-  font-weight: 600;
-  font-size: 0.82rem;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--teal-dark);
-  margin-bottom: 5px;
-}
-
-.field-hint {
-  font-size: 0.8rem;
-  color: var(--ink-light);
-  font-style: italic;
-  margin-bottom: 6px;
-}
-
-input[type="text"], textarea, select {
-  width: 100%;
-  border: 1.5px solid #d0cfc8;
-  border-radius: var(--radius);
-  padding: 9px 12px;
-  font-family: 'Source Serif 4', serif;
-  font-size: 0.92rem;
-  color: var(--ink);
-  background: var(--white);
-  transition: border-color 0.2s, box-shadow 0.2s;
-  outline: none;
-}
-
-input[type="text"]:focus, textarea:focus, select:focus {
-  border-color: var(--teal-light);
-  box-shadow: 0 0 0 3px rgba(42,157,143,0.12);
-}
-
-textarea { resize: vertical; min-height: 90px; }
-
-.meta-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-@media(max-width: 640px) { .meta-grid { grid-template-columns: 1fr 1fr; } }
-
-/* ── SCENE BLOCKS (form) ── */
-.scene-block {
-  border: 1.5px solid rgba(0,0,0,0.09);
-  border-radius: var(--radius-lg);
-  margin-bottom: 28px;
-  overflow: hidden;
-}
-
-.scene-block-header {
-  background: var(--teal);
-  color: var(--white);
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.scene-block-header h4 {
-  color: var(--white);
-  text-transform: none;
-  letter-spacing: 0;
-  font-size: 0.95rem;
-  margin: 0;
-  font-family: 'Playfair Display', serif;
-  font-weight: 600;
-}
-
-.scene-block-body { padding: 20px; background: var(--white); }
-
-.sub-section {
-  background: var(--cream);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 16px;
-}
-
-.sub-section h4 {
-  color: var(--teal-dark);
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-/* ── DYNAMIC TABLE EDITOR ── */
-.dyn-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-.dyn-table th {
-  background: var(--teal-mid);
-  color: var(--white);
-  padding: 7px 10px;
-  font-size: 0.75rem;
-  font-family: 'Source Serif 4', serif;
   letter-spacing: 0.05em;
-  text-align: left;
+  color: var(--teal);
 }
-.dyn-table td { padding: 4px 4px; vertical-align: top; }
-.dyn-table input[type="text"] {
-  padding: 6px 8px;
-  font-size: 0.82rem;
-  min-width: 0;
+.card-title span {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-family: "Crimson Pro", serif;
+  font-size: 0.9rem;
+  letter-spacing: 0;
+  margin-left: 0.5rem;
 }
-.dyn-table .del-btn {
-  background: none;
-  border: none;
-  color: var(--error);
-  cursor: pointer;
-  font-size: 1.1rem;
-  padding: 4px 6px;
+
+/* ── STATUS BADGE ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  font-family: "Cinzel", serif;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-weight: 500;
+}
+.badge-pending { background: #F3F0EB; color: var(--text-muted); }
+.badge-warning { background: var(--amber-pale); color: var(--amber); border: 1px solid #FDE68A; }
+.badge-reviewed { background: var(--green-pale); color: var(--green); border: 1px solid var(--green-border); }
+
+/* ── CARD BODY ── */
+.card-body { padding: 1.25rem 1.5rem; }
+.card-body.editing { background: #FAFAF8; }
+
+/* ── WARNINGS ── */
+.warnings-block {
+  margin: 0 1.5rem 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--amber-pale);
+  border: 1px solid #FDE68A;
   border-radius: 4px;
-  transition: background 0.15s;
 }
-.dyn-table .del-btn:hover { background: #fde8e8; }
-
-/* ── PROP FORM BLOCKS ── */
-.prop-form-block {
-  border: 1.5px solid rgba(0,0,0,0.09);
-  border-radius: var(--radius-lg);
-  margin-bottom: 20px;
-  overflow: hidden;
+.warning-title {
+  font-family: "Cinzel", serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--amber);
+  margin-bottom: 0.35rem;
 }
+.warning-item {
+  font-size: 0.9rem;
+  color: #92400E;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+.warning-item::before { content: "⚠"; font-size: 0.8rem; margin-top: 0.1rem; flex-shrink: 0; }
 
-.prop-form-header {
-  background: var(--cream-dark);
-  padding: 10px 16px;
+/* ── CARD ACTIONS ── */
+.card-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid var(--border-light);
+  background: #FCFAF7;
 }
-
-.prop-form-header .prop-label {
-  font-family: 'Source Serif 4', serif;
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: var(--teal-dark);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.prop-form-body { padding: 16px 20px; }
-
-.slot-editor { margin-top: 10px; }
-.slot-editor .slot-row-edit {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 6px;
-  align-items: center;
-}
-.slot-editor .slot-row-edit input { flex: 1; }
-.slot-editor .slot-key-input { max-width: 160px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
 
 /* ── BUTTONS ── */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 18px;
-  border-radius: var(--radius);
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
   border: none;
+  border-radius: 4px;
+  padding: 0.45rem 1rem;
   cursor: pointer;
-  font-family: 'Source Serif 4', serif;
-  font-size: 0.88rem;
+  transition: all 0.15s;
+}
+.btn-teal { background: var(--teal); color: white; }
+.btn-teal:hover { background: var(--teal-hover); }
+.btn-outline { background: transparent; color: var(--teal); border: 1px solid var(--teal); }
+.btn-outline:hover { background: var(--teal-pale); }
+.btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+.btn-green { background: var(--green); color: white; }
+.btn-green:hover { background: #035f47; }
+.btn-approve {
+  font-family: "Cinzel", serif;
+  font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: 0.03em;
-  transition: all 0.2s;
-}
-
-.btn-primary {
-  background: var(--teal);
-  color: var(--white);
-}
-.btn-primary:hover { background: var(--teal-mid); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
-
-.btn-secondary {
-  background: var(--cream-dark);
-  color: var(--teal-dark);
-  border: 1.5px solid var(--cream-dark);
-}
-.btn-secondary:hover { background: #e3d9ca; }
-
-.btn-gold {
+  letter-spacing: 0.08em;
   background: var(--gold);
-  color: var(--teal-dark);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.85rem 2.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  margin-top: 1.5rem;
 }
-.btn-gold:hover { background: var(--gold-light); }
+.btn-approve:hover:not(:disabled) { background: #7A5520; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-approve:disabled { background: var(--text-light); cursor: not-allowed; opacity: 0.6; }
+.btn-sm { padding: 0.3rem 0.7rem; font-size: 0.68rem; }
 
-.btn-ghost {
-  background: transparent;
+/* ── PROGRESS ── */
+.progress-bar-wrap {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.progress-info { flex: 1; }
+.progress-title {
+  font-family: "Cinzel", serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+.progress-track {
+  height: 6px;
+  background: var(--border-light);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+.progress-count {
+  font-family: "Cinzel", serif;
+  font-size: 0.85rem;
+  font-weight: 600;
   color: var(--teal);
-  border: 1.5px solid currentColor;
-}
-.btn-ghost:hover { background: rgba(42,157,143,0.08); }
-
-.btn-danger {
-  background: transparent;
-  color: var(--error);
-  border: 1.5px solid currentColor;
-  font-size: 0.8rem;
-  padding: 5px 12px;
-}
-.btn-danger:hover { background: #fde8e8; }
-
-.btn-sm { padding: 6px 12px; font-size: 0.8rem; }
-
-.btn-row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 12px;
+  white-space: nowrap;
 }
 
-/* ── CHECKLIST ── */
-.checklist { list-style: none; padding: 0; }
-.checklist li {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-  cursor: pointer;
-  transition: background 0.15s;
-  border-radius: var(--radius);
-  padding-left: 8px;
-  padding-right: 8px;
+/* ── REVIEW CONTENT ── */
+.level1-text {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text);
 }
-.checklist li:hover { background: var(--cream); }
-.checklist li:last-child { border-bottom: none; }
+.level1-text p { margin-bottom: 1rem; }
+.level1-text p:last-child { margin-bottom: 0; }
 
-.checklist li input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
-  accent-color: var(--teal-light);
-  cursor: pointer;
-  margin-top: 2px;
+.subsection { margin-bottom: 1.5rem; }
+.subsection:last-child { margin-bottom: 0; }
+.subsection-label {
+  font-family: "Cinzel", serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--teal-light);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--teal-pale);
+}
+.scene-title {
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-light);
 }
 
-.checklist li span { font-size: 0.92rem; line-height: 1.5; }
-.checklist li.checked span { text-decoration: line-through; color: var(--ink-light); }
+/* ── PERSON / PLACE / OBJECT ENTRIES ── */
+.entry-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.entry-item {
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  background: #FDFCFA;
+}
+.entry-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--teal);
+  margin-bottom: 0.4rem;
+}
+.entry-fields { display: grid; grid-template-columns: auto 1fr; gap: 0.15rem 0.75rem; }
+.field-label {
+  font-family: "Cinzel", serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-light);
+  text-transform: uppercase;
+  padding-top: 0.15rem;
+  white-space: nowrap;
+}
+.field-value { font-size: 0.95rem; color: var(--text); }
+.absence-note {
+  margin-top: 0.75rem;
+  padding: 0.6rem 0.9rem;
+  background: var(--gold-pale);
+  border-left: 3px solid #D4A843;
+  border-radius: 0 4px 4px 0;
+  font-size: 0.92rem;
+  font-style: italic;
+  color: #5A4020;
+}
+.prose-text { font-size: 1rem; line-height: 1.75; color: var(--text); }
 
-/* ── JSON VIEW ── */
-.json-output {
-  background: #0d1f1e;
-  color: #a8d8b9;
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.78rem;
-  line-height: 1.7;
-  overflow-x: auto;
-  white-space: pre;
-  max-height: 600px;
-  overflow-y: auto;
+/* ── PROPOSITIONS ── */
+.prop-list { display: flex; flex-direction: column; gap: 1.25rem; }
+.prop-block {
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.prop-header {
+  background: var(--teal-pale);
+  padding: 0.4rem 1rem;
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--teal);
+}
+.prop-content { padding: 0.6rem 1rem; }
+.qa-row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--border-light);
+  padding: 0.3rem 0;
+  align-items: baseline;
+}
+.qa-row:last-child { border-bottom: none; }
+.qa-question {
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--text-muted);
+  padding-right: 0.75rem;
+}
+.qa-answer { font-size: 0.95rem; color: var(--text); font-weight: 500; }
+.prop-warning { font-size: 0.8rem; color: var(--amber); padding: 0.2rem 1rem; background: var(--amber-pale); }
+
+/* ── EDIT FORMS ── */
+.edit-form { display: flex; flex-direction: column; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+.form-label {
+  font-family: "Cinzel", serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.form-input, .form-textarea {
+  font-family: "Crimson Pro", serif;
+  font-size: 1rem;
+  color: var(--text);
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+.form-input:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 2px rgba(45,110,110,0.12);
+}
+.form-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+.form-textarea.tall { min-height: 140px; }
+
+.entry-editor {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1rem;
+  background: white;
+  margin-bottom: 0.75rem;
   position: relative;
 }
-
-.json-key { color: #7ec8c8; }
-.json-string { color: #c8d8a8; }
-.json-number { color: #e8c07d; }
-.json-null { color: #888; }
-
-/* ── FLOATING ASSISTANT ── */
-#assistant-btn {
-  position: fixed;
-  bottom: 32px;
-  right: 32px;
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  background: var(--teal-dark);
-  color: var(--white);
-  border: 3px solid var(--gold);
+.entry-editor-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--teal);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-light);
+}
+.entry-editor-fields { display: flex; flex-direction: column; gap: 0.6rem; }
+.remove-entry-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: var(--text-light);
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(13,59,56,0.35);
-  z-index: 200;
-  display: flex;
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.remove-entry-btn:hover { color: #DC2626; }
+.add-entry-btn {
+  font-family: "Cinzel", serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.07em;
+  color: var(--teal);
+  background: var(--teal-pale);
+  border: 1px dashed var(--teal-light);
+  border-radius: 4px;
+  padding: 0.5rem;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 0.25rem;
+}
+.add-entry-btn:hover { background: var(--teal); color: white; border-color: var(--teal); }
+
+.qa-editor { display: flex; flex-direction: column; gap: 0.5rem; }
+.qa-edit-row {
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  gap: 0.5rem;
   align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  transition: transform 0.2s, box-shadow 0.2s;
 }
-#assistant-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(13,59,56,0.45); }
-
-#assistant-panel {
-  position: fixed;
-  bottom: 104px;
-  right: 32px;
-  width: 360px;
-  max-width: calc(100vw - 48px);
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
-  z-index: 200;
-  display: none;
-  flex-direction: column;
+.qa-edit-row input {
+  font-family: "Crimson Pro", serif;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.35rem 0.6rem;
+}
+.qa-edit-row input:focus {
+  outline: none;
+  border-color: var(--teal);
+}
+.qa-edit-row input.q-input { font-style: italic; color: var(--text-muted); }
+.remove-qa-btn {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.2rem;
+  transition: color 0.15s;
+}
+.remove-qa-btn:hover { color: #DC2626; }
+.prop-editor-block {
+  border: 1px solid var(--border);
+  border-radius: 4px;
   overflow: hidden;
-  border: 1px solid rgba(0,0,0,0.08);
+  margin-bottom: 1rem;
 }
+.prop-editor-header {
+  background: var(--teal-pale);
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.prop-editor-header label {
+  font-family: "Cinzel", serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.07em;
+  color: var(--teal);
+}
+.prop-editor-header input {
+  font-family: "Crimson Pro", serif;
+  font-size: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.2rem 0.4rem;
+  width: 60px;
+}
+.prop-editor-body { padding: 0.75rem; }
+.add-qa-btn {
+  font-family: "Cinzel", serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.07em;
+  color: var(--teal);
+  background: none;
+  border: 1px dashed var(--teal-light);
+  border-radius: 3px;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  margin-top: 0.25rem;
+  transition: all 0.15s;
+}
+.add-qa-btn:hover { background: var(--teal-pale); }
 
-#assistant-panel.open { display: flex; }
+/* ── IMPORT TAB ── */
+.import-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.paste-area {
+  font-family: "Crimson Pro", serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  width: 100%;
+  min-height: 320px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  resize: vertical;
+  transition: border-color 0.15s;
+  color: var(--text);
+}
+.paste-area:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 2px rgba(45,110,110,0.1);
+}
+.parse-result {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+.parse-result.success { background: var(--green-pale); color: var(--green); border: 1px solid var(--green-border); }
+.parse-result.error { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+.parse-result.warning { background: var(--amber-pale); color: var(--amber); border: 1px solid #FDE68A; }
 
-.asst-header {
-  background: var(--teal-dark);
-  color: var(--white);
-  padding: 14px 18px;
+/* ── ARCHIVE ── */
+.archive-empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.archive-item {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.asst-header h4 {
-  color: var(--gold-light);
-  font-family: 'Playfair Display', serif;
-  font-size: 1rem;
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0;
-  margin: 0;
-}
-
-.asst-header button {
-  background: none;
-  border: none;
-  color: rgba(255,255,255,0.7);
   cursor: pointer;
-  font-size: 1.1rem;
-  padding: 2px 6px;
-  border-radius: 4px;
+  transition: all 0.15s;
 }
-.asst-header button:hover { color: white; background: rgba(255,255,255,0.1); }
-
-.asst-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-  max-height: 320px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.archive-item:hover { border-color: var(--teal); box-shadow: var(--shadow); }
+.archive-passage {
+  font-family: "Cinzel", serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--teal);
 }
+.archive-meta { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; }
+.archive-badge { margin-left: 1rem; flex-shrink: 0; }
 
-.asst-msg {
-  padding: 10px 14px;
-  border-radius: var(--radius);
-  font-size: 0.88rem;
-  line-height: 1.55;
-  max-width: 90%;
+/* ── EXPORT ── */
+.json-output {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  background: #1C1917;
+  color: #E8DDD0;
+  border-radius: 6px;
+  padding: 1.5rem;
+  overflow: auto;
+  max-height: 500px;
+  white-space: pre;
 }
+.export-actions { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
 
-.asst-msg.system {
-  background: var(--cream-dark);
-  color: var(--ink-mid);
-  font-style: italic;
-  align-self: center;
-  text-align: center;
+/* ── APPROVE SECTION ── */
+.approve-section {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+.approve-title {
+  font-family: "Cinzel", serif;
   font-size: 0.8rem;
-  max-width: 100%;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
 }
-
-.asst-msg.user {
-  background: var(--teal);
-  color: var(--white);
-  align-self: flex-end;
-  border-bottom-right-radius: 3px;
-}
-
-.asst-msg.assistant {
-  background: var(--cream);
-  color: var(--ink);
-  align-self: flex-start;
-  border-bottom-left-radius: 3px;
-  border: 1px solid rgba(0,0,0,0.06);
-}
-
-.asst-msg.thinking {
-  background: var(--cream);
-  color: var(--ink-light);
-  font-style: italic;
-  align-self: flex-start;
-}
-
-.asst-input-row {
-  display: flex;
-  gap: 8px;
-  padding: 12px 16px;
-  border-top: 1px solid rgba(0,0,0,0.08);
-  background: var(--white);
-}
-
-.asst-input-row input {
-  flex: 1;
-  padding: 8px 12px;
-  font-size: 0.88rem;
-  border-radius: 20px;
-  border: 1.5px solid #d0cfc8;
-}
-
-.asst-input-row button {
-  background: var(--teal);
-  color: var(--white);
-  border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
+.approve-checklist { margin-bottom: 1.25rem; }
+.check-item {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  transition: background 0.2s;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+.check-item.done { color: var(--green); }
+.check-item::before { content: "○"; font-size: 0.8rem; }
+.check-item.done::before { content: "✓"; }
+
+/* ── UTILITY ── */
+.flex-gap { display: flex; gap: 0.5rem; align-items: center; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.divider { border: none; border-top: 1px solid var(--border-light); margin: 1rem 0; }
+.text-muted { color: var(--text-muted); }
+.text-small { font-size: 0.85rem; }
+
+/* ── BHSA PANEL ── */
+.bhsa-overlay {
+  position: fixed; inset: 0;
+  background: rgba(28,25,23,0.45);
+  z-index: 200;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+}
+.bhsa-overlay.open { opacity: 1; pointer-events: all; }
+.bhsa-panel {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: min(680px, 95vw);
+  background: #1C1917;
+  color: #E8DDD0;
+  z-index: 201;
+  transform: translateX(100%);
+  transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+  display: flex; flex-direction: column;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.35);
+}
+.bhsa-panel.open { transform: translateX(0); }
+.bhsa-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #3A3430;
   flex-shrink: 0;
 }
-.asst-input-row button:hover { background: var(--teal-mid); }
-.asst-input-row button:disabled { background: #ccc; cursor: not-allowed; }
-
-/* ── MISC ── */
-.divider {
-  border: none;
-  border-top: 1px solid rgba(0,0,0,0.1);
-  margin: 28px 0;
+.bhsa-panel-title {
+  font-family: "Cinzel", serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  color: #C4A97A;
 }
-
-.tag {
-  display: inline-block;
-  background: var(--teal-light);
-  color: var(--white);
-  border-radius: 20px;
-  padding: 2px 10px;
-  font-size: 0.72rem;
-  font-family: 'Source Serif 4', serif;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+.bhsa-close {
+  background: none; border: none; color: #8A7A6A;
+  font-size: 1.3rem; cursor: pointer; line-height: 1;
+  transition: color 0.15s;
 }
-
-.tag-gold {
-  background: var(--gold);
-  color: var(--teal-dark);
+.bhsa-close:hover { color: #E8DDD0; }
+.bhsa-panel-body {
+  flex: 1; overflow-y: auto; padding: 1.25rem 1.5rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  line-height: 1.7;
 }
-
-.fade-in {
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.page-title {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 28px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid var(--cream-dark);
-}
-
-.page-title-icon {
-  font-size: 2.2rem;
-  line-height: 1;
-  margin-top: 4px;
-}
-
-.page-title h2 { margin-bottom: 4px; }
-.page-title p { color: var(--ink-light); font-size: 0.95rem; margin: 0; }
-
-.save-status {
-  font-size: 0.8rem;
-  color: var(--teal-mid);
-  font-style: italic;
-  margin-left: 8px;
-}
-
-.json-toolbar {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-  align-items: center;
-}
-
-.json-section-label {
-  font-family: 'Source Serif 4', serif;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
+.bhsa-verse-block { margin-bottom: 2rem; }
+.bhsa-verse-ref {
+  font-family: "Cinzel", serif;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
-  color: var(--ink-light);
-  margin-bottom: 6px;
+  color: #C4A97A;
+  border-bottom: 1px solid #3A3430;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+.bhsa-hebrew {
+  font-size: 1rem;
+  color: #F0E8D8;
+  direction: rtl;
+  text-align: right;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: #282420;
+  border-radius: 4px;
+  line-height: 1.8;
+}
+.bhsa-clause-block { margin-bottom: 1rem; }
+.bhsa-clause-label {
+  color: #7EB8B8;
+  margin-bottom: 0.35rem;
+}
+.bhsa-phrase-line { color: #A8C8A8; margin-left: 1rem; }
+.bhsa-word-line { color: #C4B89A; margin-left: 2rem; }
+.bhsa-domain-N { color: #8ABCBC; }
+.bhsa-domain-D { color: #C4A97A; }
+.bhsa-domain-Q { color: #B8A0C8; }
+.bhsa-empty {
+  color: #6A5A4A; font-style: italic;
+  text-align: center; padding: 2rem;
 }
 
-/* ── EXAMPLE STYLES ── */
-.example-scene {
-  border-left: 4px solid var(--teal-light);
-  padding-left: 16px;
-  margin-bottom: 24px;
+/* ── BHSA LOAD SECTION ── */
+.bhsa-load-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
 }
-
-.example-scene h3 {
-  font-size: 1.05rem;
-  margin-bottom: 12px;
-  color: var(--teal-dark);
+.bhsa-load-header {
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--teal);
+  margin-bottom: 0.5rem;
 }
+.bhsa-load-status {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+.bhsa-load-status.loaded { color: var(--green); font-style: normal; }
+.btn-bhsa {
+  background: none;
+  border: 1px solid var(--teal-light);
+  border-radius: 4px;
+  color: var(--teal);
+  font-family: "Cinzel", serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  padding: 0.28rem 0.7rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-bhsa:hover { background: var(--teal-pale); }
 
-/* collapsible */
-details {
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: var(--radius);
-  margin-bottom: 12px;
+
+/* ── EXPORT BLOCKS ── */
+.export-block {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
   overflow: hidden;
 }
-
-details summary {
-  background: var(--cream);
-  padding: 12px 16px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.92rem;
-  color: var(--teal-dark);
-  user-select: none;
-  list-style: none;
+.export-block-header {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+  background: #FCFAF7;
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: baseline;
+  gap: 1rem;
+}
+.export-block-title {
+  font-family: "Cinzel", serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--teal);
+}
+.export-block-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.export-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+}
+.prose-output {
+  font-family: "Crimson Pro", Georgia, serif;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  background: #FDFCFA;
+  color: var(--text);
+  padding: 1.5rem;
+  overflow: auto;
+  max-height: 500px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
-details summary::-webkit-details-marker { display: none; }
-details summary::before {
-  content: '▶';
-  font-size: 0.65rem;
-  transition: transform 0.2s;
-  color: var(--teal-light);
-}
-details[open] summary::before { transform: rotate(90deg); }
-
-details .details-body {
-  padding: 16px;
-  background: var(--white);
-}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-top">
-    <div class="header-brand">
-      <h1>Prose Meaning Maps</h1>
-      <div class="subtitle">Tripod Method · AI-Assisted Oral Bible Translation</div>
-    </div>
-    <div class="header-org">
-      OBT Lab · Shema Bible Translation<br>
-      YWAM Kansas City · University of the Nations<br>
-      <a href="mailto:marcia.suzuki@uofn.edu">marcia.suzuki@uofn.edu</a>
-    </div>
-  </div>
-  <nav>
-    <button class="active" onclick="showTab('instructions')">① Instructions</button>
-    <button onclick="showTab('example')">② Worked Example</button>
-    <button onclick="showTab('form')">③ Create Map</button>
-    <button onclick="showTab('json')">④ JSON Output</button>
-  </nav>
+<header class="app-header">
+  <h1>Prose Meaning Map</h1>
+  <span class="subtitle">Validation Studio &mdash; Tripod Method &middot; OBT Lab</span>
 </header>
 
-<main>
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('import')">Import</button>
+  <button class="tab-btn" onclick="switchTab('review')">Review</button>
+  <button class="tab-btn" onclick="switchTab('archive')">Archive</button>
+  <button class="tab-btn" onclick="switchTab('export')">Export</button>
+</nav>
 
-<!-- ══════════════════════════════════════════
-     TAB 1: INSTRUCTIONS
-══════════════════════════════════════════ -->
-<div id="tab-instructions" class="tab-panel active fade-in">
+<!-- ── TAB 1: IMPORT ── -->
+<div id="tab-import" class="tab-pane active">
+<div class="main-content">
+  <p class="section-label">Import NotebookLM Output</p>
 
-  <div class="page-title">
-    <div class="page-title-icon">📜</div>
-    <div>
-      <h2>What Is a Prose Meaning Map?</h2>
-      <p>A complete guide to creating maps that guide faithful oral Bible translation</p>
+  <div class="import-meta">
+    <div class="form-group">
+      <label class="form-label">Passage Reference</label>
+      <input id="meta-passage" class="form-input" placeholder="e.g. Ruth 1:1–7" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Analyst Name</label>
+      <input id="meta-analyst" class="form-input" placeholder="Your name" />
     </div>
   </div>
 
-  <div class="rule-box">
-    <h3>Your Role</h3>
-    <p>You are not a translator. You are a <strong>director describing a script to actors who speak a language you don't know.</strong> Your job is to make the situation so vivid at every level — the whole book, each scene, every line — that they can re-enact it faithfully in their own language.</p>
-    <p>The biblical text is for your eyes only. It never appears in your maps.</p>
+  <div class="form-group">
+    <label class="form-label">Paste NotebookLM Output</label>
+    <textarea id="raw-input" class="paste-area"
+      placeholder="Paste the full Prose Meaning Map output from NotebookLM here..."></textarea>
   </div>
 
-  <div class="rule-box" style="background: #1a3a2a;">
-    <h3>The Core Rule</h3>
-    <p><strong>Never reproduce the sentences or clauses of the biblical text.</strong> That is what creates translationese — a target language forced into the grammatical and syntactic mold of the source. The performer must construct each sentence from scratch in their own language.</p>
-    <p>However: <strong>individual words for specific things</strong> — a tree, a road, a king, a famine, a proper name, a named period of time — must be named directly and carried into the map unchanged. Do not paraphrase them.</p>
-    <p><em>The rule is: describe the situation without reproducing its sentences. Name every thing in it precisely.</em></p>
+  <div class="mt-2 flex-gap">
+    <button class="btn btn-teal" onclick="parseInput()">Parse Map</button>
+    <button class="btn btn-ghost" onclick="clearInput()">Clear</button>
   </div>
 
-  <div class="warning">
-    <strong>The Paraphrase Test:</strong> If you wrote something that could be translated back into English and reproduce the original Bible verse, you have failed. Delete it and describe the situation instead.
-  </div>
+  <div id="parse-result" style="display:none;"></div>
 
-  <hr class="divider">
-
-  <h3 style="margin-bottom: 16px;">The Three Levels</h3>
-
-  <div class="card">
-    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-      <span class="tag">Level 1</span>
-      <h3 style="margin:0;">The Movement</h3>
+  <hr class="divider" style="margin-top:2rem">
+  <div class="bhsa-load-box">
+    <div class="bhsa-load-header">LOAD APPROVED JSON — Cross-check workflow</div>
+    <p class="text-small text-muted" style="margin-bottom:0.75rem">
+      Load an approved map exported by another validator. 
+      The map will open in the Review tab ready for cross-checking, 
+      with the original analyst and approval date preserved.
+    </p>
+    <div class="flex-gap">
+      <label class="btn btn-outline" style="cursor:pointer">
+        Load JSON File
+        <input type="file" id="json-import-input" accept=".json"
+          style="display:none" onchange="importJSON(event)">
+      </label>
     </div>
-    <p><em>One paragraph per chapter or major section.</em></p>
-    <p>Describe the arc of the whole passage. Cover the emotional trajectory (from emptiness to hope? from risk to security?), the theological significance (how does God act? what covenant themes emerge?), what this section accomplishes in the larger story, and the pacing — the shape of the narrative energy.</p>
-    <div class="notice">This is the "soul" of the passage. The performer needs to inhabit this world before they speak a word.</div>
+    <div class="bhsa-load-status" id="json-import-status"></div>
   </div>
 
-  <div class="card">
-    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-      <span class="tag">Level 2</span>
-      <h3 style="margin:0;">The Scenes</h3>
-    </div>
-    <p><em>Divide the passage into natural episodes (3–6 verses each). Complete one full block per scene.</em></p>
-    <p>Each scene block covers:</p>
-    <ul style="padding-left:20px; margin-bottom:12px; font-size:0.93rem; line-height:2;">
-      <li><strong>2A — People:</strong> Every person present, with name where the text gives it. No one omitted.</li>
-      <li><strong>2B — Places:</strong> Every location mentioned or implied, including transitional spaces. Named.</li>
-      <li><strong>2C — Objects &amp; Elements:</strong> Everything physical: artifacts, food, animals, plants, natural features, durations. Nothing is too minor. Note significant absences too.</li>
-      <li><strong>2D — What Happens:</strong> Full sequence of actions, in order.</li>
-      <li><strong>2E — Communicative Purpose:</strong> Why does this scene exist?</li>
-    </ul>
-    <div class="notice">Completeness is the standard. A map with gaps cannot guide a faithful performance.</div>
+  <div class="bhsa-load-box" id="bhsa-status-box">
+    <div class="bhsa-load-header">BHSA LINGUISTIC DATA</div>
+    <div class="bhsa-load-status" id="bhsa-load-status">Loading Hebrew analysis data...</div>
   </div>
-
-  <div class="card">
-    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-      <span class="tag">Level 3</span>
-      <h3 style="margin:0;">The Propositions</h3>
-    </div>
-    <p><em>One block per verse or closely connected clause cluster. Every verse receives a block.</em></p>
-    <p>Each proposition block contains only <strong>labeled semantic slots</strong> — the exact meaning components the performer must communicate. No sentences, no commentary. Just: <em>who / what happened / where / when / from where / to where / with whom / why</em> — whatever labels fit that verse.</p>
-    <div class="notice">If Levels 1 and 2 give the world the performer needs to inhabit, Level 3 tells them exactly what each sentence must say. Short, direct, complete.</div>
-    <p style="font-size:0.88rem; color:var(--ink-light);">Example slot labels: <code>who</code> · <code>what happened</code> · <code>where</code> · <code>when</code> · <code>from where</code> · <code>to where</code> · <code>with whom</code> · <code>why</code> · <code>cause</code> · <code>effect</code> · <code>duration</code> · <code>who is left</code> · <code>what is provided</code> · <code>clan identity</code> — use whatever the verse needs.</p>
-  </div>
-
-  <hr class="divider">
-
-  <h3 style="margin-bottom:16px;">Final Check</h3>
-  <p style="margin-bottom:16px; color:var(--ink-mid);">Before submitting any map, go back through the passage and ask:</p>
-
-  <ul class="checklist" id="instr-checklist">
-    <li onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation(); toggleCheck(this.parentElement)"><span>Is every person in each scene block of 2A, with their name where the text gives it?</span></li>
-    <li onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation(); toggleCheck(this.parentElement)"><span>Is every place — including transitional spaces — in 2B, with its name?</span></li>
-    <li onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation(); toggleCheck(this.parentElement)"><span>Is every object, natural element, duration, and significant absence in 2C?</span></li>
-    <li onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation(); toggleCheck(this.parentElement)"><span>Does every verse have a proposition block?</span></li>
-    <li onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation(); toggleCheck(this.parentElement)"><span>Does any sentence in the map reproduce the clause structure of the original text? (If yes, delete it.)</span></li>
-    <li onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation(); toggleCheck(this.parentElement)"><span>Are all specific names, places, periods, and things named directly — not paraphrased?</span></li>
-    <li onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation(); toggleCheck(this.parentElement)"><span>Could a performer who has never read this passage reconstruct it faithfully in their own language from this map alone?</span></li>
-  </ul>
 
 </div>
+</div>
 
-
-<!-- ══════════════════════════════════════════
-     TAB 2: WORKED EXAMPLE
-══════════════════════════════════════════ -->
-<div id="tab-example" class="tab-panel fade-in">
-
-  <div class="page-title">
-    <div class="page-title-icon">📖</div>
-    <div>
-      <h2>Worked Example: Ruth 1:1–7</h2>
-      <p>A complete map for the opening passage of Ruth — all three levels</p>
+<!-- ── TAB 2: REVIEW ── -->
+<div id="tab-review" class="tab-pane">
+<div class="main-content">
+  <div id="review-empty" class="archive-empty">
+    No map loaded. Go to the Import tab and paste a NotebookLM output.
+  </div>
+  <div id="review-content" style="display:none;">
+    <div class="progress-bar-wrap">
+      <div class="progress-info">
+        <div class="progress-title">Review Progress</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="progress-count" id="progress-count">0 / 0</div>
+    </div>
+    <div id="review-cards"></div>
+    <div class="approve-section" id="approve-section">
+      <div class="approve-title">APPROVAL CHECKLIST</div>
+      <div class="approve-checklist" id="approve-checklist"></div>
+      <button class="btn-approve" id="approve-btn" onclick="approveMap()" disabled>
+        Approve &amp; Save Map
+      </button>
     </div>
   </div>
+</div>
+</div>
 
-  <!-- LEVEL 1 -->
-  <div class="section-header">
-    <span class="level-badge">Level 1</span>
-    <h3>The Movement</h3>
-  </div>
-  <div class="section-body">
-    <p>A family leaves their homeland under the pressure of famine, intending a temporary stay in a foreign country. They stay. The father dies. The sons grow up, marry local women, and then they too die. What began as survival becomes a decade-long exile ending in the erasure of the entire male line. The woman is left with two foreign daughters-in-law and nothing else — no husband, no sons, no security, no visible future. Then a single piece of news arrives: food has returned to her homeland, and the God of that land is behind it. The passage ends with three widows on a road, moving.</p>
-    <p>The pace is relentless in its accumulation of loss, death following death with no pause for grief. Then a stillness — and a turn. The emotional arc is descent into emptiness, followed by the first fragile movement toward return. The theological thread is thin but load-bearing: God has acted. The woman hears. She moves. This section creates the conditions of total loss that make everything which follows extraordinary.</p>
-  </div>
+<!-- ── TAB 3: ARCHIVE ── -->
+<div id="tab-archive" class="tab-pane">
+<div class="main-content">
+  <p class="section-label">Approved Maps</p>
+  <div id="archive-list"></div>
+</div>
+</div>
 
-  <!-- LEVEL 2 -->
-  <div class="section-header">
-    <span class="level-badge">Level 2</span>
-    <h3>The Scenes</h3>
-  </div>
-  <div class="section-body">
+<!-- ── TAB 4: EXPORT ── -->
+<div id="tab-export" class="tab-pane">
+<div class="main-content">
+  <p class="section-label">Export Approved Map</p>
+  <div id="export-empty" class="archive-empty">No map loaded or approved yet.</div>
+  <div id="export-content" style="display:none;">
 
-    <div class="example-scene">
-      <h3>Scene 1 — Verses 1–2 · <em>A family leaves Bethlehem for Moab because of famine</em></h3>
-
-      <details open>
-        <summary>2A — People</summary>
-        <div class="details-body">
-          <table class="data-table">
-            <tr><th>Role</th><th>Name</th><th>Relationship</th><th>Wants</th><th>Fears / Carries</th></tr>
-            <tr><td>Man, head of household</td><td><strong>Elimelech</strong></td><td>Husband and father; decision-maker</td><td>Keep family alive; move is temporary</td><td>Man of covenant people and land; dies in foreign soil</td></tr>
-            <tr><td>Wife</td><td><strong>Naomi</strong></td><td>Wife of Elimelech</td><td>Survival; no independent decision here</td><td>Will carry all the grief that follows</td></tr>
-            <tr><td>First son</td><td><strong>Mahlon</strong></td><td>Son of Elimelech and Naomi</td><td>Young; no independent role yet</td><td>Will die in Moab</td></tr>
-            <tr><td>Second son</td><td><strong>Kilion</strong></td><td>Son of Elimelech and Naomi</td><td>Young; no independent role yet</td><td>Will die in Moab</td></tr>
-          </table>
-        </div>
-      </details>
-
-      <details>
-        <summary>2B — Places</summary>
-        <div class="details-body">
-          <table class="data-table">
-            <tr><th>Role</th><th>Name</th><th>Type</th><th>Meaning</th><th>Effect on scene</th></tr>
-            <tr><td>Town of origin</td><td><strong>Bethlehem, in Judah</strong></td><td>Town in covenant homeland</td><td>Identity, belonging, divine promise</td><td>Famine drives departure; the home they will return to</td></tr>
-            <tr><td>Destination</td><td><strong>Moab</strong></td><td>Neighboring foreign nation</td><td>Not their land, people, or God</td><td>Place of exile; will become the place of death</td></tr>
-          </table>
-        </div>
-      </details>
-
-      <details>
-        <summary>2C — Objects &amp; Elements</summary>
-        <div class="details-body">
-          <table class="data-table">
-            <tr><th>Item</th><th>What it is</th><th>Function</th><th>Signals</th></tr>
-            <tr><td><strong>Famine</strong></td><td>Widespread crop failure</td><td>Force that drives the family from Bethlehem</td><td>Severe enough to uproot people from land, people, and God</td></tr>
-          </table>
-          <div class="notice"><strong>Significant absence:</strong> No possessions or goods are named. The family departs with nothing described. Their material life is invisible throughout.</div>
-        </div>
-      </details>
-
-      <details>
-        <summary>2D — What Happens</summary>
-        <div class="details-body"><p>A severe famine strikes the land. Elimelech decides to take his wife Naomi and their two sons Mahlon and Kilion from their home in Bethlehem in Judah and relocate temporarily to Moab. They leave and settle there.</p></div>
-      </details>
-
-      <details>
-        <summary>2E — Communicative Purpose</summary>
-        <div class="details-body"><p>This scene introduces every element that will drive the story: the homeland, the foreign country, the family, and the crisis that displaces them. Bethlehem is established as the place of belonging. Moab is established as the place of exile. The move is framed as temporary — which makes the decade that follows feel like a slow loss of intention.</p></div>
-      </details>
+    <!-- Prose Map -->
+    <div class="export-block">
+      <div class="export-block-header">
+        <span class="export-block-title">PROSE MAP</span>
+        <span class="export-block-desc">Human-readable markdown — the validated map in full</span>
+      </div>
+      <div class="export-actions">
+        <button class="btn btn-teal" onclick="downloadProse()">Download .md</button>
+        <button class="btn btn-outline" onclick="copyProse()">Copy to Clipboard</button>
+      </div>
+      <pre class="prose-output" id="prose-output"></pre>
     </div>
 
-    <div class="example-scene">
-      <h3>Scene 2 — Verses 3–5 · <em>Elimelech dies. The sons marry. The sons die. Naomi is left with nothing.</em></h3>
-
-      <details>
-        <summary>2A — People</summary>
-        <div class="details-body">
-          <table class="data-table">
-            <tr><th>Role</th><th>Name</th><th>Relationship</th><th>Wants</th><th>Fears / Carries</th></tr>
-            <tr><td>Widow, bereaved mother</td><td><strong>Naomi</strong></td><td>Wife of Elimelech, widowed; mother of Mahlon and Kilion</td><td>Receiving blow after blow; no want shown</td><td>Carries husband's death then both sons'; ends scene emptied</td></tr>
-            <tr><td>First son, now dead</td><td><strong>Mahlon</strong></td><td>Son of Naomi; husband of Ruth</td><td>Built a life in Moab; married</td><td>Dies without heir</td></tr>
-            <tr><td>Second son, now dead</td><td><strong>Kilion</strong></td><td>Son of Naomi; husband of Orpah</td><td>Built a life in Moab; married</td><td>Dies without heir</td></tr>
-            <tr><td>First daughter-in-law</td><td><strong>Orpah</strong></td><td>Moabite woman; wife of Kilion, widowed</td><td>Present and grieving; future unresolved</td><td>Foreigner to covenant people; will make different choice than Ruth</td></tr>
-            <tr><td>Second daughter-in-law</td><td><strong>Ruth</strong></td><td>Moabite woman; wife of Mahlon, widowed</td><td>Present and grieving; future unresolved</td><td>Foreigner to covenant people; will make the extraordinary choice</td></tr>
-          </table>
-        </div>
-      </details>
-
-      <details>
-        <summary>2B — Places</summary>
-        <div class="details-body">
-          <table class="data-table">
-            <tr><th>Role</th><th>Name</th><th>Type</th><th>Meaning</th><th>Effect</th></tr>
-            <tr><td>Foreign country</td><td><strong>Moab</strong></td><td>Place of exile</td><td>Where the men die and marriages happen</td><td>All three losses occur here; Moab becomes associated with death</td></tr>
-          </table>
-        </div>
-      </details>
-
-      <details>
-        <summary>2C — Objects &amp; Elements</summary>
-        <div class="details-body">
-          <table class="data-table">
-            <tr><th>Item</th><th>What it is</th><th>Function</th><th>Signals</th></tr>
-            <tr><td><strong>Ten years</strong></td><td>Named duration of time</td><td>Marks how deeply the family put down roots in Moab</td><td>The temporary became a decade; the sojourn became a life</td></tr>
-          </table>
-          <div class="notice"><strong>Significant absence:</strong> No graves, no mourning rituals, no burial details. The deaths are stated as bare facts. The bluntness is part of the meaning.</div>
-        </div>
-      </details>
-
-      <details>
-        <summary>2D — What Happens</summary>
-        <div class="details-body"><p>Elimelech dies in Moab. Naomi is widowed. Her two sons grow up and each takes a Moabite wife — Mahlon marries Ruth, Kilion marries Orpah. Approximately ten years pass. Then both sons die. Naomi is now left with her two daughters-in-law, all three of them widows, in a foreign country, with no male protection and no visible future.</p></div>
-      </details>
-
-      <details>
-        <summary>2E — Communicative Purpose</summary>
-        <div class="details-body"><p>This scene completes the emptying of Naomi. Each loss is stated plainly and without comfort. It also introduces Orpah and Ruth by name and establishes them clearly as Moabite women — outsiders to the covenant. Their continued presence with Naomi at the end of this scene sets up the decision that is coming.</p></div>
-      </details>
-    </div>
-
-    <div class="example-scene">
-      <h3>Scene 3 — Verses 6–7 · <em>Naomi hears that God has provided food. She decides to return. All three set out.</em></h3>
-
-      <details>
-        <summary>2A — People</summary>
-        <div class="details-body">
-          <table class="data-table">
-            <tr><th>Role</th><th>Name</th><th>Relationship</th><th>Wants</th><th>Fears / Carries</th></tr>
-            <tr><td>Widow, now decision-maker</td><td><strong>Naomi</strong></td><td>Mother-in-law of Orpah and Ruth</td><td>Return to Bethlehem; back to her people and God</td><td>Total loss — husband, sons, decade of exile — but she hears and moves</td></tr>
-            <tr><td>First daughter-in-law</td><td><strong>Orpah</strong></td><td>Moabite widow; daughter-in-law of Naomi</td><td>Follows Naomi's lead at this point</td><td>Leaving the only country she has ever known</td></tr>
-            <tr><td>Second daughter-in-law</td><td><strong>Ruth</strong></td><td>Moabite widow; daughter-in-law of Naomi</td><td>Follows Naomi's lead at this point</td><td>Leaving the only country she has ever known</td></tr>
-          </table>
-        </div>
-      </details>
-
-      <details>
-        <summary>2B — Places</summary>
-        <div class="details-body">
-          <table class="data-table">
-            <tr><th>Role</th><th>Name</th><th>Type</th><th>Meaning</th><th>Effect</th></tr>
-            <tr><td>Place of departure</td><td><strong>Moab</strong></td><td>Foreign country they are leaving</td><td>Place of exile, marriage, death</td><td>First movement of return</td></tr>
-            <tr><td>Destination</td><td><strong>Judah, toward Bethlehem</strong></td><td>Covenant homeland</td><td>Belonging, identity, and now provision</td><td>Food is there; God has acted there</td></tr>
-            <tr><td>Transitional space</td><td><strong>The road between Moab and Judah</strong></td><td>Road between two countries</td><td>Neither Moab nor Bethlehem; place of movement and decision</td><td>Scene ends here — in motion, unresolved, between worlds</td></tr>
-          </table>
-        </div>
-      </details>
-
-      <details>
-        <summary>2C — Objects &amp; Elements</summary>
-        <div class="details-body">
-          <table class="data-table">
-            <tr><th>Item</th><th>What it is</th><th>Function</th><th>Signals</th></tr>
-            <tr><td><strong>Food</strong></td><td>Restoration of sustenance in Bethlehem</td><td>News that reaches Naomi and triggers her decision</td><td>God has acted; the famine that started everything has ended</td></tr>
-          </table>
-        </div>
-      </details>
-
-      <details>
-        <summary>2D — What Happens</summary>
-        <div class="details-body"><p>While still in Moab, Naomi hears that God has provided food for his people in Bethlehem — the famine is over. She decides to return home. She and her two daughters-in-law leave their home in Moab and set out together on the road back toward Judah.</p></div>
-      </details>
-
-      <details>
-        <summary>2E — Communicative Purpose</summary>
-        <div class="details-body"><p>This is the turn of the passage. After total emptiness, Naomi acts. The cause of her action is explicitly theological — God has provided. The scene ends with all three women walking together, which makes the coming separation on the road dramatically significant.</p></div>
-      </details>
-    </div>
-  </div>
-
-  <!-- LEVEL 3 -->
-  <div class="section-header">
-    <span class="level-badge">Level 3</span>
-    <h3>The Propositions</h3>
-  </div>
-  <div class="section-body">
-
-    <div class="prop-block">
-      <div class="prop-header">
-        <span class="prop-num">1</span>
-        <div>
-          <div class="prop-verse">Verse 1a</div>
-          <div class="prop-type">Establishes historical setting; names the period; introduces the crisis</div>
-        </div>
+    <!-- JSON -->
+    <div class="export-block" style="margin-top:2rem">
+      <div class="export-block-header">
+        <span class="export-block-title">JSON DATA</span>
+        <span class="export-block-desc">Structured data for import into other tools</span>
       </div>
-      <div class="slot-list">
-        <div class="slot-row"><span class="slot-key">when</span><span class="slot-val">the days of the judges</span></div>
-        <div class="slot-row"><span class="slot-key">what happened</span><span class="slot-val">a famine</span></div>
-        <div class="slot-row"><span class="slot-key">where</span><span class="slot-val">in the land</span></div>
+      <div class="export-actions">
+        <button class="btn btn-teal" onclick="downloadJSON()">Download .json</button>
+        <button class="btn btn-outline" onclick="copyJSON()">Copy to Clipboard</button>
       </div>
-    </div>
-
-    <div class="prop-block">
-      <div class="prop-header">
-        <span class="prop-num">2</span>
-        <div>
-          <div class="prop-verse">Verse 1b</div>
-          <div class="prop-type">Introduces Elimelech and his decision; names the family; names origin and destination</div>
-        </div>
-      </div>
-      <div class="slot-list">
-        <div class="slot-row"><span class="slot-key">what happened</span><span class="slot-val">a man emigrates temporarily</span></div>
-        <div class="slot-row"><span class="slot-key">who</span><span class="slot-val">Elimelech</span></div>
-        <div class="slot-row"><span class="slot-key">from where</span><span class="slot-val">Bethlehem in Judah</span></div>
-        <div class="slot-row"><span class="slot-key">to where</span><span class="slot-val">the fields of Moab</span></div>
-        <div class="slot-row"><span class="slot-key">with whom</span><span class="slot-val">his wife Naomi; his two sons Mahlon and Kilion</span></div>
-      </div>
-    </div>
-
-    <div class="prop-block">
-      <div class="prop-header">
-        <span class="prop-num">3</span>
-        <div>
-          <div class="prop-verse">Verse 2</div>
-          <div class="prop-type">Provides full names and clan identity; confirms settlement in Moab</div>
-        </div>
-      </div>
-      <div class="slot-list">
-        <div class="slot-row"><span class="slot-key">who</span><span class="slot-val">Elimelech, Naomi, Mahlon, Kilion</span></div>
-        <div class="slot-row"><span class="slot-key">clan identity</span><span class="slot-val">Ephrathites from Bethlehem in Judah</span></div>
-        <div class="slot-row"><span class="slot-key">where they are now</span><span class="slot-val">Moab</span></div>
-      </div>
-    </div>
-
-    <div class="prop-block">
-      <div class="prop-header">
-        <span class="prop-num">4</span>
-        <div>
-          <div class="prop-verse">Verse 3</div>
-          <div class="prop-type">Narrates the first death; establishes Naomi's new status</div>
-        </div>
-      </div>
-      <div class="slot-list">
-        <div class="slot-row"><span class="slot-key">what happened</span><span class="slot-val">Elimelech dies</span></div>
-        <div class="slot-row"><span class="slot-key">where</span><span class="slot-val">in Moab</span></div>
-        <div class="slot-row"><span class="slot-key">who is left</span><span class="slot-val">Naomi and her two sons</span></div>
-      </div>
-    </div>
-
-    <div class="prop-block">
-      <div class="prop-header">
-        <span class="prop-num">5</span>
-        <div>
-          <div class="prop-verse">Verse 4</div>
-          <div class="prop-type">Narrates the sons' marriages; names the wives; marks ten years passing</div>
-        </div>
-      </div>
-      <div class="slot-list">
-        <div class="slot-row"><span class="slot-key">what happened</span><span class="slot-val">the two sons each take a wife</span></div>
-        <div class="slot-row"><span class="slot-key">who marries whom</span><span class="slot-val">Mahlon → Ruth; Kilion → Orpah</span></div>
-        <div class="slot-row"><span class="slot-key">origin of wives</span><span class="slot-val">Moabite women</span></div>
-        <div class="slot-row"><span class="slot-key">duration</span><span class="slot-val">approximately ten years</span></div>
-      </div>
-    </div>
-
-    <div class="prop-block">
-      <div class="prop-header">
-        <span class="prop-num">6</span>
-        <div>
-          <div class="prop-verse">Verse 5</div>
-          <div class="prop-type">Narrates the second and third deaths; establishes Naomi's complete isolation</div>
-        </div>
-      </div>
-      <div class="slot-list">
-        <div class="slot-row"><span class="slot-key">what happened</span><span class="slot-val">both sons die</span></div>
-        <div class="slot-row"><span class="slot-key">who dies</span><span class="slot-val">Mahlon and Kilion</span></div>
-        <div class="slot-row"><span class="slot-key">who is left</span><span class="slot-val">Naomi, without husband and without sons</span></div>
-        <div class="slot-row"><span class="slot-key">who remains with her</span><span class="slot-val">Orpah and Ruth</span></div>
-      </div>
-    </div>
-
-    <div class="prop-block">
-      <div class="prop-header">
-        <span class="prop-num">7</span>
-        <div>
-          <div class="prop-verse">Verse 6</div>
-          <div class="prop-type">Narrates Naomi's decision to return; names the theological cause</div>
-        </div>
-      </div>
-      <div class="slot-list">
-        <div class="slot-row"><span class="slot-key">what happened</span><span class="slot-val">Naomi decides to return</span></div>
-        <div class="slot-row"><span class="slot-key">who acts</span><span class="slot-val">Naomi</span></div>
-        <div class="slot-row"><span class="slot-key">why</span><span class="slot-val">she heard that God had provided food for his people</span></div>
-        <div class="slot-row"><span class="slot-key">who provided</span><span class="slot-val">God — the God of the covenant people</span></div>
-        <div class="slot-row"><span class="slot-key">what was provided</span><span class="slot-val">food</span></div>
-        <div class="slot-row"><span class="slot-key">where</span><span class="slot-val">in Bethlehem in Judah</span></div>
-        <div class="slot-row"><span class="slot-key">where Naomi is</span><span class="slot-val">still in Moab</span></div>
-        <div class="slot-row"><span class="slot-key">with whom</span><span class="slot-val">her two daughters-in-law, Orpah and Ruth</span></div>
-      </div>
-    </div>
-
-    <div class="prop-block">
-      <div class="prop-header">
-        <span class="prop-num">8</span>
-        <div>
-          <div class="prop-verse">Verse 7</div>
-          <div class="prop-type">Narrates the departure; places all three women on the road</div>
-        </div>
-      </div>
-      <div class="slot-list">
-        <div class="slot-row"><span class="slot-key">what happened</span><span class="slot-val">they leave and set out on the road</span></div>
-        <div class="slot-row"><span class="slot-key">who</span><span class="slot-val">Naomi, Orpah, and Ruth — all three together</span></div>
-        <div class="slot-row"><span class="slot-key">from where</span><span class="slot-val">Moab</span></div>
-        <div class="slot-row"><span class="slot-key">direction</span><span class="slot-val">toward Judah</span></div>
-      </div>
+      <pre class="json-output" id="json-output"></pre>
     </div>
 
   </div>
 </div>
-
-
-<!-- ══════════════════════════════════════════
-     TAB 3: FORM
-══════════════════════════════════════════ -->
-<div id="tab-form" class="tab-panel fade-in">
-
-  <div class="page-title">
-    <div class="page-title-icon">✍️</div>
-    <div>
-      <h2>Create a Prose Meaning Map</h2>
-      <p>Complete every section. The JSON output is generated automatically as you type.</p>
-    </div>
-  </div>
-
-  <div class="notice">Remember: Never reproduce sentences or clauses from the biblical text. Name specific things directly. Describe situations, not words.</div>
-
-  <!-- META -->
-  <div class="card">
-    <h4>Passage Information</h4>
-    <div class="meta-grid">
-      <div class="form-group">
-        <label class="field-label">Book</label>
-        <input type="text" id="f-book" placeholder="e.g. Ruth" oninput="autoSave()">
-      </div>
-      <div class="form-group">
-        <label class="field-label">Chapter</label>
-        <input type="text" id="f-chapter" placeholder="e.g. 1" oninput="autoSave()">
-      </div>
-      <div class="form-group">
-        <label class="field-label">Verses</label>
-        <input type="text" id="f-verses" placeholder="e.g. 1-7" oninput="autoSave()">
-      </div>
-      <div class="form-group">
-        <label class="field-label">Mapper name</label>
-        <input type="text" id="f-mapper" placeholder="Your name" oninput="autoSave()">
-      </div>
-      <div class="form-group">
-        <label class="field-label">Date</label>
-        <input type="text" id="f-date" placeholder="YYYY-MM-DD" oninput="autoSave()">
-      </div>
-      <div class="form-group">
-        <label class="field-label">Target language</label>
-        <input type="text" id="f-lang" placeholder="e.g. Sateré-Mawé" oninput="autoSave()">
-      </div>
-    </div>
-  </div>
-
-  <!-- LEVEL 1 -->
-  <div class="section-header">
-    <span class="level-badge">Level 1</span>
-    <h3>The Movement</h3>
-  </div>
-  <div class="section-body">
-    <div class="field-hint">One paragraph. Describe the arc: emotional trajectory, theological significance, pacing, what this section accomplishes. Write in prose. No biblical sentences.</div>
-    <textarea id="f-movement" rows="6" placeholder="Describe the arc of this entire passage..." oninput="autoSave()"></textarea>
-  </div>
-
-  <!-- LEVEL 2 -->
-  <div class="section-header">
-    <span class="level-badge">Level 2</span>
-    <h3>The Scenes</h3>
-  </div>
-  <div class="section-body">
-    <div class="field-hint">Divide the passage into natural episodes. Complete one full block per scene. Every person, place, and object must appear.</div>
-    <div id="scenes-container"></div>
-    <button class="btn btn-ghost" onclick="addScene()">+ Add Scene</button>
-  </div>
-
-  <!-- LEVEL 3 -->
-  <div class="section-header">
-    <span class="level-badge">Level 3</span>
-    <h3>The Propositions</h3>
-  </div>
-  <div class="section-body">
-    <div class="field-hint">One block per verse or closely connected clause cluster. Every verse receives a block. Use labeled slots only — no sentences, no commentary.</div>
-    <div id="props-container"></div>
-    <button class="btn btn-ghost" onclick="addProp()">+ Add Proposition</button>
-  </div>
-
-  <!-- CHECKLIST -->
-  <div class="card" style="margin-top:28px;">
-    <h4>Final Checklist</h4>
-    <p class="field-hint" style="margin-bottom:12px;">Check each item before submitting your map.</p>
-    <ul class="checklist" id="form-checklist">
-      <li onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation(); toggleCheck(this.parentElement)"><span>Every person is in 2A for each scene, with their name where the text gives it.</span></li>
-      <li onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation(); toggleCheck(this.parentElement)"><span>Every place — including transitional spaces — is in 2B, with its name.</span></li>
-      <li onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation(); toggleCheck(this.parentElement)"><span>Every object, natural element, duration, and significant absence is in 2C.</span></li>
-      <li onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation(); toggleCheck(this.parentElement)"><span>Every verse has a proposition block.</span></li>
-      <li onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation(); toggleCheck(this.parentElement)"><span>No sentence reproduces the clause structure of the original text.</span></li>
-      <li onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation(); toggleCheck(this.parentElement)"><span>All specific names, places, periods, and things are named directly — not paraphrased.</span></li>
-      <li onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation(); toggleCheck(this.parentElement)"><span>A performer who has never read this passage could reconstruct it faithfully from this map alone.</span></li>
-    </ul>
-  </div>
-
-  <div class="btn-row" style="margin-top:24px;">
-    <button class="btn btn-gold" onclick="downloadJSON()">⬇ Download JSON</button>
-    <button class="btn btn-primary" onclick="showTab('json')">View JSON Output →</button>
-    <button class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
-    <span class="save-status" id="save-status"></span>
-  </div>
-
 </div>
-
-
-<!-- ══════════════════════════════════════════
-     TAB 4: JSON OUTPUT
-══════════════════════════════════════════ -->
-<div id="tab-json" class="tab-panel fade-in">
-
-  <div class="page-title">
-    <div class="page-title-icon">{ }</div>
-    <div>
-      <h2>JSON Output</h2>
-      <p>Auto-generated from your form. Ready for pipeline processing.</p>
-    </div>
-  </div>
-
-  <div class="notice">This JSON is generated live from your form. Switch to the <strong>Create Map</strong> tab to edit. The structure is designed for direct input into the Tripod Method encoding pipeline.</div>
-
-  <div class="json-toolbar">
-    <button class="btn btn-gold" onclick="downloadJSON()">⬇ Download JSON</button>
-    <button class="btn btn-secondary" onclick="copyJSON()">📋 Copy to Clipboard</button>
-    <button class="btn btn-ghost" onclick="loadExample()">Load Example (Ruth 1:1–7)</button>
-  </div>
-
-  <div class="json-section-label">Generated output</div>
-  <div class="json-output" id="json-display">// Fill in the form to generate JSON output</div>
-
-</div>
-</main>
-
-<!-- ══════════════════════════════════════════
-     FLOATING ASSISTANT
-══════════════════════════════════════════ -->
-<button id="assistant-btn" onclick="toggleAssistant()" title="Ask the mapping assistant">💬</button>
-
-<div id="assistant-panel">
-  <div class="asst-header">
-    <h4>Mapping Assistant</h4>
-    <button onclick="toggleAssistant()">✕</button>
-  </div>
-  <div class="asst-messages" id="asst-messages">
-    <div class="asst-msg system">Ask me anything about creating Prose Meaning Maps — methodology, examples, or how to handle a specific verse.</div>
-  </div>
-  <div class="asst-input-row">
-    <input type="text" id="asst-input" placeholder="Ask a question..." onkeydown="if(event.key==='Enter') sendMessage()">
-    <button onclick="sendMessage()" id="asst-send">➤</button>
-  </div>
-</div>
-
 
 <script>
-// ══════════════════════════════════════════
-// NAVIGATION
-// ══════════════════════════════════════════
-function showTab(id) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  const idx = ['instructions','example','form','json'].indexOf(id);
-  document.querySelectorAll('nav button')[idx].classList.add('active');
-  if (id === 'json') renderJSON();
-  window.scrollTo(0,0);
+// ════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════
+const state = {
+  currentMap: null,
+  savedMaps: loadFromStorage(),
+  bhsaData: {}   // keyed by "Ruth 1:1", "Ruth 1:2", etc.
+};
+
+// Each review section has an id, a label, and a reviewed flag
+// Sections: level1, scene_1, scene_2, ..., level3
+
+// ════════════════════════════════════════════
+// TAB SWITCHING
+// ════════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("tab-" + name).classList.add("active");
+  document.querySelectorAll(".tab-btn").forEach(b => {
+    if (b.getAttribute("onclick").includes("'" + name + "'")) b.classList.add("active");
+  });
+  if (name === "archive") renderArchive();
+  if (name === "export") renderExport();
 }
 
-function toggleCheck(el) {
-  el.classList.toggle('checked');
-  const cb = el.querySelector('input[type=checkbox]');
-  if (cb) cb.checked = el.classList.contains('checked');
+// ════════════════════════════════════════════
+// PARSER
+// ════════════════════════════════════════════
+function parseInput() {
+  const raw = document.getElementById("raw-input").value.trim();
+  const passage = document.getElementById("meta-passage").value.trim();
+  const analyst = document.getElementById("meta-analyst").value.trim();
+
+  if (!raw) {
+    showParseResult("error", "Please paste a NotebookLM output first.");
+    return;
+  }
+
+  try {
+    const map = parseMap(raw);
+    map.meta.passage = passage || inferPassage(raw);
+    map.meta.analyst = analyst;
+    map.meta.dateImported = new Date().toISOString();
+    map.meta.status = "draft";
+
+    // Run automated checks
+    runChecks(map);
+
+    state.currentMap = map;
+
+    const totalSections = 1 + map.scenes.length + 1; // L1 + scenes + L3
+    const warnings = countWarnings(map);
+    const msg = `Parsed successfully: Level 1, ${map.scenes.length} scene(s), ${map.propositions.length} proposition(s).`
+      + (warnings > 0 ? ` ${warnings} automated warning(s) flagged for review.` : " No automated warnings.");
+    showParseResult(warnings > 0 ? "warning" : "success", msg);
+
+    // Build review sections
+    buildReviewSections(map);
+    updateProgress();
+
+  } catch(e) {
+    showParseResult("error", "Parse error: " + e.message + ". Check that the format matches the expected NotebookLM output.");
+    console.error(e);
+  }
 }
 
-// ══════════════════════════════════════════
-// FORM STATE
-// ══════════════════════════════════════════
-let sceneCount = 0;
-let propCount = 0;
+function inferPassage(text) {
+  // Try to extract from "Ruth 1:1–7" patterns
+  const m = text.match(/Ruth\s+[\d:–\-,\s]+/i);
+  return m ? m[0].trim() : "";
+}
 
-function addScene(data) {
-  sceneCount++;
-  const id = sceneCount;
-  const d = data || {};
-  const container = document.getElementById('scenes-container');
-  const div = document.createElement('div');
-  div.className = 'scene-block fade-in';
-  div.id = 'scene-' + id;
+function showParseResult(type, msg) {
+  const el = document.getElementById("parse-result");
+  el.style.display = "block";
+  el.className = "parse-result " + type;
+  el.textContent = msg;
+}
+
+function clearInput() {
+  document.getElementById("raw-input").value = "";
+  document.getElementById("parse-result").style.display = "none";
+}
+
+function parseMap(raw) {
+  const text = raw.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+
+  const map = {
+    meta: { passage: "", analyst: "", status: "draft" },
+    level1: { text: "", reviewed: false, warnings: [] },
+    scenes: [],
+    propositions: [],
+    propositionsReviewed: false,
+    propositionWarnings: []
+  };
+
+  // ── LEVEL 1 ──
+  const l1m = text.match(/#{1,4}\s*Level\s*1[^\n]*\n([\s\S]*?)(?=#{1,4}\s*Level\s*[23]|$)/i);
+  if (l1m) {
+    map.level1.text = cleanSeparators(l1m[1]).trim();
+  }
+
+  // ── SCENES ──
+  const sceneRe = /#{1,4}\s*Level\s*2[^\n]*Scene\s*(\d+)[^\n]*Verses?\s*([\d\u2013\u2014\-:,\s]+)[^\n]*\n([\s\S]*?)(?=#{1,4}\s*Level|$)/gi;
+  let sm;
+  while ((sm = sceneRe.exec(text)) !== null) {
+    map.scenes.push(parseScene(sm[1], sm[2].trim(), sm[3]));
+  }
+
+  // ── LEVEL 3 ──
+  const l3m = text.match(/#{1,4}\s*Level\s*3[^\n]*\n([\s\S]*?)$/i);
+  if (l3m) {
+    map.propositions = parsePropositions(l3m[1]);
+  }
+
+  return map;
+}
+
+function cleanSeparators(text) {
+  return text.replace(/^[\-\u2500=]{3,}$/mg, "").replace(/\n{3,}/g, "\n\n");
+}
+
+function parseScene(num, verses, text) {
+  const scene = {
+    number: parseInt(num),
+    verses: verses,
+    title: "",
+    people: [], places: [], objects: [],
+    significantAbsence: "",
+    whatHappens: "",
+    communicativePurpose: "",
+    reviewed: false,
+    warnings: []
+  };
+
+  // Title
+  const titleM = text.match(/\*\*Title:\*\*\s*([^\n]+)/);
+  if (titleM) scene.title = titleM[1].trim();
+
+  // Extract subsections
+  const sub2A = extractSubsection(text, "2A", ["2B","2C","2D","2E"]);
+  const sub2B = extractSubsection(text, "2B", ["2C","2D","2E"]);
+  const sub2C = extractSubsection(text, "2C", ["2D","2E"]);
+  const sub2D = extractSubsection(text, "2D", ["2E"]);
+  const sub2E = extractSubsection(text, "2E", []);
+
+  if (sub2A) scene.people   = parseBoldEntries(sub2A, ["Role","Relationship","Wants","Carries"]);
+  if (sub2B) scene.places   = parseBoldEntries(sub2B, ["Role","Type","Meaning","Effect on scene"]);
+  if (sub2C) {
+    const absM = sub2C.match(/\*\*Significant absence:\*\*\s*([^\n]+(?:\n(?!\*\*)[^\n]*)*)/i);
+    if (absM) scene.significantAbsence = absM[1].trim();
+    const sub2CcleanText = sub2C.replace(/\*\*Significant absence:[^]*$/i, "");
+    scene.objects = parseBoldEntries(sub2CcleanText, ["What it is","Function in scene","Signals"]);
+  }
+  if (sub2D) scene.whatHappens = cleanSeparators(sub2D).trim();
+  if (sub2E) scene.communicativePurpose = cleanSeparators(sub2E).trim();
+
+  return scene;
+}
+
+function extractSubsection(text, label, nextLabels) {
+  const lookahead = nextLabels.length > 0
+    ? "(?=" + nextLabels.map(l => "#{1,5}\\s*" + l).join("|") + "|$)"
+    : "(?=$)";
+  const re = new RegExp("#{1,5}\\s*" + label + "\\s*[\\u2013\\u2014\\-][^\\n]*\\n([\\s\\S]*?)" + lookahead, "i");
+  const m = text.match(re);
+  return m ? m[1] : null;
+}
+
+function parseBoldEntries(text, fields) {
+  const entries = [];
+  if (!text) return entries;
+
+  // Split on **Name** pattern
+  const parts = text.split(/(?=\*\*[^*\n]+\*\*)/);
+
+  for (const part of parts) {
+    const nameM = part.match(/^\*\*([^*]+)\*\*/);
+    if (!nameM) continue;
+    const name = nameM[1].trim();
+    if (!name || name.toLowerCase().startsWith("significant absence")) continue;
+
+    const body = part.slice(nameM[0].length);
+    const entry = { name };
+
+    for (let i = 0; i < fields.length; i++) {
+      const field = fields[i];
+      const nextFields = fields.slice(i + 1);
+      entry[fieldKey(field)] = extractFieldValue(body, field, nextFields);
+    }
+    entries.push(entry);
+  }
+  return entries;
+}
+
+function fieldKey(f) {
+  return f.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z_]/g, "");
+}
+
+function escapeRe(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function extractFieldValue(text, fieldName, nextFields) {
+  const startRe = new RegExp(escapeRe(fieldName) + ":\s*", "i");
+  const startM = text.match(startRe);
+  if (!startM) return "";
+
+  const vs = startM.index + startM[0].length;
+  let ve = text.length;
+
+  for (const nf of nextFields) {
+    const nextRe = new RegExp("(?:\\s|^)" + escapeRe(nf) + ":\s*", "im");
+    const nm = text.slice(vs).match(nextRe);
+    if (nm && nm.index < (ve - vs)) {
+      ve = vs + nm.index;
+    }
+  }
+  return text.slice(vs, ve).trim();
+}
+
+function parsePropositions(text) {
+  const props = [];
+  const blocks = text.split(/(?=\*\*Proposition\s+\d+)/i);
+
+  for (const block of blocks) {
+    const hm = block.match(/\*\*Proposition\s+(\d+)\s*[\u2013\u2014\-]+\s*Verse\s*([^*\n]+)\*\*/i);
+    if (!hm) continue;
+
+    const prop = {
+      number: parseInt(hm[1]),
+      verse: hm[2].trim(),
+      content: [],
+      reviewed: false,
+      warnings: []
+    };
+
+    const lines = block.split("\n");
+    for (const line of lines) {
+      const t = line.trim();
+      if (!t || t.startsWith("**Proposition")) continue;
+      // Q→A: "Question? Answer"
+      const qam = t.match(/^(.+?\?)\s+(.+)$/);
+      if (qam) {
+        prop.content.push({ question: qam[1].trim(), answer: qam[2].trim() });
+      }
+    }
+
+    if (prop.content.length > 0) props.push(prop);
+  }
+  return props;
+}
+
+// ════════════════════════════════════════════
+// AUTOMATED CHECKS
+// ════════════════════════════════════════════
+const COMMENTARY_WORDS = [
+  "significant","important","notably","note that","this shows","this reveals",
+  "this establishes","interestingly","remarkably","it is worth","one should"
+];
+
+// ── Validation helpers ───────────────────────────────────────────────────────
+
+// Embedding markers that signal a finite clause / undecomposed proposition
+const EMBEDDING_MARKERS = [
+  "that ", "because ", "so that ", "in order to ", "in order that ",
+  "which ", "who ", "when ", "although ", "even though ", "since ",
+  "after ", "before ", "until ", "as soon as ", "provided that ",
+  "so ", "therefore ", "thus "
+];
+
+// Performance frame phrases that should not appear in proposition lines
+const FRAME_MARKERS = [
+  "and then", "and so", "at that point", "at this point", "now then",
+  "listen", "hear this", "with all", "with everyone", "having said",
+  "now,", "well,", "so,", "behold", "look,", "see,",
+  "and it came to pass", "it happened that", "it came about"
+];
+
+// Returns true if the string contains a finite verb pattern
+// (conjugated verb with tense/person distinct from the subject noun)
+function hasFiniteVerb(str) {
+  // Remove leading article/pronoun combos that are just noun phrases
+  const s = str.trim().toLowerCase();
+
+  // Finite verb indicators: conjugated verb forms
+  // We look for: pronoun/noun + conjugated verb, or conjugated verb at start
+  // Common patterns: "she heard", "he said", "they went", "Naomi decided"
+  // Also: "had provided", "has gone", "were married", "will return"
+  const finitePatterns = [
+    /\b(i|you|he|she|it|we|they|naomi|ruth|elimelech|boaz|orpah)\s+(was|were|is|are|had|has|have|did|do|does|will|would|could|should|may|might|shall|went|came|said|told|heard|saw|took|gave|made|left|returned|decided|chose|asked|answered|replied|rose|fell|died|lived|married|stayed|remained|followed|urged|wept|lifted|kissed|called)\b/i,
+    /\b(was|were)\s+\w+ed\b/i,   // passive: was left, were married
+    /\bhad\s+\w+ed?\b/i,          // perfect: had provided, had gone
+    /\b(has|have)\s+\w+ed?\b/i,   // present perfect
+    /\bwill\s+\w+\b/i,            // future
+  ];
+  return finitePatterns.some(p => p.test(s));
+}
+
+// Returns true if the string starts with or contains an embedding marker
+function hasEmbeddingMarker(str) {
+  const s = str.trim().toLowerCase();
+  // Check if answer begins with a clause connector (strong signal)
+  if (EMBEDDING_MARKERS.some(m => s.startsWith(m))) return true;
+  // Check for embedded "that" following a verb-like word (weaker signal)
+  if (/\b(heard|said|knew|learned|reported|told|showed)\s+that\b/i.test(str)) return true;
+  return false;
+}
+
+// Count sentences (splits on . ! ? followed by space or end)
+function countSentences(str) {
+  if (!str) return 0;
+  const matches = str.match(/[^.!?]*[.!?]+/g);
+  return matches ? matches.length : (str.trim().length > 0 ? 1 : 0);
+}
+
+// ── Main check function ──────────────────────────────────────────────────────
+
+function runChecks(map) {
+  // ── Level 1 ────────────────────────────────────────────────────────────────
+  map.level1.warnings = [];
+  if (!map.level1.text) {
+    map.level1.warnings.push("Level 1 text not found or empty.");
+  } else {
+    if (/^[\-\*•]\s/m.test(map.level1.text))
+      map.level1.warnings.push("Level 1 contains bullet points. It should be prose only.");
+    if (/^\d+\.\s/m.test(map.level1.text))
+      map.level1.warnings.push("Level 1 contains a numbered list. It should be prose only.");
+    if (map.level1.text.split(/\s+/).length < 80)
+      map.level1.warnings.push("Level 1 is very short (under 80 words). It may be incomplete.");
+  }
+
+  // ── Scenes ─────────────────────────────────────────────────────────────────
+  for (const scene of map.scenes) {
+    scene.warnings = [];
+
+    if (scene.people.length === 0)
+      scene.warnings.push("2A — People is empty. Every scene must name every person present.");
+
+    if (scene.places.length === 0)
+      scene.warnings.push("2B — Places is empty. Every scene must name every location, including transitional spaces.");
+
+    if (scene.objects.length === 0)
+      scene.warnings.push("2C — Objects has no entries. Check whether objects, durations, or natural elements are present.");
+
+    if (!scene.whatHappens || scene.whatHappens.split(/\s+/).length < 15)
+      scene.warnings.push("2D — What Happens is very short. Check for completeness.");
+
+    // 2E: require both minimum word count AND minimum sentence count
+    if (!scene.communicativePurpose || scene.communicativePurpose.trim().length === 0) {
+      scene.warnings.push("2E — Communicative Purpose is missing. This component is mandatory in every scene.");
+    } else {
+      const w2e = scene.communicativePurpose.split(/\s+/).length;
+      const s2e = countSentences(scene.communicativePurpose);
+      if (w2e < 10) {
+        scene.warnings.push("2E — Communicative Purpose is very short (" + w2e + " words). Minimum is three substantive sentences.");
+      } else if (s2e < 3) {
+        scene.warnings.push("2E — Communicative Purpose has only " + s2e + " sentence" + (s2e === 1 ? "" : "s") + ". The rule requires at least three sentences explaining why this scene exists and what it establishes.");
+      }
+    }
+  }
+
+  // ── Propositions ───────────────────────────────────────────────────────────
+  map.propositionWarnings = [];
+  if (map.propositions.length === 0) {
+    map.propositionWarnings.push("No propositions found. Check that Level 3 is present in the input.");
+  }
+
+  for (const prop of map.propositions) {
+    prop.warnings = [];
+    if (prop.content.length === 0) {
+      prop.warnings.push("Proposition " + prop.number + " has no Q→A content.");
+      continue;
+    }
+
+    // First line must be "What happens?"
+    if (!prop.content[0].question.toLowerCase().startsWith("what happens")) {
+      prop.warnings.push("Proposition " + prop.number + ": first line should be \"What happens?\" — found: \"" + prop.content[0].question + "\"");
+    }
+
+    for (const qa of prop.content) {
+      const ans = qa.answer.trim();
+      const ansLower = ans.toLowerCase();
+      const qLabel = "Proposition " + prop.number + " (\"" + qa.question + "\")";
+
+      // 1. Commentary words
+      for (const word of COMMENTARY_WORDS) {
+        if (ansLower.includes(word)) {
+          prop.warnings.push(qLabel + ": answer may contain commentary (\"" + word + "\"). Level 3 should state only what the text says.");
+          break;
+        }
+      }
+
+      // 2. Finite clause detection (replaces old "full sentence" heuristic)
+      // Skip inner content lines ("What the words say —", "What the report said —")
+      // which are expected to have more complex content
+      const isInnerContentLine = /what the (words|report|message|news) (say|said|says)\s*[—\-]/i.test(qa.question);
+      if (!isInnerContentLine) {
+        if (hasFiniteVerb(ans)) {
+          prop.warnings.push(qLabel + ": answer appears to be a finite clause (contains a conjugated verb with its own subject). This encodes an embedded proposition. Apply the two-layer rule: name the outer event on this line, then add inner-content lines decomposing the embedded content.");
+        } else if (hasEmbeddingMarker(ans)) {
+          prop.warnings.push(qLabel + ": answer may contain an embedding marker (\"that,\" \"because,\" \"so that,\" etc.). If this is a clause, decompose it into outer-event and inner-content lines.");
+        }
+      }
+
+      // 3. Performance frame elements in proposition lines
+      for (const frame of FRAME_MARKERS) {
+        if (ansLower.includes(frame) || ansLower.startsWith(frame.replace(/,$/, ""))) {
+          prop.warnings.push(qLabel + ": answer may contain a performance frame element (\"" + frame.trim() + "\"). These oral framing devices belong to the reconstructor and the target language, not to the semantic inventory.");
+          break;
+        }
+      }
+    }
+
+    if (prop.warnings.length > 0) {
+      map.propositionWarnings.push(...prop.warnings);
+    }
+  }
+}
+
+function countWarnings(map) {
+  return map.level1.warnings.length
+    + map.scenes.reduce((s, sc) => s + sc.warnings.length, 0)
+    + map.propositionWarnings.length;
+}
+
+// ════════════════════════════════════════════
+// REVIEW RENDERER
+// ════════════════════════════════════════════
+function buildReviewSections(map) {
+  document.getElementById("review-empty").style.display = "none";
+  document.getElementById("review-content").style.display = "block";
+
+  const container = document.getElementById("review-cards");
+  container.innerHTML = "";
+
+  // Level 1 card
+  container.appendChild(buildLevel1Card(map));
+
+  // Scene cards
+  for (const scene of map.scenes) {
+    container.appendChild(buildSceneCard(scene, map));
+  }
+
+  // Level 3 card
+  container.appendChild(buildPropositionsCard(map));
+
+  updateApproveChecklist(map);
+}
+
+function buildLevel1Card(map) {
+  const sec = map.level1;
+  const div = document.createElement("div");
+  div.id = "card-level1";
+  div.className = "card" + (sec.warnings.length > 0 ? " has-warnings" : "");
+
+  const badge = statusBadge(sec);
+  const warnings = sec.warnings.length > 0 ? warningsHTML(sec.warnings) : "";
+
+  const textHTML = sec.text.split(/\n\n+/).map(p =>
+    "<p>" + escHtml(p.trim()) + "</p>"
+  ).join("");
+
+  // Build verse refs from all propositions for Level 1 (whole passage)
+  const l1Refs = map.propositions.map(p => {
+    const chap = (map.meta.passage || "Ruth 1").match(/Ruth\s+(\d+)/i);
+    const chapNum = chap ? chap[1] : "1";
+    const v = p.verse.replace(/[ab]$/,"").trim();
+    return "Ruth " + chapNum + ":" + v;
+  }).filter((v,i,a) => a.indexOf(v) === i);
+  const l1BhsaBtn = l1Refs.length > 0 ? bhsaButtonHTML("Level 1 — " + (map.meta.passage||""), l1Refs) : "";
+
   div.innerHTML = `
-    <div class="scene-block-header">
-      <h4>Scene ${id}</h4>
-      <button class="btn btn-danger" onclick="removeScene(${id})">Remove</button>
+    <div class="card-header">
+      <span class="card-title">LEVEL 1 <span>— The Arc</span></span>
+      <div class="flex-gap">${l1BhsaBtn}${badge}</div>
     </div>
-    <div class="scene-block-body">
-      <div style="display:grid; grid-template-columns:1fr 2fr; gap:12px; margin-bottom:16px;">
-        <div class="form-group">
-          <label class="field-label">Verses</label>
-          <input type="text" id="s${id}-verses" placeholder="e.g. 1-2" value="${d.verses||''}" oninput="autoSave()">
-        </div>
-        <div class="form-group">
-          <label class="field-label">Scene Title</label>
-          <input type="text" id="s${id}-title" placeholder="Brief description of what happens" value="${d.title||''}" oninput="autoSave()">
-        </div>
-      </div>
-
-      <div class="sub-section">
-        <h4>2A — People <span style="font-weight:300; text-transform:none; letter-spacing:0; font-size:0.78rem; color:var(--ink-light);">List every person. No one omitted. Include name where text gives it.</span></h4>
-        <table class="dyn-table" id="s${id}-people-table">
-          <tr><th>Role</th><th>Name</th><th>Relationship</th><th>Wants</th><th>Fears / Carries</th><th style="width:36px"></th></tr>
-          ${(d.people||[{}]).map(p => personRow(id, p)).join('')}
-        </table>
-        <button class="btn btn-sm btn-secondary" onclick="addRow('s${id}-people-table', personRow.bind(null,${id}))">+ Person</button>
-      </div>
-
-      <div class="sub-section">
-        <h4>2B — Places <span style="font-weight:300; text-transform:none; letter-spacing:0; font-size:0.78rem; color:var(--ink-light);">Every location including transitional spaces. Named.</span></h4>
-        <table class="dyn-table" id="s${id}-places-table">
-          <tr><th>Role in scene</th><th>Name</th><th>Type</th><th>Meaning</th><th>Effect on scene</th><th style="width:36px"></th></tr>
-          ${(d.places||[{}]).map(p => placeRow(id, p)).join('')}
-        </table>
-        <button class="btn btn-sm btn-secondary" onclick="addRow('s${id}-places-table', placeRow.bind(null,${id}))">+ Place</button>
-      </div>
-
-      <div class="sub-section">
-        <h4>2C — Objects &amp; Elements <span style="font-weight:300; text-transform:none; letter-spacing:0; font-size:0.78rem; color:var(--ink-light);">Exhaustive: artifacts, food, animals, plants, durations. Nothing too minor.</span></h4>
-        <table class="dyn-table" id="s${id}-objects-table">
-          <tr><th>Item</th><th>What it is</th><th>Function in scene</th><th>What it signals</th><th style="width:36px"></th></tr>
-          ${(d.objects_and_elements||[{}]).map(o => objectRow(id, o)).join('')}
-        </table>
-        <button class="btn btn-sm btn-secondary" onclick="addRow('s${id}-objects-table', objectRow.bind(null,${id}))">+ Item</button>
-        <div class="form-group" style="margin-top:10px;">
-          <label class="field-label" style="font-size:0.76rem;">Significant absences</label>
-          <textarea id="s${id}-absences" rows="2" placeholder="Things conspicuously missing — their absence is meaningful..." oninput="autoSave()">${d.significant_absences||''}</textarea>
-        </div>
-      </div>
-
-      <div class="sub-section">
-        <h4>2D — What Happens</h4>
-        <textarea id="s${id}-happens" rows="4" placeholder="Full sequence of actions, in order. Specific about cause and effect. No biblical sentences." oninput="autoSave()">${d.what_happens||''}</textarea>
-      </div>
-
-      <div class="sub-section">
-        <h4>2E — Communicative Purpose</h4>
-        <textarea id="s${id}-purpose" rows="3" placeholder="Why does this scene exist? What would be lost without it?" oninput="autoSave()">${d.communicative_purpose||''}</textarea>
-      </div>
+    ${warnings}
+    <div class="card-body" id="body-level1">
+      <div class="level1-text" id="view-level1">${textHTML}</div>
     </div>
-  `;
-  container.appendChild(div);
+    <div class="card-actions">
+      <button class="btn btn-ghost btn-sm" onclick="editLevel1()">Edit</button>
+      <button class="btn btn-${sec.reviewed ? "green" : "outline"} btn-sm" 
+        id="reviewed-btn-level1"
+        onclick="markReviewed('level1')">
+        ${sec.reviewed ? "✓ Reviewed" : "Mark Reviewed"}
+      </button>
+    </div>`;
+  return div;
 }
 
-function personRow(sid, d) {
-  d = d||{};
-  return `<tr>
-    <td><input type="text" placeholder="Role" value="${d.role||''}" oninput="autoSave()"></td>
-    <td><input type="text" placeholder="Name" value="${d.name||''}" oninput="autoSave()"></td>
-    <td><input type="text" placeholder="Relationship" value="${d.relationship||''}" oninput="autoSave()"></td>
-    <td><input type="text" placeholder="Wants" value="${d.wants||''}" oninput="autoSave()"></td>
-    <td><input type="text" placeholder="Fears / Carries" value="${d.fears_carries||''}" oninput="autoSave()"></td>
-    <td><button class="del-btn" onclick="this.closest('tr').remove(); autoSave()">×</button></td>
-  </tr>`;
-}
+function buildSceneCard(scene, map) {
+  const sid = "scene_" + scene.number;
+  const div = document.createElement("div");
+  div.id = "card-" + sid;
+  div.className = "card" + (scene.warnings.length > 0 ? " has-warnings" : "");
 
-function placeRow(sid, d) {
-  d = d||{};
-  return `<tr>
-    <td><input type="text" placeholder="Role in scene" value="${d.role_in_scene||''}" oninput="autoSave()"></td>
-    <td><input type="text" placeholder="Name" value="${d.name||''}" oninput="autoSave()"></td>
-    <td><input type="text" placeholder="Type" value="${d.type||''}" oninput="autoSave()"></td>
-    <td><input type="text" placeholder="Meaning" value="${d.meaning||''}" oninput="autoSave()"></td>
-    <td><input type="text" placeholder="Effect on scene" value="${d.effect_on_scene||''}" oninput="autoSave()"></td>
-    <td><button class="del-btn" onclick="this.closest('tr').remove(); autoSave()">×</button></td>
-  </tr>`;
-}
+  const badge = statusBadge(scene);
+  const warnings = scene.warnings.length > 0 ? warningsHTML(scene.warnings) : "";
 
-function objectRow(sid, d) {
-  d = d||{};
-  return `<tr>
-    <td><input type="text" placeholder="Item" value="${d.item||''}" oninput="autoSave()"></td>
-    <td><input type="text" placeholder="What it is" value="${d.what_it_is||''}" oninput="autoSave()"></td>
-    <td><input type="text" placeholder="Function in scene" value="${d.function_in_scene||''}" oninput="autoSave()"></td>
-    <td><input type="text" placeholder="What it signals" value="${d.what_it_signals||''}" oninput="autoSave()"></td>
-    <td><button class="del-btn" onclick="this.closest('tr').remove(); autoSave()">×</button></td>
-  </tr>`;
-}
+  let bodyHTML = `<div class="scene-title">${escHtml(scene.title)}</div>`;
 
-function addRow(tableId, rowFn) {
-  const table = document.getElementById(tableId);
-  const tr = document.createElement('tr');
-  tr.innerHTML = rowFn({}).replace(/^<tr>|<\/tr>$/g,'');
-  table.appendChild(tr);
-}
+  // 2A
+  bodyHTML += `<div class="subsection">
+    <div class="subsection-label">2A — People</div>
+    <div class="entry-list">`;
+  for (const p of scene.people) {
+    bodyHTML += `<div class="entry-item">
+      <div class="entry-name">${escHtml(p.name)}</div>
+      <div class="entry-fields">
+        ${fieldRow("Role", p.role)}
+        ${fieldRow("Relationship", p.relationship)}
+        ${fieldRow("Wants", p.wants)}
+        ${fieldRow("Carries", p.carries)}
+      </div></div>`;
+  }
+  if (scene.people.length === 0) bodyHTML += `<div class="text-muted text-small"><em>No people parsed.</em></div>`;
+  bodyHTML += `</div></div>`;
 
-function removeScene(id) {
-  const el = document.getElementById('scene-' + id);
-  if (el) el.remove();
-  autoSave();
-}
+  // 2B
+  bodyHTML += `<div class="subsection">
+    <div class="subsection-label">2B — Places</div>
+    <div class="entry-list">`;
+  for (const pl of scene.places) {
+    bodyHTML += `<div class="entry-item">
+      <div class="entry-name">${escHtml(pl.name)}</div>
+      <div class="entry-fields">
+        ${fieldRow("Role", pl.role)}
+        ${fieldRow("Type", pl.type)}
+        ${fieldRow("Meaning", pl.meaning)}
+        ${fieldRow("Effect on scene", pl.effect_on_scene)}
+      </div></div>`;
+  }
+  if (scene.places.length === 0) bodyHTML += `<div class="text-muted text-small"><em>No places parsed.</em></div>`;
+  bodyHTML += `</div></div>`;
 
-function addProp(data) {
-  propCount++;
-  const id = propCount;
-  const d = data || {};
-  const container = document.getElementById('props-container');
-  const div = document.createElement('div');
-  div.className = 'prop-form-block fade-in';
-  div.id = 'prop-' + id;
+  // 2C
+  bodyHTML += `<div class="subsection">
+    <div class="subsection-label">2C — Objects and Elements</div>
+    <div class="entry-list">`;
+  for (const o of scene.objects) {
+    bodyHTML += `<div class="entry-item">
+      <div class="entry-name">${escHtml(o.name)}</div>
+      <div class="entry-fields">
+        ${fieldRow("What it is", o.what_it_is)}
+        ${fieldRow("Function in scene", o.function_in_scene)}
+        ${fieldRow("Signals", o.signals)}
+      </div></div>`;
+  }
+  if (scene.objects.length === 0) bodyHTML += `<div class="text-muted text-small"><em>No objects parsed.</em></div>`;
+  if (scene.significantAbsence) {
+    bodyHTML += `<div class="absence-note"><strong>Significant absence:</strong> ${escHtml(scene.significantAbsence)}</div>`;
+  }
+  bodyHTML += `</div></div>`;
 
-  const slots = d.slots || {};
-  const slotRows = Object.entries(slots).map(([k,v]) => slotEditRow(k, Array.isArray(v) ? v.join('; ') : String(v))).join('');
+  // 2D
+  bodyHTML += `<div class="subsection">
+    <div class="subsection-label">2D — What Happens</div>
+    <div class="prose-text">${escHtml(scene.whatHappens)}</div>
+  </div>`;
+
+  // 2E
+  bodyHTML += `<div class="subsection">
+    <div class="subsection-label">2E — Communicative Purpose</div>
+    <div class="prose-text">${escHtml(scene.communicativePurpose)}</div>
+  </div>`;
+
+  // Build verse refs for this scene
+  const scVerse = scene.verses || "";
+  const scChapM = (state.currentMap && state.currentMap.meta.passage || "Ruth 1").match(/Ruth\s+(\d+)/i);
+  const scChap = scChapM ? scChapM[1] : "1";
+  const scNums = versesInRange(scVerse);
+  const scRefs = scNums.map(n => "Ruth " + scChap + ":" + n);
+  const scBhsaBtn = scRefs.length > 0 ? bhsaButtonHTML("Scene " + scene.number + " — Verses " + scVerse, scRefs) : "";
 
   div.innerHTML = `
-    <div class="prop-form-header">
-      <div class="prop-label">
-        <span class="prop-num" style="width:26px;height:26px;font-size:0.75rem;">${id}</span>
-        Proposition ${id}
-      </div>
-      <button class="btn btn-danger" onclick="removeProp(${id})">Remove</button>
+    <div class="card-header">
+      <span class="card-title">SCENE ${scene.number} <span>— Verses ${escHtml(scene.verses)}</span></span>
+      <div class="flex-gap">${scBhsaBtn}${badge}</div>
     </div>
-    <div class="prop-form-body">
-      <div style="display:grid; grid-template-columns:1fr 2fr; gap:12px; margin-bottom:12px;">
-        <div class="form-group">
-          <label class="field-label" style="font-size:0.76rem;">Verse</label>
-          <input type="text" id="p${id}-verse" placeholder="e.g. 1a" value="${d.verse||''}" oninput="autoSave()">
-        </div>
-        <div class="form-group">
-          <label class="field-label" style="font-size:0.76rem;">Type of statement</label>
-          <input type="text" id="p${id}-type" placeholder="e.g. introduces characters; names origin" value="${d.type_of_statement||''}" oninput="autoSave()">
-        </div>
-      </div>
-      <div class="slot-editor" id="p${id}-slots">
-        <label class="field-label" style="font-size:0.76rem; margin-bottom:8px; display:block;">Slots — add one row per slot (label: value)</label>
-        ${slotRows || slotEditRow('','') }
-      </div>
-      <button class="btn btn-sm btn-secondary" style="margin-top:6px;" onclick="addSlotRow(${id})">+ Add slot</button>
-    </div>
-  `;
-  container.appendChild(div);
+    ${warnings}
+    <div class="card-body" id="body-${sid}">${bodyHTML}</div>
+    <div class="card-actions">
+      <button class="btn btn-ghost btn-sm" onclick="editScene(${scene.number})">Edit</button>
+      <button class="btn btn-${scene.reviewed ? "green" : "outline"} btn-sm"
+        id="reviewed-btn-${sid}"
+        onclick="markReviewed('${sid}')">
+        ${scene.reviewed ? "✓ Reviewed" : "Mark Reviewed"}
+      </button>
+    </div>`;
+  return div;
 }
 
-function slotEditRow(key, val) {
-  return `<div class="slot-row-edit">
-    <input type="text" class="slot-key-input" placeholder="label (e.g. who)" value="${escHtml(key)}" oninput="autoSave()">
-    <input type="text" placeholder="value" value="${escHtml(val)}" oninput="autoSave()">
-    <button class="del-btn" onclick="this.closest('.slot-row-edit').remove(); autoSave()">×</button>
+function buildPropositionsCard(map) {
+  const div = document.createElement("div");
+  div.id = "card-level3";
+  const allPropWarnings = map.propositionWarnings;
+  div.className = "card" + (allPropWarnings.length > 0 ? " has-warnings" : "");
+
+  const badge = statusBadge({ reviewed: map.propositionsReviewed, warnings: allPropWarnings });
+  const warnings = allPropWarnings.length > 0 ? warningsHTML(allPropWarnings) : "";
+
+  let propsHTML = `<div class="prop-list">`;
+  for (const prop of map.propositions) {
+    propsHTML += `<div class="prop-block">
+      <div class="prop-header">Proposition ${prop.number} — Verse ${escHtml(prop.verse)}</div>
+      <div class="prop-content">`;
+    for (const qa of prop.content) {
+      propsHTML += `<div class="qa-row">
+        <span class="qa-question">${escHtml(qa.question)}</span>
+        <span class="qa-answer">${escHtml(qa.answer)}</span>
+      </div>`;
+    }
+    propsHTML += `</div></div>`;
+  }
+  propsHTML += `</div>`;
+
+  // Build verse refs for all propositions
+  const p3ChapM = (map.meta.passage || "Ruth 1").match(/Ruth\s+(\d+)/i);
+  const p3Chap = p3ChapM ? p3ChapM[1] : "1";
+  const p3Refs = map.propositions.map(p => {
+    const v = p.verse.replace(/[ab]$/,"").trim();
+    return "Ruth " + p3Chap + ":" + v;
+  }).filter((v,i,a) => a.indexOf(v) === i);
+  const p3BhsaBtn = p3Refs.length > 0 ? bhsaButtonHTML("Level 3 Propositions", p3Refs) : "";
+
+  div.innerHTML = `
+    <div class="card-header">
+      <span class="card-title">LEVEL 3 <span>— Propositions (${map.propositions.length})</span></span>
+      <div class="flex-gap">${p3BhsaBtn}${badge}</div>
+    </div>
+    ${warnings}
+    <div class="card-body" id="body-level3">${propsHTML}</div>
+    <div class="card-actions">
+      <button class="btn btn-ghost btn-sm" onclick="editPropositions()">Edit</button>
+      <button class="btn btn-${map.propositionsReviewed ? "green" : "outline"} btn-sm"
+        id="reviewed-btn-level3"
+        onclick="markReviewed('level3')">
+        ${map.propositionsReviewed ? "✓ Reviewed" : "Mark Reviewed"}
+      </button>
+    </div>`;
+  return div;
+}
+
+function fieldRow(label, value) {
+  if (!value) return "";
+  return `<span class="field-label">${escHtml(label)}</span><span class="field-value">${escHtml(value)}</span>`;
+}
+
+function statusBadge(section) {
+  const reviewed = section.reviewed;
+  const warnings = (section.warnings || []).length;
+  if (reviewed) return `<span class="badge badge-reviewed">✓ Reviewed</span>`;
+  if (warnings > 0) return `<span class="badge badge-warning">⚠ ${warnings} warning${warnings > 1 ? "s" : ""}</span>`;
+  return `<span class="badge badge-pending">Not reviewed</span>`;
+}
+
+function warningsHTML(warnings) {
+  if (!warnings || warnings.length === 0) return "";
+  let html = `<div class="warnings-block">
+    <div class="warning-title">AUTOMATED FLAGS — requires analyst review</div>`;
+  for (const w of warnings) {
+    html += `<div class="warning-item">${escHtml(w)}</div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+// ════════════════════════════════════════════
+// EDIT HANDLERS
+// ════════════════════════════════════════════
+function editLevel1() {
+  const map = state.currentMap;
+  const body = document.getElementById("body-level1");
+  body.classList.add("editing");
+  body.innerHTML = `
+    <div class="form-group">
+      <label class="form-label">Level 1 — The Arc (prose only)</label>
+      <textarea id="edit-level1-text" class="form-textarea tall" style="min-height:200px">${escHtml(map.level1.text)}</textarea>
+    </div>
+    <div class="mt-1 flex-gap">
+      <button class="btn btn-teal btn-sm" onclick="saveLevel1()">Save</button>
+      <button class="btn btn-ghost btn-sm" onclick="cancelEditLevel1()">Cancel</button>
+    </div>`;
+}
+
+function saveLevel1() {
+  const val = document.getElementById("edit-level1-text").value;
+  state.currentMap.level1.text = val;
+  state.currentMap.level1.reviewed = false;
+  runChecks(state.currentMap);
+  const card = document.getElementById("card-level1");
+  const newCard = buildLevel1Card(state.currentMap);
+  card.replaceWith(newCard);
+  updateProgress();
+}
+
+function cancelEditLevel1() {
+  const card = document.getElementById("card-level1");
+  const newCard = buildLevel1Card(state.currentMap);
+  card.replaceWith(newCard);
+}
+
+function editScene(num) {
+  const map = state.currentMap;
+  const scene = map.scenes.find(s => s.number === num);
+  const sid = "scene_" + num;
+  const body = document.getElementById("body-" + sid);
+  body.classList.add("editing");
+
+  let html = `<div class="edit-form">`;
+
+  // Title
+  html += `<div class="form-group">
+    <label class="form-label">Scene Title</label>
+    <input id="edit-scene-title-${num}" class="form-input" value="${escHtml(scene.title)}">
+  </div>`;
+
+  // 2A People
+  html += `<div class="subsection-label" style="margin-top:1rem">2A — People</div>
+    <div id="edit-people-${num}">`;
+  for (let i = 0; i < scene.people.length; i++) {
+    html += personEditorHTML(num, i, scene.people[i]);
+  }
+  html += `</div>
+  <button class="add-entry-btn" onclick="addPerson(${num})">+ Add Person</button>`;
+
+  // 2B Places
+  html += `<div class="subsection-label" style="margin-top:1rem">2B — Places</div>
+    <div id="edit-places-${num}">`;
+  for (let i = 0; i < scene.places.length; i++) {
+    html += placeEditorHTML(num, i, scene.places[i]);
+  }
+  html += `</div>
+  <button class="add-entry-btn" onclick="addPlace(${num})">+ Add Place</button>`;
+
+  // 2C Objects
+  html += `<div class="subsection-label" style="margin-top:1rem">2C — Objects and Elements</div>
+    <div id="edit-objects-${num}">`;
+  for (let i = 0; i < scene.objects.length; i++) {
+    html += objectEditorHTML(num, i, scene.objects[i]);
+  }
+  html += `</div>
+  <button class="add-entry-btn" onclick="addObject(${num})">+ Add Object</button>`;
+
+  // Significant absence
+  html += `<div class="form-group" style="margin-top:0.75rem">
+    <label class="form-label">Significant Absence</label>
+    <textarea id="edit-absence-${num}" class="form-textarea">${escHtml(scene.significantAbsence)}</textarea>
+  </div>`;
+
+  // 2D
+  html += `<div class="form-group">
+    <label class="form-label">2D — What Happens</label>
+    <textarea id="edit-2d-${num}" class="form-textarea tall">${escHtml(scene.whatHappens)}</textarea>
+  </div>`;
+
+  // 2E
+  html += `<div class="form-group">
+    <label class="form-label">2E — Communicative Purpose</label>
+    <textarea id="edit-2e-${num}" class="form-textarea tall">${escHtml(scene.communicativePurpose)}</textarea>
+  </div>`;
+
+  html += `<div class="flex-gap">
+    <button class="btn btn-teal btn-sm" onclick="saveScene(${num})">Save</button>
+    <button class="btn btn-ghost btn-sm" onclick="cancelEditScene(${num})">Cancel</button>
+  </div></div>`;
+
+  body.innerHTML = html;
+}
+
+function personEditorHTML(sceneNum, idx, p) {
+  return `<div class="entry-editor" id="person-editor-${sceneNum}-${idx}">
+    <button class="remove-entry-btn" onclick="removeEntry('people',${sceneNum},${idx})">×</button>
+    <div class="entry-editor-name">${escHtml(p.name || "Person " + (idx+1))}</div>
+    <div class="entry-editor-fields">
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input class="form-input" id="p-name-${sceneNum}-${idx}" value="${escHtml(p.name)}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <textarea class="form-textarea" id="p-role-${sceneNum}-${idx}">${escHtml(p.role)}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Relationship</label>
+        <textarea class="form-textarea" id="p-relationship-${sceneNum}-${idx}">${escHtml(p.relationship)}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Wants</label>
+        <textarea class="form-textarea" id="p-wants-${sceneNum}-${idx}">${escHtml(p.wants)}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Carries</label>
+        <textarea class="form-textarea" id="p-carries-${sceneNum}-${idx}">${escHtml(p.carries)}</textarea>
+      </div>
+    </div>
   </div>`;
 }
 
-function addSlotRow(propId) {
-  const container = document.getElementById('p' + propId + '-slots');
-  const div = document.createElement('div');
-  div.innerHTML = slotEditRow('','');
-  container.insertBefore(div.firstChild, container.lastElementChild);
+function placeEditorHTML(sceneNum, idx, pl) {
+  return `<div class="entry-editor" id="place-editor-${sceneNum}-${idx}">
+    <button class="remove-entry-btn" onclick="removeEntry('places',${sceneNum},${idx})">×</button>
+    <div class="entry-editor-fields">
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input class="form-input" id="pl-name-${sceneNum}-${idx}" value="${escHtml(pl.name)}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <textarea class="form-textarea" id="pl-role-${sceneNum}-${idx}">${escHtml(pl.role)}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Type</label>
+        <input class="form-input" id="pl-type-${sceneNum}-${idx}" value="${escHtml(pl.type)}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Meaning</label>
+        <textarea class="form-textarea" id="pl-meaning-${sceneNum}-${idx}">${escHtml(pl.meaning)}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Effect on Scene</label>
+        <textarea class="form-textarea" id="pl-effect-${sceneNum}-${idx}">${escHtml(pl.effect_on_scene)}</textarea>
+      </div>
+    </div>
+  </div>`;
 }
 
-function removeProp(id) {
-  const el = document.getElementById('prop-' + id);
-  if (el) el.remove();
-  autoSave();
+function objectEditorHTML(sceneNum, idx, o) {
+  return `<div class="entry-editor" id="object-editor-${sceneNum}-${idx}">
+    <button class="remove-entry-btn" onclick="removeEntry('objects',${sceneNum},${idx})">×</button>
+    <div class="entry-editor-fields">
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input class="form-input" id="o-name-${sceneNum}-${idx}" value="${escHtml(o.name)}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">What it is</label>
+        <textarea class="form-textarea" id="o-what-${sceneNum}-${idx}">${escHtml(o.what_it_is)}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Function in scene</label>
+        <textarea class="form-textarea" id="o-function-${sceneNum}-${idx}">${escHtml(o.function_in_scene)}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Signals</label>
+        <textarea class="form-textarea" id="o-signals-${sceneNum}-${idx}">${escHtml(o.signals)}</textarea>
+      </div>
+    </div>
+  </div>`;
 }
 
-function escHtml(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// ══════════════════════════════════════════
-// DATA EXTRACTION
-// ══════════════════════════════════════════
-function getFormData() {
-  const book = val('f-book');
-  const chapter = val('f-chapter');
-  const verses = val('f-verses');
-  const ref = [book, chapter ? chapter + (verses ? ':' + verses : '') : ''].filter(Boolean).join(' ');
-
-  const data = {
-    meta: {
-      schema_version: "1.0",
-      method: "Tripod Method - Prose Meaning Map",
-      passage_reference: ref,
-      book, chapter, verses,
-      mapper: val('f-mapper'),
-      date: val('f-date'),
-      language_target: val('f-lang')
-    },
-    level_1_movement: { text: val('f-movement') },
-    level_2_scenes: [],
-    level_3_propositions: []
+function readPersonFromEditor(sceneNum, idx) {
+  return {
+    name: val("p-name-" + sceneNum + "-" + idx),
+    role: val("p-role-" + sceneNum + "-" + idx),
+    relationship: val("p-relationship-" + sceneNum + "-" + idx),
+    wants: val("p-wants-" + sceneNum + "-" + idx),
+    carries: val("p-carries-" + sceneNum + "-" + idx)
   };
-
-  // Scenes
-  document.querySelectorAll('[id^="scene-"]').forEach(el => {
-    const id = el.id.replace('scene-','');
-    const scene = {
-      scene_number: parseInt(id),
-      verses: val(`s${id}-verses`),
-      title: val(`s${id}-title`),
-      people: tableRows(`s${id}-people-table`, ['role','name','relationship','wants','fears_carries']),
-      places: tableRows(`s${id}-places-table`, ['role_in_scene','name','type','meaning','effect_on_scene']),
-      objects_and_elements: tableRows(`s${id}-objects-table`, ['item','what_it_is','function_in_scene','what_it_signals']),
-      significant_absences: val(`s${id}-absences`),
-      what_happens: val(`s${id}-happens`),
-      communicative_purpose: val(`s${id}-purpose`)
-    };
-    data.level_2_scenes.push(scene);
-  });
-
-  // Props
-  document.querySelectorAll('[id^="prop-"]').forEach(el => {
-    const id = el.id.replace('prop-','');
-    const slots = {};
-    el.querySelectorAll('.slot-row-edit').forEach(row => {
-      const inputs = row.querySelectorAll('input');
-      const k = inputs[0] ? inputs[0].value.trim() : '';
-      const v = inputs[1] ? inputs[1].value.trim() : '';
-      if (k) slots[k] = v;
-    });
-    data.level_3_propositions.push({
-      proposition_number: parseInt(id),
-      verse: val(`p${id}-verse`),
-      type_of_statement: val(`p${id}-type`),
-      slots
-    });
-  });
-
-  return data;
+}
+function readPlaceFromEditor(sceneNum, idx) {
+  return {
+    name: val("pl-name-" + sceneNum + "-" + idx),
+    role: val("pl-role-" + sceneNum + "-" + idx),
+    type: val("pl-type-" + sceneNum + "-" + idx),
+    meaning: val("pl-meaning-" + sceneNum + "-" + idx),
+    effect_on_scene: val("pl-effect-" + sceneNum + "-" + idx)
+  };
+}
+function readObjectFromEditor(sceneNum, idx) {
+  return {
+    name: val("o-name-" + sceneNum + "-" + idx),
+    what_it_is: val("o-what-" + sceneNum + "-" + idx),
+    function_in_scene: val("o-function-" + sceneNum + "-" + idx),
+    signals: val("o-signals-" + sceneNum + "-" + idx)
+  };
 }
 
 function val(id) {
   const el = document.getElementById(id);
-  return el ? el.value.trim() : '';
+  return el ? el.value.trim() : "";
 }
 
-function tableRows(tableId, fields) {
-  const table = document.getElementById(tableId);
-  if (!table) return [];
-  const rows = [];
-  table.querySelectorAll('tr:not(:first-child)').forEach(tr => {
-    const inputs = tr.querySelectorAll('input[type=text]');
-    const obj = {};
-    fields.forEach((f,i) => { obj[f] = inputs[i] ? inputs[i].value.trim() : ''; });
-    if (Object.values(obj).some(v => v)) rows.push(obj);
-  });
-  return rows;
+function addPerson(sceneNum) {
+  const scene = state.currentMap.scenes.find(s => s.number === sceneNum);
+  scene.people.push({ name:"", role:"", relationship:"", wants:"", carries:"" });
+  const container = document.getElementById("edit-people-" + sceneNum);
+  const idx = scene.people.length - 1;
+  container.insertAdjacentHTML("beforeend", personEditorHTML(sceneNum, idx, scene.people[idx]));
+}
+function addPlace(sceneNum) {
+  const scene = state.currentMap.scenes.find(s => s.number === sceneNum);
+  scene.places.push({ name:"", role:"", type:"", meaning:"", effect_on_scene:"" });
+  const container = document.getElementById("edit-places-" + sceneNum);
+  const idx = scene.places.length - 1;
+  container.insertAdjacentHTML("beforeend", placeEditorHTML(sceneNum, idx, scene.places[idx]));
+}
+function addObject(sceneNum) {
+  const scene = state.currentMap.scenes.find(s => s.number === sceneNum);
+  scene.objects.push({ name:"", what_it_is:"", function_in_scene:"", signals:"" });
+  const container = document.getElementById("edit-objects-" + sceneNum);
+  const idx = scene.objects.length - 1;
+  container.insertAdjacentHTML("beforeend", objectEditorHTML(sceneNum, idx, scene.objects[idx]));
+}
+function removeEntry(type, sceneNum, idx) {
+  const scene = state.currentMap.scenes.find(s => s.number === sceneNum);
+  scene[type].splice(idx, 1);
+  editScene(sceneNum); // re-render edit form
 }
 
-// ══════════════════════════════════════════
-// JSON RENDERING
-// ══════════════════════════════════════════
-function renderJSON() {
-  const data = getFormData();
-  const json = JSON.stringify(data, null, 2);
-  const el = document.getElementById('json-display');
-  el.textContent = json;
-}
+function saveScene(num) {
+  const scene = state.currentMap.scenes.find(s => s.number === num);
+  scene.title   = val("edit-scene-title-" + num);
+  scene.whatHappens = val("edit-2d-" + num);
+  scene.communicativePurpose = val("edit-2e-" + num);
+  scene.significantAbsence = val("edit-absence-" + num);
 
-function autoSave() {
-  try {
-    const data = getFormData();
-    localStorage.setItem('pmm-draft', JSON.stringify(data));
-    const el = document.getElementById('save-status');
-    if (el) {
-      el.textContent = 'Auto-saved';
-      setTimeout(() => { el.textContent = ''; }, 2000);
-    }
-  } catch(e) {}
-  // If JSON tab is open, re-render live
-  if (document.getElementById('tab-json').classList.contains('active')) {
-    renderJSON();
+  // Read people
+  const newPeople = [];
+  for (let i = 0; i < scene.people.length + 5; i++) {
+    const el = document.getElementById("p-name-" + num + "-" + i);
+    if (!el) break;
+    newPeople.push(readPersonFromEditor(num, i));
   }
+  scene.people = newPeople.filter(p => p.name);
+
+  // Read places
+  const newPlaces = [];
+  for (let i = 0; i < scene.places.length + 5; i++) {
+    const el = document.getElementById("pl-name-" + num + "-" + i);
+    if (!el) break;
+    newPlaces.push(readPlaceFromEditor(num, i));
+  }
+  scene.places = newPlaces.filter(p => p.name);
+
+  // Read objects
+  const newObjects = [];
+  for (let i = 0; i < scene.objects.length + 5; i++) {
+    const el = document.getElementById("o-name-" + num + "-" + i);
+    if (!el) break;
+    newObjects.push(readObjectFromEditor(num, i));
+  }
+  scene.objects = newObjects.filter(o => o.name);
+
+  scene.reviewed = false;
+  runChecks(state.currentMap);
+  const sid = "scene_" + num;
+  const card = document.getElementById("card-" + sid);
+  const newCard = buildSceneCard(scene, state.currentMap);
+  card.replaceWith(newCard);
+  updateProgress();
+}
+
+function cancelEditScene(num) {
+  const scene = state.currentMap.scenes.find(s => s.number === num);
+  const sid = "scene_" + num;
+  const card = document.getElementById("card-" + sid);
+  const newCard = buildSceneCard(scene, state.currentMap);
+  card.replaceWith(newCard);
+}
+
+function editPropositions() {
+  const map = state.currentMap;
+  const body = document.getElementById("body-level3");
+  body.classList.add("editing");
+
+  let html = `<div class="edit-form" id="prop-edit-form">`;
+  for (let pi = 0; pi < map.propositions.length; pi++) {
+    const prop = map.propositions[pi];
+    html += `<div class="prop-editor-block" id="prop-block-${pi}">
+      <div class="prop-editor-header">
+        <label>Proposition</label>
+        <input id="pe-num-${pi}" value="${prop.number}" style="width:45px">
+        <label>— Verse</label>
+        <input id="pe-verse-${pi}" value="${escHtml(prop.verse)}" style="width:60px">
+      </div>
+      <div class="prop-editor-body">
+        <div class="qa-editor" id="qa-editor-${pi}">`;
+    for (let qi = 0; qi < prop.content.length; qi++) {
+      html += qaEditRow(pi, qi, prop.content[qi]);
+    }
+    html += `</div>
+        <button class="add-qa-btn" onclick="addQARow(${pi})">+ Add line</button>
+      </div>
+    </div>`;
+  }
+  html += `<div class="flex-gap">
+    <button class="btn btn-teal btn-sm" onclick="savePropositions()">Save</button>
+    <button class="btn btn-ghost btn-sm" onclick="cancelEditPropositions()">Cancel</button>
+  </div></div>`;
+
+  body.innerHTML = html;
+}
+
+function qaEditRow(pi, qi, qa) {
+  return `<div class="qa-edit-row" id="qa-row-${pi}-${qi}">
+    <input class="q-input" id="q-${pi}-${qi}" value="${escHtml((qa || {}).question || "")}">
+    <input id="a-${pi}-${qi}" value="${escHtml((qa || {}).answer || "")}">
+    <button class="remove-qa-btn" onclick="removeQARow(${pi},${qi})">×</button>
+  </div>`;
+}
+
+function addQARow(pi) {
+  const container = document.getElementById("qa-editor-" + pi);
+  const prop = state.currentMap.propositions[pi];
+  const qi = prop.content.length;
+  prop.content.push({ question: "", answer: "" });
+  container.insertAdjacentHTML("beforeend", qaEditRow(pi, qi, {}));
+}
+
+function removeQARow(pi, qi) {
+  state.currentMap.propositions[pi].content.splice(qi, 1);
+  editPropositions();
+}
+
+function savePropositions() {
+  const map = state.currentMap;
+  for (let pi = 0; pi < map.propositions.length; pi++) {
+    map.propositions[pi].number = parseInt(val("pe-num-" + pi)) || pi+1;
+    map.propositions[pi].verse  = val("pe-verse-" + pi);
+    const newContent = [];
+    for (let qi = 0; qi < 20; qi++) {
+      const qel = document.getElementById("q-" + pi + "-" + qi);
+      if (!qel) break;
+      const q = qel.value.trim();
+      const a = val("a-" + pi + "-" + qi);
+      if (q || a) newContent.push({ question: q, answer: a });
+    }
+    map.propositions[pi].content = newContent;
+  }
+  map.propositionsReviewed = false;
+  runChecks(map);
+  const card = document.getElementById("card-level3");
+  const newCard = buildPropositionsCard(map);
+  card.replaceWith(newCard);
+  updateProgress();
+}
+
+function cancelEditPropositions() {
+  const card = document.getElementById("card-level3");
+  const newCard = buildPropositionsCard(state.currentMap);
+  card.replaceWith(newCard);
+}
+
+// ════════════════════════════════════════════
+// REVIEW LOGIC
+// ════════════════════════════════════════════
+function markReviewed(sectionId) {
+  const map = state.currentMap;
+  if (!map) return;
+
+  if (sectionId === "level1") {
+    map.level1.reviewed = true;
+  } else if (sectionId === "level3") {
+    map.propositionsReviewed = true;
+  } else if (sectionId.startsWith("scene_")) {
+    const num = parseInt(sectionId.split("_")[1]);
+    const scene = map.scenes.find(s => s.number === num);
+    if (scene) scene.reviewed = true;
+  }
+
+  // Update card appearance
+  const card = document.getElementById("card-" + sectionId);
+  if (card) {
+    card.classList.remove("has-warnings");
+    card.classList.add("reviewed");
+    const btn = document.getElementById("reviewed-btn-" + sectionId);
+    if (btn) {
+      btn.className = "btn btn-green btn-sm";
+      btn.textContent = "✓ Reviewed";
+    }
+    // Update badge in header
+    const badge = card.querySelector(".badge");
+    if (badge) {
+      badge.className = "badge badge-reviewed";
+      badge.textContent = "✓ Reviewed";
+    }
+  }
+
+  updateProgress();
+  updateApproveChecklist(map);
+}
+
+function updateProgress() {
+  const map = state.currentMap;
+  if (!map) return;
+
+  const total = 1 + map.scenes.length + 1;
+  const done  = (map.level1.reviewed ? 1 : 0)
+    + map.scenes.filter(s => s.reviewed).length
+    + (map.propositionsReviewed ? 1 : 0);
+
+  document.getElementById("progress-fill").style.width = (done / total * 100) + "%";
+  document.getElementById("progress-count").textContent = done + " / " + total;
+
+  const allDone = done === total;
+  document.getElementById("approve-btn").disabled = !allDone;
+}
+
+function updateApproveChecklist(map) {
+  const el = document.getElementById("approve-checklist");
+  if (!el) return;
+  const checks = [
+    { label: "Level 1 — Arc reviewed", done: map.level1.reviewed },
+    ...map.scenes.map(s => ({ label: "Scene " + s.number + " (Verses " + s.verses + ") reviewed", done: s.reviewed })),
+    { label: "Level 3 propositions reviewed", done: map.propositionsReviewed }
+  ];
+  el.innerHTML = checks.map(c =>
+    `<div class="check-item ${c.done ? "done" : ""}">${escHtml(c.label)}</div>`
+  ).join("");
+}
+
+// ════════════════════════════════════════════
+// APPROVE & SAVE
+// ════════════════════════════════════════════
+function approveMap() {
+  const map = state.currentMap;
+  if (!map) return;
+
+  map.meta.status = "approved";
+  map.meta.dateApproved = new Date().toISOString();
+  map.meta.version = 1;
+
+  // Check for existing version of same passage
+  const existing = state.savedMaps.findIndex(m => m.meta.passage === map.meta.passage);
+  if (existing >= 0) {
+    map.meta.version = (state.savedMaps[existing].meta.version || 1) + 1;
+    state.savedMaps[existing] = JSON.parse(JSON.stringify(map));
+  } else {
+    state.savedMaps.push(JSON.parse(JSON.stringify(map)));
+  }
+
+  saveToStorage();
+
+  // Update approve button
+  const btn = document.getElementById("approve-btn");
+  btn.textContent = "✓ Approved & Saved";
+  btn.style.background = "#047857";
+
+  // Switch to export
+  setTimeout(() => switchTab("export"), 800);
+}
+
+// ════════════════════════════════════════════
+// ARCHIVE & EXPORT
+// ════════════════════════════════════════════
+function renderArchive() {
+  const el = document.getElementById("archive-list");
+  if (state.savedMaps.length === 0) {
+    el.innerHTML = `<div class="archive-empty">No approved maps yet. Complete a review and approve a map to see it here.</div>`;
+    return;
+  }
+  el.innerHTML = state.savedMaps.map((m, i) => `
+    <div class="archive-item" onclick="loadFromArchive(${i})">
+      <div>
+        <div class="archive-passage">${escHtml(m.meta.passage || "Untitled")}</div>
+        <div class="archive-meta">
+          Analyst: ${escHtml(m.meta.analyst || "—")} &middot;
+          ${m.meta.dateApproved ? new Date(m.meta.dateApproved).toLocaleDateString() : "—"} &middot;
+          v${m.meta.version || 1} &middot;
+          ${m.scenes ? m.scenes.length : 0} scene(s), ${m.propositions ? m.propositions.length : 0} prop(s)
+        </div>
+      </div>
+      <span class="badge badge-reviewed archive-badge">Approved</span>
+    </div>`).join("");
+}
+
+function loadFromArchive(idx) {
+  state.currentMap = JSON.parse(JSON.stringify(state.savedMaps[idx]));
+  buildReviewSections(state.currentMap);
+  updateProgress();
+  switchTab("review");
+}
+
+function renderExport() {
+  const map = state.currentMap;
+  const el = document.getElementById("export-content");
+  const empty = document.getElementById("export-empty");
+
+  if (!map || map.meta.status !== "approved") {
+    el.style.display = "none";
+    empty.style.display = "block";
+    return;
+  }
+
+  el.style.display = "block";
+  empty.style.display = "none";
+  document.getElementById("json-output").textContent = buildJSON(map);
+  document.getElementById("prose-output").textContent = buildProse(map);
+}
+
+function buildJSON(map) {
+  const output = {
+    meta: map.meta,
+    level_1: { arc: map.level1.text },
+    level_2_scenes: map.scenes.map(s => ({
+      scene_number: s.number,
+      verses: s.verses,
+      title: s.title,
+      people: s.people,
+      places: s.places,
+      objects: s.objects,
+      significant_absence: s.significantAbsence,
+      what_happens: s.whatHappens,
+      communicative_purpose: s.communicativePurpose
+    })),
+    level_3_propositions: map.propositions.map(p => ({
+      proposition_number: p.number,
+      verse: p.verse,
+      content: p.content
+    }))
+  };
+  return JSON.stringify(output, null, 2);
 }
 
 function downloadJSON() {
-  const data = getFormData();
-  const json = JSON.stringify(data, null, 2);
-  const book = data.meta.book || 'map';
-  const ch = data.meta.chapter || '';
-  const vs = data.meta.verses || '';
-  const filename = `pmm_${book}${ch ? '_' + ch : ''}${vs ? '_' + vs : ''}.json`.replace(/\s+/g,'_');
-  const blob = new Blob([json], { type: 'application/json' });
+  const map = state.currentMap;
+  if (!map) return;
+  const json = buildJSON(map);
+  const blob = new Blob([json], { type: "application/json" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename; a.click();
+  const a = document.createElement("a");
+  a.href = url;
+  const passage = (map.meta.passage || "map").replace(/[^a-z0-9]/gi, "_").toLowerCase();
+  a.download = "pmm_" + passage + ".json";
+  a.click();
   URL.revokeObjectURL(url);
 }
 
 function copyJSON() {
-  const data = getFormData();
-  navigator.clipboard.writeText(JSON.stringify(data, null, 2)).then(() => {
-    const btn = event.target;
+  const map = state.currentMap;
+  if (!map) return;
+  navigator.clipboard.writeText(buildJSON(map)).then(() => {
+    const btn = document.querySelector(".export-actions .btn-outline");
     const orig = btn.textContent;
-    btn.textContent = '✓ Copied!';
-    setTimeout(() => btn.textContent = orig, 2000);
+    btn.textContent = "Copied!";
+    setTimeout(() => btn.textContent = orig, 1500);
   });
 }
 
-function clearForm() {
-  if (!confirm('Clear all form data? This cannot be undone.')) return;
-  document.querySelectorAll('[id^="scene-"]').forEach(el => el.remove());
-  document.querySelectorAll('[id^="prop-"]').forEach(el => el.remove());
-  sceneCount = 0; propCount = 0;
-  ['f-book','f-chapter','f-verses','f-mapper','f-date','f-lang','f-movement'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  localStorage.removeItem('pmm-draft');
-  autoSave();
-}
-
-// ══════════════════════════════════════════
-// LOAD EXAMPLE
-// ══════════════════════════════════════════
-function loadExample() {
-  if (document.querySelectorAll('[id^="scene-"]').length > 0 || document.querySelectorAll('[id^="prop-"]').length > 0) {
-    if (!confirm('This will replace your current form with the Ruth 1:1–7 example. Continue?')) return;
-  }
-  clearFormSilent();
-  loadFromData(EXAMPLE_DATA);
-  showTab('form');
-}
-
-function clearFormSilent() {
-  document.querySelectorAll('[id^="scene-"]').forEach(el => el.remove());
-  document.querySelectorAll('[id^="prop-"]').forEach(el => el.remove());
-  sceneCount = 0; propCount = 0;
-}
-
-function loadFromData(data) {
-  const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v||''; };
-  set('f-book', data.meta.book);
-  set('f-chapter', data.meta.chapter);
-  set('f-verses', data.meta.verses);
-  set('f-mapper', data.meta.mapper);
-  set('f-date', data.meta.date);
-  set('f-lang', data.meta.language_target);
-  set('f-movement', data.level_1_movement.text);
-  (data.level_2_scenes||[]).forEach(s => addScene(s));
-  (data.level_3_propositions||[]).forEach(p => addProp(p));
-  autoSave();
-}
-
-// ══════════════════════════════════════════
-// ASSISTANT
-// ══════════════════════════════════════════
-let assistantOpen = false;
-let asstHistory = [];
-
-function toggleAssistant() {
-  assistantOpen = !assistantOpen;
-  const panel = document.getElementById('assistant-panel');
-  const btn = document.getElementById('assistant-btn');
-  panel.classList.toggle('open', assistantOpen);
-  btn.textContent = assistantOpen ? '✕' : '💬';
-}
-
-async function sendMessage() {
-  const input = document.getElementById('asst-input');
-  const text = input.value.trim();
-  if (!text) return;
-
-  appendMsg('user', text);
-  asstHistory.push({ role: 'user', content: text });
-  input.value = '';
-
-  const sendBtn = document.getElementById('asst-send');
-  sendBtn.disabled = true;
-
-  const thinking = appendMsg('thinking', '…');
-
+// ════════════════════════════════════════════
+// STORAGE
+// ════════════════════════════════════════════
+function saveToStorage() {
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: `You are a methodology assistant for the Prose Meaning Maps tool, part of the Tripod Method for AI-Assisted Oral Bible Translation developed by Marcia Suzuki at the OBT Lab, Shema Bible Translation, YWAM Kansas City.
-
-Your role is to help analysts (mappers) create high-quality Prose Meaning Maps. You know this method deeply:
-
-CORE RULE: Never reproduce sentences or clauses of the biblical text. Individual specific words (names, places, things) are named directly. The goal is to describe the communicative situation so completely that a performer can reconstruct the passage faithfully in another language without translating from a bridge language.
-
-THREE LEVELS:
-- Level 1: One paragraph describing the movement/arc of the whole section — emotional trajectory, theological significance, pacing.
-- Level 2: Scene analysis — divided into natural episodes (3-6 verses). Each scene has: People (2A, exhaustive, named), Places (2B, exhaustive, named), Objects/Elements (2C, exhaustive), What Happens (2D), Communicative Purpose (2E).
-- Level 3: Propositions — one block per verse, using labeled semantic slots (who/what happened/where/when/etc.). No sentences. No commentary. Just clean slot-filler pairs.
-
-KEY PRINCIPLES:
-- Completeness is the standard. Missing anything is a failure.
-- Names of people and places are always included directly.
-- The rule against paraphrasing applies to clauses and sentences, not individual words.
-- Significant absences (things conspicuously not mentioned) must be noted.
-- Level 3 slots should be clean and direct — "what happened: a famine" not lengthy descriptions.
-
-Answer questions clearly, concisely, and in the spirit of helping someone produce excellent, faithful maps. Be encouraging but precise about methodology.`,
-        messages: asstHistory
-      })
-    });
-
-    const data = await response.json();
-    thinking.remove();
-    const reply = data.content && data.content[0] ? data.content[0].text : 'Sorry, I could not get a response.';
-    appendMsg('assistant', reply);
-    asstHistory.push({ role: 'assistant', content: reply });
-
-  } catch(e) {
-    thinking.remove();
-    appendMsg('assistant', 'Connection error. Please check your internet connection and try again.');
-  }
-
-  sendBtn.disabled = false;
+    localStorage.setItem("pmm_maps", JSON.stringify(state.savedMaps));
+  } catch(e) { console.warn("Storage save failed:", e); }
 }
 
-function appendMsg(type, text) {
-  const container = document.getElementById('asst-messages');
-  const div = document.createElement('div');
-  div.className = `asst-msg ${type}`;
-  div.textContent = text;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-  return div;
-}
-
-// ══════════════════════════════════════════
-// EXAMPLE DATA
-// ══════════════════════════════════════════
-const EXAMPLE_DATA = {
-  meta: {
-    schema_version: "1.0",
-    method: "Tripod Method - Prose Meaning Map",
-    passage_reference: "Ruth 1:1-7",
-    book: "Ruth", chapter: "1", verses: "1-7",
-    mapper: "Example", date: "2025-01-01", language_target: ""
-  },
-  level_1_movement: {
-    text: "A family leaves their homeland under the pressure of famine, intending a temporary stay in a foreign country. They stay. The father dies. The sons grow up, marry local women, and then they too die. What began as survival becomes a decade-long exile ending in the erasure of the entire male line. The woman is left with two foreign daughters-in-law and nothing else — no husband, no sons, no security, no visible future. Then a single piece of news arrives: food has returned to her homeland, and the God of that land is behind it. The passage ends with three widows on a road, moving.\n\nThe pace is relentless in its accumulation of loss, death following death with no pause for grief. Then a stillness — and a turn. The emotional arc is descent into emptiness, followed by the first fragile movement toward return. The theological thread is thin but load-bearing: God has acted. The woman hears. She moves. This section creates the conditions of total loss that make everything which follows extraordinary."
-  },
-  level_2_scenes: [
-    {
-      scene_number: 1, verses: "1-2", title: "A family leaves Bethlehem for Moab because of famine",
-      people: [
-        { role: "Man, head of household", name: "Elimelech", relationship: "Husband and father; decision-maker for the family", wants: "To keep his family alive; the move is intended as temporary", fears_carries: "A man of a specific people and land; carries the identity of the covenant community" },
-        { role: "Wife", name: "Naomi", relationship: "Wife of Elimelech; she follows her husband", wants: "Survival; she has no independent decision in this scene", fears_carries: "She will carry all the grief of what follows" },
-        { role: "First son", name: "Mahlon", relationship: "Son of Elimelech and Naomi", wants: "He is young; no independent role yet", fears_carries: "He will die in Moab" },
-        { role: "Second son", name: "Kilion", relationship: "Son of Elimelech and Naomi", wants: "He is young; no independent role yet", fears_carries: "He will die in Moab" }
-      ],
-      places: [
-        { role_in_scene: "Town of origin", name: "Bethlehem, in Judah", type: "A town in the covenant homeland", meaning: "Place of identity, belonging, and divine promise", effect_on_scene: "The famine here drives the departure; it is the home they leave and will return to" },
-        { role_in_scene: "Destination", name: "Moab", type: "A neighboring foreign nation", meaning: "Not their land, not their people, not their God", effect_on_scene: "The place of exile; it will become the place of death" }
-      ],
-      objects_and_elements: [
-        { item: "Famine", what_it_is: "Widespread crop failure", function_in_scene: "The force that drives the family from Bethlehem", what_it_signals: "Severe enough to uproot people from their land, their people, and their God" }
-      ],
-      significant_absences: "No possessions or goods are named. The family departs with nothing described. Their material life is invisible throughout.",
-      what_happens: "A severe famine strikes the land. Elimelech decides to take his wife Naomi and their two sons Mahlon and Kilion from their home in Bethlehem in Judah and relocate temporarily to Moab. They leave and settle there.",
-      communicative_purpose: "This scene introduces every element that will drive the story: the homeland, the foreign country, the family, and the crisis that displaces them. Bethlehem is established as the place of belonging. Moab is the place of exile. The move is framed as temporary — which makes the decade that follows feel like a slow loss of intention."
-    },
-    {
-      scene_number: 2, verses: "3-5", title: "Elimelech dies. The sons marry Moabite women. The sons die. Naomi is left with nothing.",
-      people: [
-        { role: "Widow, bereaved mother", name: "Naomi", relationship: "Wife of Elimelech, now widowed; mother of Mahlon and Kilion", wants: "She is not shown wanting anything — she is receiving blow after blow", fears_carries: "Carries the death of her husband, then both sons; ends this scene completely emptied" },
-        { role: "First son, now dead", name: "Mahlon", relationship: "Son of Naomi; husband of Ruth", wants: "He built a life in Moab and married", fears_carries: "Dies without an heir" },
-        { role: "Second son, now dead", name: "Kilion", relationship: "Son of Naomi; husband of Orpah", wants: "He built a life in Moab and married", fears_carries: "Dies without an heir" },
-        { role: "First daughter-in-law", name: "Orpah", relationship: "Moabite woman; wife of Kilion, now widow", wants: "Present and grieving; her future is unresolved", fears_carries: "A foreigner to the covenant people; she will make a different choice than Ruth" },
-        { role: "Second daughter-in-law", name: "Ruth", relationship: "Moabite woman; wife of Mahlon, now widow", wants: "Present and grieving; her future is unresolved", fears_carries: "A foreigner to the covenant people; she will make the extraordinary choice" }
-      ],
-      places: [
-        { role_in_scene: "Foreign country of settlement", name: "Moab", type: "The place of exile", meaning: "Where the men die and the marriages happen", effect_on_scene: "All three losses occur here; Moab becomes associated with death" }
-      ],
-      objects_and_elements: [
-        { item: "Ten years", what_it_is: "A named duration of time", function_in_scene: "Marks how deeply the family put down roots in Moab", what_it_signals: "The temporary became a decade; the sojourn became a life" }
-      ],
-      significant_absences: "No graves, no mourning rituals, no burial details. The deaths are stated as bare facts. The bluntness is part of the meaning.",
-      what_happens: "Elimelech dies in Moab. Naomi is widowed. Her two sons grow up and each takes a Moabite wife — Mahlon marries Ruth, Kilion marries Orpah. Approximately ten years pass. Then both sons die. Naomi is now left with her two daughters-in-law, all three of them widows, in a foreign country, with no male protection and no visible future.",
-      communicative_purpose: "This scene completes the emptying of Naomi. Each loss is stated plainly and without comfort. It also introduces Orpah and Ruth by name and establishes them clearly as Moabite women — outsiders to the covenant. Their continued presence with Naomi at the end of this scene sets up the decision that is coming."
-    },
-    {
-      scene_number: 3, verses: "6-7", title: "Naomi hears that God has provided food in Bethlehem. She decides to return. All three women set out.",
-      people: [
-        { role: "Widow, now decision-maker", name: "Naomi", relationship: "Mother-in-law of Orpah and Ruth", wants: "To return to Bethlehem; to go back to her people and her God", fears_carries: "Carries total loss — husband, sons, a decade of exile — but she has heard news and she moves" },
-        { role: "First daughter-in-law", name: "Orpah", relationship: "Moabite widow; daughter-in-law of Naomi", wants: "Follows Naomi's lead at this point", fears_carries: "Leaving the only country she has ever known" },
-        { role: "Second daughter-in-law", name: "Ruth", relationship: "Moabite widow; daughter-in-law of Naomi", wants: "Follows Naomi's lead at this point", fears_carries: "Leaving the only country she has ever known" }
-      ],
-      places: [
-        { role_in_scene: "Place of departure", name: "Moab", type: "The foreign country they are leaving", meaning: "Place of exile, marriage, death, and a decade of loss", effect_on_scene: "They leave it; the departure is the first movement of return" },
-        { role_in_scene: "Destination", name: "Judah, toward Bethlehem", type: "The covenant homeland", meaning: "Place of belonging, identity, and now provision", effect_on_scene: "Food is there; God has acted there" },
-        { role_in_scene: "Transitional space", name: "The road between Moab and Judah", type: "A road between two countries", meaning: "Neither Moab nor Bethlehem; a place of movement and decision", effect_on_scene: "The scene ends here — in motion, unresolved, between worlds" }
-      ],
-      objects_and_elements: [
-        { item: "Food", what_it_is: "Restoration of sustenance in Bethlehem", function_in_scene: "The news that reaches Naomi and triggers her decision", what_it_signals: "God has acted; the famine that started everything has ended" }
-      ],
-      significant_absences: "",
-      what_happens: "While still in Moab, Naomi hears that God has provided food for his people in Bethlehem — the famine is over. She decides to return home. She and her two daughters-in-law leave their home in Moab and set out together on the road back toward Judah.",
-      communicative_purpose: "This is the turn of the passage. After total emptiness, Naomi acts. The cause of her action is explicitly theological — God has provided. The scene ends with all three women walking together, which makes the coming separation on the road dramatically significant."
-    }
-  ],
-  level_3_propositions: [
-    { proposition_number: 1, verse: "1a", type_of_statement: "Establishes historical setting; names the period; introduces the crisis", slots: { "when": "the days of the judges", "what happened": "a famine", "where": "in the land" } },
-    { proposition_number: 2, verse: "1b", type_of_statement: "Introduces Elimelech and his decision; names the family; names origin and destination", slots: { "what happened": "a man emigrates temporarily", "who": "Elimelech", "from where": "Bethlehem in Judah", "to where": "the fields of Moab", "with whom": "his wife Naomi; his two sons Mahlon and Kilion" } },
-    { proposition_number: 3, verse: "2", type_of_statement: "Provides full names and clan identity; confirms settlement in Moab", slots: { "who": "Elimelech, Naomi, Mahlon, Kilion", "clan identity": "Ephrathites from Bethlehem in Judah", "where they are now": "Moab" } },
-    { proposition_number: 4, verse: "3", type_of_statement: "Narrates the first death; establishes Naomi's new status", slots: { "what happened": "Elimelech dies", "where": "in Moab", "who is left": "Naomi and her two sons" } },
-    { proposition_number: 5, verse: "4", type_of_statement: "Narrates the sons' marriages; names the wives; marks ten years passing", slots: { "what happened": "the two sons each take a wife", "who marries whom": "Mahlon → Ruth; Kilion → Orpah", "origin of wives": "Moabite women", "duration": "approximately ten years" } },
-    { proposition_number: 6, verse: "5", type_of_statement: "Narrates the second and third deaths; establishes Naomi's complete isolation", slots: { "what happened": "both sons die", "who dies": "Mahlon and Kilion", "who is left": "Naomi, without husband and without sons", "who remains with her": "Orpah and Ruth" } },
-    { proposition_number: 7, verse: "6", type_of_statement: "Narrates Naomi's decision to return; names the theological cause", slots: { "what happened": "Naomi decides to return", "who acts": "Naomi", "why": "she heard that God had provided food for his people", "who provided": "God — the God of the covenant people", "what was provided": "food", "where": "in Bethlehem in Judah", "where Naomi is": "still in Moab", "with whom": "her two daughters-in-law, Orpah and Ruth" } },
-    { proposition_number: 8, verse: "7", type_of_statement: "Narrates the departure; places all three women on the road", slots: { "what happened": "they leave and set out on the road", "who": "Naomi, Orpah, and Ruth — all three together", "from where": "Moab", "direction": "toward Judah" } }
-  ]
-};
-
-// ══════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════
-window.addEventListener('DOMContentLoaded', () => {
-  // Try to restore draft
+function loadFromStorage() {
   try {
-    const draft = localStorage.getItem('pmm-draft');
-    if (draft) {
-      const data = JSON.parse(draft);
-      if (data.meta && (data.meta.book || data.level_2_scenes.length || data.level_3_propositions.length)) {
-        loadFromData(data);
-        return;
+    const raw = localStorage.getItem("pmm_maps");
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+// ════════════════════════════════════════════
+// UTILITIES
+// ════════════════════════════════════════════
+function escHtml(s) {
+  if (!s) return "";
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+
+// ════════════════════════════════════════════
+// BHSA DATA LOADER & PARSER
+// ════════════════════════════════════════════
+function autoLoadBHSA() {
+  const statusEl = document.getElementById("bhsa-load-status");
+  // Fetch from same directory as the HTML — works on GitHub Pages
+  fetch("ruth_bhsa_full_analysis.md")
+    .then(r => {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.text();
+    })
+    .then(text => {
+      state.bhsaData = parseBHSAMarkdown(text);
+      const count = Object.keys(state.bhsaData).length;
+      if (statusEl) {
+        statusEl.textContent = "✓ " + count + " verses loaded.";
+        statusEl.className = "bhsa-load-status loaded";
       }
+    })
+    .catch(err => {
+      console.warn("BHSA auto-load failed:", err);
+      if (statusEl) {
+        statusEl.textContent = "BHSA data not found. Add ruth_bhsa_full_analysis.md to the repository.";
+        statusEl.className = "bhsa-load-status";
+      }
+    });
+}
+
+// Auto-load on page ready
+document.addEventListener("DOMContentLoaded", autoLoadBHSA);
+
+function parseBHSAMarkdown(text) {
+  // Index by "Ruth X:Y" from "## Ruth X:Y" headers
+  const data = {};
+  const lines = text.split("\n");
+  let currentRef = null;
+  let buffer = [];
+
+  for (const line of lines) {
+    const hm = line.match(/^##\s+(Ruth\s+\d+:\d+)\s*$/);
+    if (hm) {
+      if (currentRef && buffer.length) {
+        data[currentRef] = buffer.join("\n").trim();
+      }
+      currentRef = hm[1].trim();
+      buffer = [];
+    } else if (currentRef) {
+      buffer.push(line);
     }
-  } catch(e) {}
-  // Default: one empty scene, one empty prop
-  addScene();
-  addProp();
-});
+  }
+  if (currentRef && buffer.length) {
+    data[currentRef] = buffer.join("\n").trim();
+  }
+  return data;
+}
+
+function versesInRange(versesStr) {
+  // Parse "1–7", "1-7", "6–7", "1", "1:1", etc.
+  // Returns array of verse numbers as strings
+  const clean = versesStr.replace(/\u2013|\u2014/g, "-").trim();
+  const m = clean.match(/^(\d+)(?:-(\d+))?$/);
+  if (!m) return [];
+  const from = parseInt(m[1]);
+  const to   = m[2] ? parseInt(m[2]) : from;
+  const result = [];
+  for (let i = from; i <= to; i++) result.push(String(i));
+  return result;
+}
+
+function openBHSAPanel(label, refs) {
+  // refs: array of "Ruth X:Y" strings
+  const panel = document.getElementById("bhsa-panel");
+  const overlay = document.getElementById("bhsa-overlay");
+  const body = document.getElementById("bhsa-panel-body");
+  const title = document.getElementById("bhsa-panel-title");
+
+  title.textContent = "BHSA — " + label;
+
+  if (!refs || refs.length === 0 || Object.keys(state.bhsaData).length === 0) {
+    body.innerHTML = `<div class="bhsa-empty">
+      ${Object.keys(state.bhsaData).length === 0
+        ? "Load the BHSA file in the Import tab first."
+        : "No BHSA data found for these verses."}
+    </div>`;
+  } else {
+    let html = "";
+    for (const ref of refs) {
+      const raw = state.bhsaData[ref];
+      if (!raw) {
+        html += `<div class="bhsa-verse-block">
+          <div class="bhsa-verse-ref">${escHtml(ref)}</div>
+          <div class="bhsa-empty" style="padding:0.5rem 0">Not found in BHSA data.</div>
+        </div>`;
+        continue;
+      }
+      html += renderBHSAVerse(ref, raw);
+    }
+    body.innerHTML = html || `<div class="bhsa-empty">No data for these verses.</div>`;
+  }
+
+  panel.classList.add("open");
+  overlay.classList.add("open");
+  body.scrollTop = 0;
+}
+
+function renderBHSAVerse(ref, raw) {
+  const lines = raw.split("\n");
+  let html = `<div class="bhsa-verse-block">
+    <div class="bhsa-verse-ref">${escHtml(ref)}</div>`;
+
+  // Hebrew line
+  const hebLine = lines.find(l => l.startsWith("**Hebrew:**"));
+  if (hebLine) {
+    const heb = hebLine.replace("**Hebrew:**", "").trim();
+    html += `<div class="bhsa-hebrew">${escHtml(heb)}</div>`;
+  }
+
+  // Clauses and phrases
+  for (const line of lines) {
+    if (line.startsWith("**Hebrew:**")) continue;
+    const t = line.trim();
+    if (!t) continue;
+
+    if (t.startsWith("**Clause")) {
+      // Clause header
+      const domainM = t.match(/Domain:\s*(\S+)/);
+      const domainKey = domainM ? domainM[1] : "N";
+      const domainClass = "bhsa-domain-" + domainKey.replace(/[^A-Z]/g,"").charAt(0);
+      html += `<div class="bhsa-clause-block">
+        <div class="bhsa-clause-label ${domainClass}">${escHtml(t)}</div>`;
+    } else if (t.startsWith("*(Relation")) {
+      html += `<div class="bhsa-phrase-line" style="color:#8A7A5A;font-style:italic">${escHtml(t)}</div>`;
+    } else if (t.startsWith("**[")) {
+      // Phrase line
+      html += `<div class="bhsa-phrase-line">${escHtml(t)}</div></div>`;
+    } else if (t.startsWith("- ")) {
+      // Word line
+      html += `<div class="bhsa-word-line">${escHtml(t)}</div>`;
+    }
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+function closeBHSA() {
+  document.getElementById("bhsa-panel").classList.remove("open");
+  document.getElementById("bhsa-overlay").classList.remove("open");
+}
+
+// ════════════════════════════════════════════
+// BHSA BUTTON BUILDERS
+// ════════════════════════════════════════════
+function bhsaButtonHTML(label, refs) {
+  const refsJson = JSON.stringify(refs).replace(/'/g, "\\'");
+  return `<button class="btn-bhsa" onclick='openBHSAPanel(${JSON.stringify(label)}, ${JSON.stringify(refs)})'>
+    Hebrew &#x1F4D6;
+  </button>`;
+}
+
+
+// ════════════════════════════════════════════
+// PROSE MAP EXPORT
+// ════════════════════════════════════════════
+function buildProse(map) {
+  const lines = [];
+  const passage = map.meta.passage || "";
+  const analyst = map.meta.analyst || "";
+  const date = map.meta.dateApproved
+    ? new Date(map.meta.dateApproved).toLocaleDateString("en-GB", {day:"numeric",month:"long",year:"numeric"})
+    : "";
+
+  lines.push("# Prose Meaning Map — " + passage);
+  lines.push("");
+  if (analyst) lines.push("**Analyst:** " + analyst);
+  if (date)    lines.push("**Approved:** " + date);
+  lines.push("**Method:** Tripod Method · OBT Lab · Shema Bible Translation · YWAM Kansas City");
+  lines.push("");
+  lines.push("---");
+  lines.push("");
+
+  // ── LEVEL 1 ──
+  lines.push("#### Level 1 — The Arc");
+  lines.push("");
+  lines.push(map.level1.text || "");
+  lines.push("");
+  lines.push("---");
+  lines.push("");
+
+  // ── SCENES ──
+  for (const scene of map.scenes) {
+    lines.push("#### Level 2 — Scene " + scene.number + ": Verses " + scene.verses);
+    lines.push("**Title:** " + scene.title);
+    lines.push("");
+
+    // 2A
+    lines.push("##### 2A — People");
+    for (const p of scene.people) {
+      let entry = "**" + p.name + "**";
+      if (p.role)         entry += " Role: " + p.role;
+      if (p.relationship) entry += " Relationship: " + p.relationship;
+      if (p.wants)        entry += " Wants: " + p.wants;
+      if (p.carries)      entry += " Carries: " + p.carries;
+      lines.push(entry);
+    }
+    lines.push("");
+
+    // 2B
+    lines.push("##### 2B — Places");
+    for (const pl of scene.places) {
+      let entry = "**" + pl.name + "**";
+      if (pl.role)           entry += " Role: " + pl.role;
+      if (pl.type)           entry += " Type: " + pl.type;
+      if (pl.meaning)        entry += " Meaning: " + pl.meaning;
+      if (pl.effect_on_scene) entry += " Effect on scene: " + pl.effect_on_scene;
+      lines.push(entry);
+    }
+    lines.push("");
+
+    // 2C
+    lines.push("##### 2C — Objects and Elements");
+    for (const o of scene.objects) {
+      let entry = "**" + o.name + "**";
+      if (o.what_it_is)       entry += " What it is: " + o.what_it_is;
+      if (o.function_in_scene) entry += " Function in scene: " + o.function_in_scene;
+      if (o.signals)           entry += " Signals: " + o.signals;
+      lines.push(entry);
+    }
+    if (scene.significantAbsence) {
+      lines.push("**Significant absence:** " + scene.significantAbsence);
+    }
+    lines.push("");
+
+    // 2D
+    lines.push("##### 2D — What Happens");
+    lines.push(scene.whatHappens || "");
+    lines.push("");
+
+    // 2E
+    lines.push("##### 2E — Communicative Purpose");
+    lines.push(scene.communicativePurpose || "");
+    lines.push("");
+    lines.push("---");
+    lines.push("");
+  }
+
+  // ── LEVEL 3 ──
+  lines.push("#### Level 3 — The Propositions");
+  lines.push("");
+  for (const prop of map.propositions) {
+    lines.push("**Proposition " + prop.number + " — Verse " + prop.verse + "**");
+    for (const qa of prop.content) {
+      lines.push(qa.question + " " + qa.answer);
+    }
+    lines.push("");
+  }
+
+  return lines.join("\n");
+}
+
+function downloadProse() {
+  const map = state.currentMap;
+  if (!map) return;
+  const text = buildProse(map);
+  const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  const passage = (map.meta.passage || "map").replace(/[^a-z0-9]/gi, "_").toLowerCase();
+  a.download = "pmm_" + passage + ".md";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function copyProse() {
+  const map = state.currentMap;
+  if (!map) return;
+  navigator.clipboard.writeText(buildProse(map)).then(() => {
+    const btns = document.querySelectorAll(".export-actions .btn-outline");
+    // first btn-outline in first export-block is Copy Prose
+    if (btns[0]) {
+      const orig = btns[0].textContent;
+      btns[0].textContent = "Copied!";
+      setTimeout(() => btns[0].textContent = orig, 1500);
+    }
+  });
+}
+
+
+// ════════════════════════════════════════════
+// JSON IMPORT (cross-check workflow)
+// ════════════════════════════════════════════
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById("json-import-status");
+  statusEl.className = "bhsa-load-status";
+  statusEl.textContent = "Loading...";
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      const map = rebuildMapFromJSON(data);
+
+      // Mark as loaded for cross-check — reset all reviewed flags
+      map.level1.reviewed = false;
+      map.scenes.forEach(s => s.reviewed = false);
+      map.propositionsReviewed = false;
+      map.meta.status = "draft";
+      map.meta.crossCheckBy = "";
+      map.meta.originalAnalyst = map.meta.analyst || "";
+      map.meta.originalApproved = map.meta.dateApproved || "";
+
+      state.currentMap = map;
+      runChecks(map);
+      buildReviewSections(map);
+      updateProgress();
+
+      const passage = map.meta.passage || "Unknown passage";
+      const analyst = map.meta.originalAnalyst;
+      statusEl.className = "bhsa-load-status loaded";
+      statusEl.textContent = "✓ Loaded: " + passage
+        + (analyst ? " — originally approved by " + analyst : "")
+        + ". Switching to Review tab.";
+
+      // Pre-fill analyst field for cross-checker
+      document.getElementById("meta-passage").value = map.meta.passage || "";
+
+      setTimeout(() => switchTab("review"), 600);
+    } catch(err) {
+      statusEl.textContent = "Error reading JSON: " + err.message;
+      console.error(err);
+    }
+  };
+  reader.readAsText(file, "utf-8");
+}
+
+function rebuildMapFromJSON(data) {
+  // Reconstruct internal map structure from exported JSON
+  return {
+    meta: data.meta || {},
+    level1: {
+      text: (data.level_1 || {}).arc || "",
+      reviewed: false,
+      warnings: []
+    },
+    scenes: (data.level_2_scenes || []).map(s => ({
+      number: s.scene_number,
+      verses: s.verses,
+      title: s.title || "",
+      people: s.people || [],
+      places: s.places || [],
+      objects: s.objects || [],
+      significantAbsence: s.significant_absence || "",
+      whatHappens: s.what_happens || "",
+      communicativePurpose: s.communicative_purpose || "",
+      reviewed: false,
+      warnings: []
+    })),
+    propositions: (data.level_3_propositions || []).map(p => ({
+      number: p.proposition_number,
+      verse: p.verse,
+      content: p.content || [],
+      reviewed: false,
+      warnings: []
+    })),
+    propositionsReviewed: false,
+    propositionWarnings: []
+  };
+}
+
 </script>
+
+<!-- ── BHSA PANEL ── -->
+<div class="bhsa-overlay" id="bhsa-overlay" onclick="closeBHSA()"></div>
+<div class="bhsa-panel" id="bhsa-panel">
+  <div class="bhsa-panel-header">
+    <span class="bhsa-panel-title" id="bhsa-panel-title">BHSA Analysis</span>
+    <button class="bhsa-close" onclick="closeBHSA()">×</button>
+  </div>
+  <div class="bhsa-panel-body" id="bhsa-panel-body">
+    <div class="bhsa-empty">Select a section to view its BHSA analysis.</div>
+  </div>
+</div>
+
 </body>
 </html>
